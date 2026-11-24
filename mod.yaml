@@ -1,0 +1,10 @@
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod). Cài: Cấu hình → Mods → Cài mod → chọn file .zip, bật mod rồi tải lại trang.
+id: van_kiep_tro_ly
+name: Vạn Kiếp Tu Tiên Tool · Trợ Lý
+version: 8.1.0-thu.5
+api_version: 1
+author: Minhndt3 · Shgphuoc · Kỹ Sư Claude
+description: |
+  Trợ Lý tính toán theo dữ liệu game: nhân vật, kinh mạch, đột phá (có hạn mức đan theo cảnh giới), kiếm lời, tra cứu, Ngự Linh, Luân Hồi, Tự Động, cùng lớp bản đồ đánh dấu mọi sự kiện, di tích, bí cảnh… (hiện cả khi đóng Trợ Lý).
+  Chỉ đọc dữ liệu qua tuTien.core; không thêm nội dung hay đổi luật nên không khóa Tỉ thí.
+script: main.js
