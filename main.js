@@ -1,10 +1,10 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.3.1
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.4.0
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.3.1';
+const VKX_BAN_CAI = '8.4.0';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
@@ -150,7 +150,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.3.1',
+  version: '8.4.0',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
@@ -159,7 +159,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
   if (gWin.__vkxMerged) { try { gWin.__vkxMerged.open(); } catch (e) {} return; }
-  var TOOL_VER = '8.3.1';
+  var TOOL_VER = '8.4.0';
   const VKX_TG = Object.freeze(['Minhndt3', 'Shgphuoc']);
 var MOD_CSS_EXTRA = `
 #vkx-toast:not(.on){pointer-events:none!important}
@@ -285,6 +285,12 @@ table.vk-t tr:nth-child(even) td { background:color-mix(in srgb,var(--bg3) 60%,t
 #vkx-win { scale:var(--vkx-k,1); transform-origin:100% 0; box-sizing:border-box; }
 #vkx-fab { scale:var(--vkx-k,1); transform-origin:100% 100%; }
 #vkx-toast { scale:var(--vkx-k,1); transform-origin:50% 100%; }
+/* Tách cửa sổ: Tool nằm trong cửa sổ phụ, chiếm trọn cửa sổ (JS đặt width/height) */
+#vkx-win.vkx-tach { position:fixed !important; transform-origin:0 0 !important; border-radius:0 !important; border:0 !important; box-shadow:none !important; }
+#vkx-win.vkx-tach .vkx-resize, #vkx-win.vkx-tach #vkx-close { display:none !important; }
+#vkx-win.vkx-tach .vkx-hd { cursor:default; }
+#vkx-win.vkx-tach #vkx-tach { background:var(--hi,#16231f); }
+#vkx-win.vkx-m:not(.vkx-tach) #vkx-tach, #vkx-win.vkx-m:not(.vkx-tach) #vkx-mnu .vkx-mt { display:none; }
 #vkx-win.vkx-m { border-radius:0; border:0; }
 #vkx-win.vkx-m .vkx-hd { padding:12px 12px 8px 14px; cursor:default; touch-action:auto; }
 #vkx-win.vkx-m input[type=text], #vkx-win.vkx-m input[type=number], #vkx-win.vkx-m select { font-size:16px; }
@@ -412,6 +418,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
             return null;
         }
 
+        try { var tw0 = window.__vkxTachW; if (tw0 && !tw0.closed) tw0.close(); window.__vkxTachW = null; } catch (e) {}   /* Nạp lại khi đang tách: đóng cửa sổ phụ của bản cũ */
         var old = document.getElementById('vkx-win');
         if (old) old.remove();
         ['vkx-fab', 'vkx-toast', 'vkx-style'].forEach(function (id) {
@@ -435,6 +442,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
             '<button class="vkx-ib" id="vkx-find" title="Tìm trong mod (tên mục, vật phẩm, quái, địa danh, sự kiện, chữ trong các mục đã mở)" aria-label="Tìm trong mod">🔍</button>' +
             '<button class="vkx-ib" id="vkx-zoom" title="Cỡ giao diện (kéo thanh 50% – 200%)" aria-label="Cỡ giao diện">📐</button>' +
             '<button class="vkx-ib" id="vkx-log" title="Nhật Ký Cập Nhật" aria-label="Nhật Ký Cập Nhật">📜</button>' +
+            '<button class="vkx-ib" id="vkx-tach" title="Tách ra cửa sổ riêng (kéo sang màn hình khác)" aria-label="Tách ra cửa sổ riêng">⧉</button>' +
             '<button class="vkx-ib x" id="vkx-close" title="Thu gọn">✕</button>' +
             '</div>' +
             '<div class="vkx-sec" id="vkx-sec-nk"><div class="vkx-scroll" id="vkx-nk-body"></div></div>' +
@@ -522,6 +530,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         function applyTheme() {
             [win, fab, toastEl].forEach(function (el) { el.setAttribute('data-vkx-theme', THEMES[themeIdx][0]); });
             ls('vkx_theme', THEMES[themeIdx][0]);
+            if (typeof api !== 'undefined' && api && api.tach && api.tachNen) api.tachNen();
         }
         applyTheme();
 
@@ -550,6 +559,11 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         };
         try { var vv = win.querySelector('.vkx-ver'); if (vv && typeof TOOL_VER !== 'undefined') vv.textContent = 'v' + TOOL_VER; } catch (e) { /* bỏ qua */ }
         var segBtns = win.querySelectorAll('.vkx-seg button');
+        /* Tách cửa sổ: các lắng nghe sự kiện toàn cục (phím, bấm ngoài) phải gắn thêm vào cửa sổ phụ khi tách. */
+        api.tach = null; api._tachHooks = []; api._tachCb = null;
+        api.tachThem = function (type, fn, cap) { api._tachHooks.push([type, fn, cap]); if (api.tach) { try { api.tach.w.addEventListener(type, fn, cap); } catch (e) { /* bỏ qua */ } } };
+        api.onTach = function (fn) { api._tachCb = fn; };
+        api.doc = function () { return win.ownerDocument || document; };
 
         api.setSection = function (name) {
             api._section = name;
@@ -561,6 +575,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         };
         api.isOpen = function () { return win.classList.contains('open'); };
         api.open = function () {
+            if (api.tach) { try { api.tach.w.focus(); } catch (e) { /* bỏ qua */ } return; }
             win.classList.add('open');
             if (api.fit && api.fit.run) api.fit.run();
             fab.style.display = 'none';
@@ -569,6 +584,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
             if (api._secCb) api._secCb(api._section, true);
         };
         api.close = function () {
+            if (api.tach && api.ganLai) api.ganLai();
             win.classList.remove('open');
             fab.style.display = 'block';
             ls('vkx_open', '0');
@@ -618,13 +634,15 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
             fq.addEventListener('input', function () { clearTimeout(tm); tm = setTimeout(ve, 180); });
             fq.addEventListener('keydown', function (e) { if (e.key === 'Enter' && ds.length) chon(0); else if (e.key === 'Escape') fpop.style.display = 'none'; });
             fres.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.vkx-fr'); if (b) chon(+b.dataset.i); });
-            document.addEventListener('pointerdown', function (e) {
+            var dongPop = function (e) {
                 ['#vkx-zpop', '#vkx-fpop'].forEach(function (s) {
                     var el = win.querySelector(s); if (!el || el.style.display === 'none') return;
                     if (el.contains(e.target) || (e.target.closest && e.target.closest('#vkx-zoom, #vkx-find'))) return;
                     el.style.display = 'none';
                 });
-            }, true);
+            };
+            document.addEventListener('pointerdown', dongPop, true);
+            api.tachThem('pointerdown', dongPop, true);
         })();
 
         /* ---- kéo nút ☯ bằng ngón tay / chuột (nhớ vị trí) ---- */
@@ -723,8 +741,24 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
                 return { k: k, comp: comp, lw: lw, lh: lh, vh: vh, vtop: vtop, dpr: window.devicePixelRatio || 1, coarse: coarse, land: land,
                     ins: { t: parseFloat(cs.paddingTop) || 0, r: parseFloat(cs.paddingRight) || 0, b: parseFloat(cs.paddingBottom) || 0, l: parseFloat(cs.paddingLeft) || 0 } };
             }
+            function runTach() { /* đang tách: cỡ theo cửa sổ phụ, không có điện thoại / kéo / đổi kích thước */
+                var w2 = api.tach.w, d2 = w2.document, lw = (d2.documentElement && d2.documentElement.clientWidth) || w2.innerWidth, vh = w2.innerHeight;
+                var k = pickV === 'auto' ? 1 : parseFloat(pickV); if (!canScale || !(k > 0)) k = 1;
+                k = clamp(k, 0.5, Math.max(0.5, lw / 300));
+                var effW = lw / k, effH = vh / k;
+                F.k = k; F.comp = 1; F.lw = lw; F.lh = vh; F.vh = vh; F.vtop = 0; F.dpr = w2.devicePixelRatio || 1; F.coarse = false; F.land = lw > vh; F.phone = false;
+                [win, toastEl].forEach(function (el) { el.style.setProperty('--vkx-k', String(k)); });
+                win.classList.remove('vkx-m'); win.classList.remove('vkx-t'); win.classList.remove('vkx-land');
+                win.classList.toggle('vkx-xs', effW < 370);
+                win.classList.toggle('vkx-wide', effW >= 760);
+                var s = win.style;
+                s.boxSizing = 'border-box'; s.maxWidth = 'none'; s.maxHeight = 'none'; s.left = '0px'; s.right = 'auto'; s.top = '0px';
+                s.width = effW + 'px'; s.height = effH + 'px'; s.paddingTop = s.paddingBottom = s.paddingLeft = s.paddingRight = '0px';
+                toastEl.style.bottom = '26px'; toastEl.style.maxWidth = Math.min(0.92 * lw / k, 520) + 'px';
+            }
             function run() {
                 raf = 0;
+                if (api.tach) { runTach(); return; }
                 var m = measure(), k = m.k, effW = m.lw / k, effH = m.vh / k, ins = m.ins;
                 var phone = effW <= 720 || (m.coarse && effH <= 520);
                 F.k = k; F.comp = m.comp; F.lw = m.lw; F.lh = m.lh; F.vh = m.vh; F.vtop = m.vtop; F.dpr = m.dpr; F.coarse = m.coarse; F.land = m.land; F.phone = phone;
@@ -786,7 +820,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
                 ls('vkx_win_rect', JSON.stringify(customRect));
             }
             hd.addEventListener('pointerdown', function (e) {
-                if (F.phone || e.target.closest('button')) return;
+                if (F.phone || api.tach || e.target.closest('button')) return;
                 drag = { dx: e.clientX - (F.lw - (parseFloat(win.style.right) || 16) - (parseFloat(win.style.width) || 480) * F.k),
                     dy: e.clientY - (parseFloat(win.style.top) || 16) };
                 try { hd.setPointerCapture(e.pointerId); } catch (x) {}
@@ -807,7 +841,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
             win.querySelectorAll('.vkx-resize').forEach(function (handle) {
                 var resize = null, dir = handle.dataset.rz || '';
                 handle.addEventListener('pointerdown', function (e) {
-                    if (F.phone || e.button !== undefined && e.button !== 0) return;
+                    if (F.phone || api.tach || e.button !== undefined && e.button !== 0) return;
                     e.preventDefault(); e.stopPropagation();
                     resize = {
                         x: e.clientX, y: e.clientY,
@@ -911,6 +945,64 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         })();
         api.fitInfo = Fit.info;
 
+        /* ---- TÁCH CỬA SỔ: đưa nguyên cửa sổ Tool sang cửa sổ phụ (Document Picture-in-Picture, không có thì popup) ---- */
+        (function () {
+            var tBtn = win.querySelector('#vkx-tach');
+            function chepKieu(d2) {
+                var ds = document.querySelectorAll('style[id^="vkx-"], link[rel="stylesheet"][id^="vkx-"]');
+                for (var i = 0; i < ds.length; i++) { try { d2.head.appendChild(d2.importNode(ds[i], true)); } catch (e) { /* bỏ qua */ } }
+            }
+            function popup() { var w = null; try { w = window.open('', 'vkx_tro_ly', 'popup,width=1000,height=760'); } catch (e) { w = null; } return w; }
+            api.tachNen = function () {
+                try { var t = api.tach; if (!t) return; var c = (t.w.getComputedStyle(win).getPropertyValue('--bg') || '').trim() || '#0b1210'; t.w.document.body.style.background = c; t.w.document.documentElement.style.background = c; } catch (e) { /* bỏ qua */ }
+            };
+            function dung(w2) {
+                var d2 = w2.document;
+                try { d2.title = 'Vạn Kiếp Tu Tiên Tool'; } catch (e) { /* bỏ qua */ }
+                try { Array.prototype.slice.call(d2.head.querySelectorAll('style, link[rel="stylesheet"]')).forEach(function (n) { n.remove(); }); d2.body.innerHTML = ''; } catch (e) { /* bỏ qua */ }
+                chepKieu(d2);
+                d2.documentElement.style.cssText = 'margin:0;height:100%;overflow:hidden';
+                d2.body.style.cssText = 'margin:0;height:100%;overflow:hidden';
+                if (api._tachCb) { try { api._tachCb(true); } catch (e) { /* bỏ qua */ } }
+                var t = { w: w2, iv: 0, fn: { pagehide: function () { api.ganLai(); }, resize: function () { if (api.fit && api.fit.run) api.fit.run(); } } };
+                api.tach = t; window.__vkxTachW = w2;
+                win.classList.add('vkx-tach'); win.classList.add('open');
+                d2.body.appendChild(win); d2.body.appendChild(toastEl);
+                fab.style.display = 'none';
+                api._tachHooks.forEach(function (h) { try { w2.addEventListener(h[0], h[1], h[2]); } catch (e) { /* bỏ qua */ } });
+                w2.addEventListener('pagehide', t.fn.pagehide); w2.addEventListener('resize', t.fn.resize);
+                t.iv = setInterval(function () { if (w2.closed) api.ganLai(); }, 700);
+                tBtn.title = 'Gắn lại vào trang game';
+                api.tachNen();
+                if (api.fit && api.fit.run) api.fit.run();
+                try { w2.focus(); } catch (e) { /* bỏ qua */ }
+            }
+            api.ganLai = function () {
+                var t = api.tach; if (!t) return;
+                if (api._tachCb) { try { api._tachCb(false); } catch (e) { /* bỏ qua */ } }
+                api.tach = null; window.__vkxTachW = null;
+                clearInterval(t.iv);
+                try { api._tachHooks.forEach(function (h) { t.w.removeEventListener(h[0], h[1], h[2]); }); t.w.removeEventListener('pagehide', t.fn.pagehide); t.w.removeEventListener('resize', t.fn.resize); } catch (e) { /* bỏ qua */ }
+                win.classList.remove('vkx-tach');
+                document.body.appendChild(win); document.body.appendChild(toastEl);
+                tBtn.title = 'Tách ra cửa sổ riêng (kéo sang màn hình khác)';
+                fab.style.display = win.classList.contains('open') ? 'none' : 'block';
+                if (api.fit && api.fit.run) api.fit.run();
+                try { if (!t.w.closed) t.w.close(); } catch (e) { /* bỏ qua */ }
+            };
+            tBtn.onclick = function (e) {
+                e.stopPropagation();
+                if (api.tach) { api.ganLai(); return; }
+                var pip = window.documentPictureInPicture, p;
+                try { p = (pip && typeof pip.requestWindow === 'function') ? pip.requestWindow({ width: 900, height: 700 }).catch(function () { return popup(); }) : Promise.resolve(popup()); } catch (x) { p = Promise.resolve(popup()); }
+                p.then(function (w2) {
+                    if (!w2) { notify('Trình duyệt chặn cửa sổ bật lên: cho phép popup cho trang game rồi bấm lại.', 6000); return; }
+                    dung(w2);
+                });
+            };
+            window.addEventListener('pagehide', function () { if (api.tach) { try { api.tach.w.close(); } catch (e) { /* bỏ qua */ } } });
+        })();
+
         /* ---- trạng thái ban đầu ---- */
         var sec = ls('vkx_sec');
         api.setSection(sec === 'nk' ? 'nk' : 'tl');
@@ -919,6 +1011,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         Fit.run();
         return api;
     })();
+    /* Tài liệu (document) đang chứa cửa sổ Tool: trang game, hoặc cửa sổ phụ khi đã tách. Phần tử nằm TRONG Tool phải tìm / tạo ở đây; phần tử của GAME thì vẫn dùng `document`. */
+    function vkDoc() { try { return UI.doc(); } catch (e) { return document; } }
 
     /* ═══════════════ DỮ LIỆU NGỰ LINH (thư viện game mới nhất) ═══════════════ */
     var NL_META = {"item.am_binh_lenh": ["phu_lieu", "hon"], "item.am_hon_cham": ["phap_khi", "hon"], "item.am_phach_chau": ["lieu", "hon"], "item.am_phu_chi": ["phu_lieu", "hon"], "item.am_thi_tho": ["lieu", "thi"], "item.am_thuy_chau": ["phu_lieu", "hon"], "item.au_trung_bich_hat": ["trung", "trung"], "item.au_trung_doc_ngo": ["trung", "trung"], "item.au_trung_hac_chu": ["trung", "trung"], "item.au_trung_huyet_co": ["trung", "trung"], "item.au_trung_kim_giap": ["trung", "trung"], "item.bach_co_phe_than": ["cong_phap", "trung"], "item.bach_co_sao": ["phap_khi", "trung"], "item.bach_cot_phan": ["phu_lieu", "thi"], "item.bach_khoi_tam_kinh": ["cong_phap", "khoi_loi"], "item.bach_mao_thi_quan": ["do_pho", "khoi_loi"], "item.bach_quy_chan_kinh": ["cong_phap", "hon"], "item.bach_quy_phien": ["phap_khi", "hon"], "item.bach_quy_vuong_phien": ["do_pho", "khoi_loi"], "item.bach_thu_cao": ["lieu", "thu"], "item.bach_thu_cuong_hong": ["cong_phap", "thu"], "item.bach_thu_linh_bai": ["phap_khi", "thu"], "item.bach_thu_thong_ngu": ["cong_phap", "thu"], "item.bach_trung_kinh": ["cong_phap", "trung"], "item.bat_hoa_dong_cot": ["do_pho", "khoi_loi"], "item.bat_hu_thi_kinh": ["cong_phap", "thi"], "item.bich_hat_vi": ["lieu", "trung"], "item.canh_kim_tinh": ["phu_lieu", "khoi_loi"], "item.chien_hon_phien": ["do_pho", "khoi_loi"], "item.chieu_hon_linh": ["phap_khi", "hon"], "item.chu_doc_nang": ["lieu", "trung"], "item.chuong_doc_tinh": ["phu_lieu", "trung"], "item.co_dinh": ["phap_khi", "trung"], "item.co_huyet_phan_bo": ["cong_phap", "trung"], "item.co_huyet_tinh": ["lieu", "trung"], "item.co_khoi_hach": ["phu_lieu", "khoi_loi"], "item.co_khoi_tan_giap": ["phu_lieu", "khoi_loi"], "item.co_mau_tam_kinh": ["cong_phap", "trung"], "item.co_mo_bach_cot": ["do_pho", "khoi_loi"], "item.co_moc_tam": ["phu_lieu", "linh_thu"], "item.cuong_sat_tinh": ["lieu", "thi"], "item.cuong_thi_nha": ["phu_lieu", "thi"], "item.cuu_am_thi_quan": ["phap_khi", "thi"], "item.cuu_chuyen_khoi_dien": ["cong_phap", "khoi_loi"], "item.cuu_u_am_hoa": ["phu_lieu", "hon"], "item.cuu_u_hon_hach": ["lieu", "hon"], "item.cuu_u_thi_hach": ["lieu", "thi"], "item.cuu_u_thi_kinh": ["cong_phap", "thi"], "item.dang_trien_thi_hai": ["do_pho", "khoi_loi"], "item.do_pho_cu_khoi": ["do_pho", "khoi_loi"], "item.do_pho_dong_giap": ["do_pho", "khoi_loi"], "item.do_pho_dong_hac": ["do_pho", "khoi_loi"], "item.do_pho_khoi_binh": ["do_pho", "khoi_loi"], "item.do_pho_khoi_tuong": ["do_pho", "khoi_loi"], "item.do_pho_moc_hau": ["do_pho", "khoi_loi"], "item.do_pho_moc_khoi": ["do_pho", "khoi_loi"], "item.do_pho_moc_lang": ["do_pho", "khoi_loi"], "item.do_pho_moc_nhan": ["do_pho", "khoi_loi"], "item.do_pho_thiet_thi": ["do_pho", "khoi_loi"], "item.doc_co_chan_kinh": ["cong_phap", "trung"], "item.dong_khoi_hach": ["phu_lieu", "khoi_loi"], "item.dp_thu_linh_phu": ["don_phuong", ""], "item.dp_thu_thu_phu": ["don_phuong", ""], "item.duong_co_quyet": ["cong_phap", "trung"], "item.duong_co_ung": ["phap_khi", "trung"], "item.duong_hach_dang": ["phap_khi", "khoi_loi"], "item.duong_hon_moc": ["phap_khi", "hon"], "item.duong_hon_quyet": ["cong_phap", "hon"], "item.duong_quy_kinh": ["cong_phap", "hon"], "item.duong_thi_quan": ["phap_khi", "thi"], "item.duong_thi_quyet": ["cong_phap", "thi"], "item.duong_thu_quyet": ["cong_phap", "thu"], "item.han_bang_thi_quan": ["do_pho", "khoi_loi"], "item.han_thiet": ["phu_lieu", "khoi_loi"], "item.hat_doc_nang": ["phu_lieu", "trung"], "item.hoang_tuyen_quy_kinh": ["cong_phap", "hon"], "item.hoe_am_moc": ["phu_lieu", "hon"], "item.hon_nguyen_kim_tuy": ["lieu", "khoi_loi"], "item.hon_phach_tan": ["lieu", "hon"], "item.hon_phien_tan": ["do_pho", "khoi_loi"], "item.huyen_am_thi_dinh": ["phap_khi", "thi"], "item.huyen_ti_quyet": ["cong_phap", "khoi_loi"], "item.huyen_van_phan": ["lieu", "khoi_loi"], "item.huyet_anh_tinh": ["phu_lieu", "thi"], "item.huyet_linh_chi": ["phu_lieu", "linh_thu"], "item.huyet_ngoc_quan": ["do_pho", "khoi_loi"], "item.huyet_sat_chau": ["lieu", "thi"], "item.huyet_tinh_yeu_thu": ["phu_lieu", "thu"], "item.huyet_tri_cot": ["do_pho", "khoi_loi"], "item.khoi_loi_ban": ["phap_khi", "khoi_loi"], "item.khoi_loi_hien_than": ["cong_phap", "khoi_loi"], "item.khoi_loi_nang": ["phap_khi", "khoi_loi"], "item.khoi_ti_thoa": ["phap_khi", "khoi_loi"], "item.khu_khoi_thuat": ["cong_phap", "khoi_loi"], "item.khu_thi_linh": ["phap_khi", "thi"], "item.khu_yeu_tien": ["phap_khi", "thu"], "item.kim_giap_xac": ["lieu", "trung"], "item.kim_tinh_phien": ["lieu", "linh_thu"], "item.kim_trung_si": ["lieu", "trung"], "item.le_hon_phien": ["do_pho", "khoi_loi"], "item.le_phach_tinh": ["lieu", "hon"], "item.linh_giao_binh": ["phap_khi", "khoi_loi"], "item.linh_kim_vun": ["lieu", "khoi_loi"], "item.linh_nhuc_can": ["lieu", "thu"], "item.linh_thu_dai": ["phap_khi", "thu"], "item.luyen_hon_quyet": ["cong_phap", "hon"], "item.luyen_thi_bi_luc": ["cong_phap", "thi"], "item.mang_hon_chi": ["phu_lieu", "linh_thu"], "item.moc_khoi_hach": ["phu_lieu", "khoi_loi"], "item.moc_khoi_quyet": ["cong_phap", "khoi_loi"], "item.muc_yeu_kinh": ["cong_phap", "thu"], "item.ngan_ti_khien_hoan": ["phap_khi", "khoi_loi"], "item.ngo_cong_doc_nang": ["phu_lieu", "trung"], "item.ngu_doc_co_tam": ["lieu", "trung"], "item.ngu_doc_dich": ["lieu", "trung"], "item.ngu_thu_an": ["cong_phap", "thu"], "item.ngu_thu_hoan": ["phap_khi", "thu"], "item.nhiep_hach_thuat": ["cong_phap", "khoi_loi"], "item.nhiep_hon_thuat": ["cong_phap", "hon"], "item.oan_hon_tinh": ["lieu", "hon"], "item.oan_hon_ty": ["phu_lieu", "hon"], "item.pham_thi": ["do_pho", "khoi_loi"], "item.phan_than_khoi_an": ["phap_khi", "khoi_loi"], "item.phe_kim_nha": ["lieu", "trung"], "item.phong_thao_nho": ["lieu", "linh_thu"], "item.phuc_thu_an_quyet": ["cong_phap", "thu"], "item.quy_khoc_thuat": ["cong_phap", "hon"], "item.tang_hon_chung": ["phap_khi", "hon"], "item.tao_hoa_khoi_kinh": ["cong_phap", "khoi_loi"], "item.thai_co_thu_huyet": ["lieu", "thu"], "item.thanh_doc_nang": ["lieu", "trung"], "item.thanh_dong_khau": ["lieu", "khoi_loi"], "item.thao_khoi_quyet": ["cong_phap", "khoi_loi"], "item.that_thai_doc_nang": ["lieu", "trung"], "item.thi_am_chau": ["lieu", "thi"], "item.thi_cot_tien": ["phap_khi", "thi"], "item.thi_du": ["phu_lieu", "thi"], "item.thi_hach": ["phu_lieu", "thi"], "item.thi_hoang_an": ["phap_khi", "thi"], "item.thi_huyet_tinh": ["lieu", "thi"], "item.thi_khi_nang": ["lieu", "thi"], "item.thi_khoi_hach": ["phu_lieu", "khoi_loi"], "item.thi_mao": ["phu_lieu", "thi"], "item.thi_no_chu": ["cong_phap", "thi"], "item.thi_sat_chan_kinh": ["cong_phap", "thi"], "item.thi_sat_trao": ["phap_khi", "thi"], "item.thi_vuong_cot_truong": ["phap_khi", "thi"], "item.thi_vuong_hieu_lenh": ["cong_phap", "thi"], "item.thien_cong_hap": ["phap_khi", "khoi_loi"], "item.thien_la_khoi_vong": ["phap_khi", "khoi_loi"], "item.thien_ngoai_van_thiet": ["phu_lieu", "khoi_loi"], "item.thien_nien_ha_thu_o": ["phu_lieu", "linh_thu"], "item.thien_tam_ti": ["lieu", "trung"], "item.thiet_moc_tiet": ["lieu", "khoi_loi"], "item.thieu_hon_quyet": ["cong_phap", "hon"], "item.thu_co_an": ["cong_phap", "trung"], "item.thu_hoang_chan_kinh": ["cong_phap", "thu"], "item.thu_linh_phu": ["phu", ""], "item.thu_thi_an": ["cong_phap", "thi"], "item.thu_thu_phu": ["phu", ""], "item.thu_vuong_tuy": ["lieu", "thu"], "item.thuc_khoi_chi": ["cong_phap", "khoi_loi"], "item.tinh_than_sa": ["lieu", "khoi_loi"], "item.toa_hon_ho_lo": ["do_pho", "khoi_loi"], "item.toai_hon_dinh": ["phap_khi", "hon"], "item.tram_ho_thi": ["do_pho", "khoi_loi"], "item.tram_hon_binh": ["do_pho", "khoi_loi"], "item.tran_van_an_hinh": ["phu", ""], "item.tran_van_co_chien": ["phu", ""], "item.tran_van_cu_luc": ["phu", ""], "item.tran_van_cuong_bao": ["phu", ""], "item.tran_van_dong_tam": ["phu", ""], "item.tran_van_giap_da": ["phu", ""], "item.tran_van_ho_chu": ["phu", ""], "item.tran_van_hut_linh": ["phu", ""], "item.tran_van_kiem_y": ["phu", ""], "item.tran_van_lien_no": ["phu", ""], "item.tran_van_nguyen_to": ["phu", ""], "item.tran_van_phan_chan": ["phu", ""], "item.tran_van_yeu_nha": ["phu", ""], "item.trung_bach_hac": ["trung", "linh_thu"], "item.trung_bach_linh_ho": ["trung", "linh_thu"], "item.trung_bach_ngac": ["trung", "thu"], "item.trung_bach_van_au_ho": ["trung", "linh_thu"], "item.trung_bang_so": ["trung", "thu"], "item.trung_bich_lan_mang": ["trung", "thu"], "item.trung_boi_son_quy": ["trung", "thu"], "item.trung_cam_ly": ["trung", "linh_thu"], "item.trung_giap_phien": ["lieu", "trung"], "item.trung_hac_phong_bao": ["trung", "thu"], "item.trung_hoa_lan": ["trung", "thu"], "item.trung_hoa_loan": ["trung", "thu"], "item.trung_hoa_nha": ["trung", "linh_thu"], "item.trung_hoa_vu_ke": ["trung", "thu"], "item.trung_huyen_quy": ["trung", "thu"], "item.trung_kim_mao_thu": ["trung", "linh_thu"], "item.trung_liet_khong_ung": ["trung", "thu"], "item.trung_ly_long": ["trung", "thu"], "item.trung_mac_ngoc_linh_mieu": ["trung", "linh_thu"], "item.trung_ngan_giac_loc": ["trung", "linh_thu"], "item.trung_ngan_nguyet_au_lang": ["trung", "linh_thu"], "item.trung_ngoc_tho": ["trung", "linh_thu"], "item.trung_phan_son_ho": ["trung", "thu"], "item.trung_sa_tich": ["trung", "thu"], "item.trung_tam_bao_dieu": ["trung", "linh_thu"], "item.trung_thanh_dieu": ["trung", "linh_thu"], "item.trung_thanh_loan": ["trung", "thu"], "item.trung_thanh_ngoc_linh_xa": ["trung", "linh_thu"], "item.trung_thanh_nguu": ["trung", "linh_thu"], "item.trung_thanh_van_quy": ["trung", "thu"], "item.trung_thanh_vu_hac": ["trung", "thu"], "item.trung_vuong_giap": ["lieu", "trung"], "item.tu_am_bai": ["phap_khi", "thi"], "item.tu_hon_binh": ["phap_khi", "hon"], "item.tu_kim": ["phu_lieu", "khoi_loi"], "item.tu_lan_thao": ["lieu", "thu"], "item.tu_si_thi_hai": ["do_pho", "khoi_loi"], "item.u_minh_hon_phien": ["do_pho", "khoi_loi"], "item.u_minh_hon_tinh": ["lieu", "hon"], "item.u_minh_quy_dien": ["cong_phap", "hon"], "item.van_co_no": ["phap_khi", "khoi_loi"], "item.van_co_phien": ["phap_khi", "trung"], "item.van_co_thien_kinh": ["cong_phap", "trung"], "item.van_doc_phien": ["phap_khi", "trung"], "item.van_hon_phien": ["phap_khi", "hon"], "item.van_quy_phien": ["phap_khi", "hon"], "item.van_thu_quy_tong": ["cong_phap", "thu"], "item.van_thu_te_minh": ["cong_phap", "thu"], "item.van_yeu_phien": ["phap_khi", "thu"], "item.xich_dong_khoi_quyet": ["cong_phap", "khoi_loi"], "item.xich_kim_dich": ["lieu", "khoi_loi"], "item.yeu_dan_1": ["phu_lieu", "thu"], "item.yeu_dan_2": ["phu_lieu", "thu"], "item.yeu_dan_3": ["phu_lieu", "thu"], "item.yeu_dan_4": ["phu_lieu", "thu"], "item.yeu_dan_5": ["phu_lieu", "thu"], "item.yeu_hoang_phien": ["phap_khi", "thu"], "item.yeu_lang_nhuc": ["lieu", "thu"], "item.huyen_co_lang_do": ["do_pho", "khoi_loi"], "item.kim_hac_bi_do": ["do_pho", "khoi_loi"], "item.chien_khoi_chan_do": ["do_pho", "khoi_loi"], "item.tuong_hon_ho_phu": ["do_pho", "hon"], "item.hong_y_le_phach": ["do_pho", "hon"], "item.cuu_tu_hon_dang": ["do_pho", "hon"], "item.toa_hoa_dao_khu": ["do_pho", "thi"], "item.huyen_bang_co_quan": ["do_pho", "thi"], "item.han_bat_tan_khu": ["do_pho", "thi"], "item.trung_xich_diem_cau": ["trung", "linh_thu"], "item.trung_tu_dien_hau": ["trung", "linh_thu"], "item.trung_thuc_thiet_thu": ["trung", "linh_thu"], "item.trung_bach_trach": ["trung", "linh_thu"], "item.trung_da_anh_kieu": ["trung", "linh_thu"], "item.trung_huyen_duc_buc": ["trung", "linh_thu"], "item.tran_van_toa_cot": ["phu", ""], "item.tran_van_tien_vu": ["phu", ""], "item.tran_van_ti_thuan": ["phu", ""], "item.tran_van_lien_khoi": ["phu", ""], "item.tran_van_thien_ti": ["phu", ""], "item.tran_van_hac_vu": ["phu", ""], "item.tran_van_thi_bao": ["phu", ""], "item.tran_van_thiet_thuan": ["phu", ""], "item.tran_van_chan_dia": ["phu", ""], "item.tran_van_tran_hon": ["phu", ""], "item.tran_van_xuyen_giap": ["phu", ""], "item.tran_van_loi_tieu": ["phu", ""], "item.tran_van_loi_vuc": ["phu", ""], "item.tran_van_lien_quan": ["phu", ""]}; /* mã vật phẩm → [nhóm, nhánh] */
@@ -1559,7 +1653,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   }
 
   // 7.15.1-thu.5: bộ nhớ đệm Auto Build (chỉ giữ trong lúc game mở, không lưu đĩa). Khóa sig gồm toàn bộ thứ làm điểm đổi: nhân vật (nv0 đầy đủ), chế độ chấm, S.dir/prio/kmBuild/kmCore/kmCoreW/biasK/full/hbRatio, danh sách quái chấm.
-  const kmSigOf = (nv0, mode, enemies) => { try { return JSON.stringify([nv0, mode, S.dir, S.prio, S.kmBuild, S.kmCore ? [...S.kmCore] : null, S.kmCoreW, S.biasK, S.full, S.hbRatio, !!S.phamCao, S.phMin || null, S.kmCam ? [...S.kmCam].sort() : null, S.tocBoi >= 2 ? 2 : S.tocBoi >= 1 ? 1 : 0, enemies ? enemies.map((e) => [e.id, e.E]) : null]); } catch (e) { return ''; } };
+  const kmSigOf = (nv0, mode, enemies) => { try { return JSON.stringify([nv0, mode, S.dir, S.prio, S.kmBuild, S.kmCore ? [...S.kmCore] : null, S.kmCoreW, S.biasK, S.full, S.hbRatio, !!S.phamCao, S.phMin || null, S.kmCam ? [...S.kmCam].sort() : null, S.kmHeChi || null, S.tocBoi >= 2 ? 2 : S.tocBoi >= 1 ? 1 : 0, enemies ? enemies.map((e) => [e.id, e.E]) : null]); } catch (e) { return ''; } };
   const _kmEvCache = new Map(), KM_EV_MAX = 8000, KM_HI_W = 30, KM_HI_WIN = 20;   // sig -> Map(keyBoXep -> kết quả chấm, thứ tự chèn = LRU); tối đa 4 sig, mỗi sig 8000 mục; KM_HI_W = trọng số sát thương trận bậc cao, KM_HI_WIN = thưởng thắng trận bậc cao (thu.28; trần một trận = tổng hai số)
   const kmEvCacheFor = (sig) => {
     if (!sig) return new Map();
@@ -1573,7 +1667,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     const K = S.core, c = C(), cache = kmEvCacheFor(kmSigOf(nv0, mode, enemies));
     const B = biasCtx(nv0, K.luoiKinhMach(c, nv0)), capX = capCtxOf(nv0), sX = statCapCtx(nv0), ngW = S.dir === 'ma' ? 0.4 : 1;
     const hp0 = mode === 'thu' ? (() => { try { const b0 = clone(nv0); b0.kinhMach.manh = []; return Math.max(1, K.taoBenTa(b0, c).khiHuyetToiDa || 1); } catch (e) { return 1; } })() : 1;   // khí huyết lúc chưa xếp gì
-    let probed = false, noNv = false, noFt = false, cutBad = false, nEv = 0, phK = 0;   // thu.12: thử bỏ clone ở lần chấm đầu; cắt sớm theo chặn trên
+    let probed = false, noNv = false, noFt = false, cutBad = false, nEv = 0, phK = 0, lastCp = 0;   // thu.12: thử bỏ clone ở lần chấm đầu; cắt sớm theo chặn trên
     const ord = enemies.map((_, i) => i).sort((a, b) => (enemies[b].E.khiHuyetToiDa || 0) - (enemies[a].E.khiHuyetToiDa || 0)), hsum = new Array(enemies.length).fill(0);
     const bnd = enemies.map((e) => e.hi ? KM_HI_W + KM_HI_WIN : mode === 'thu' ? 220 : mode === 'cong' ? 225 : 175), bSum = bnd.reduce((a, b) => a + b, 0);
     // thu.29: Ưu Tiên Phẩm Cao: thưởng mỗi món thông = phK × pham_cap². phK chọn theo thang điểm trận hiện tại (bSum = tổng trần điểm các trận) sao cho ở phẩm cao nhất ứng với cảnh giới (pRef), món hơn 2 bậc phẩm
@@ -1619,7 +1713,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         s = fightScore + 0.2 * thong - 3 * ng + llScore + 80 * hb.htEff + 40 * Math.min(2, khi - 1);
       }
       else s = fightScore + 30 * toc + 20 * dp + 0.2 * thong - 10 * ng + llScore;
-      s += bias + capScore(capX, R) + capStatScore(sX, R, mode);
+      if (S.dir !== 'ma' && mode !== 'dot') s -= KM_NG_K * bSum * (R.diemNghich || 0);   // 8.3.1-thu.2: phạt điểm nghịch nặng hơn (dot đã phạt riêng)
+      lastCp = capScore(capX, R) + capStatScore(sX, R, mode); s += bias + lastCp;   // 8.3.2-thu.2: lastCp để báo thành phần điểm
       if (S.hbRatio) s -= hbRatioPenalty(manh, R);
       // Xếp Full Ô: thưởng lớn theo số ô được phủ để bộ tìm kiếm ưu tiên lấp đầy lưới.
       if (S.full) s += 20 * manh.reduce((a, p) => a + p.cells.length, 0);
@@ -1649,7 +1744,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       let fightScore = 0; for (let i = 0; i < nE; i++) fightScore += sc[i];   // cộng theo thứ tự gốc để điểm y hệt bản cũ
       for (let i = 0; i < nE; i++) { hsum[i] += sc[i] / bnd[i]; } if (++nEv % 32 === 0) ord.sort((a, b) => hsum[a] - hsum[b]);   // địch khó (điểm thấp) chấm trước
       const s = sOf(fightScore);
-      const out = { s, wins, P, R, bias };
+      const out = { s, wins, P, R, bias, parts: { fs: fightScore, cp: lastCp, ng: (S.dir !== 'ma' && mode !== 'dot') ? KM_NG_K * bSum * (R.diemNghich || 0) : 0, thong } };   // 8.3.2-thu.2: parts chỉ để hiển thị, không đổi s
       if (cache.size >= KM_EV_MAX) cache.delete(cache.keys().next().value);
       cache.set(key, out);
       return out;
@@ -1663,8 +1758,25 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   // Đề xuất "theo cảnh giới": phẩm cao nhất ứng với cảnh giới R (bảng TIER_CG, không tính Nghịch Thiên) trừ 2, tối thiểu 1; số chọn tay (> 0) thắng đề xuất.
   const kmPhOf = (R) => { let p = 1; for (let i = 0; i < 7; i++) if (TIER_CG[i] <= R) p = i + 1; return p; };
   const kmPhMin = (it, R) => { const m = S.phMin; if (!m || !it) return 0; const tay = it.loai === 'cong_phap' ? m.cp : m.pk; if (tay > 0) return tay; return m.auto ? Math.max(1, kmPhOf(R) - 2) : 0; };
-  const kmPhOK = (it, R) => { const mn = kmPhMin(it, R); return !mn || (it.pham_cap || 0) >= mn || !!(S.kmCore && S.kmCore.has(it.id)); };
+  const kmPhOK = (it, R) => { if (S.kmPhBo) return true; const mn = kmPhMin(it, R); return !mn || (it.pham_cap || 0) >= mn || !!(S.kmCore && S.kmCore.has(it.id)); };
+  // 8.3.1-thu.2: Ưu Tiên Theo Hệ Linh Căn lọc cứng: bỏ món có hệ bị linh căn khắc hoặc khắc linh căn (so theo gốc hệ). Món chủ đạo, món vô sắc, linh căn rỗng luôn qua. `nv` = nhân vật đang xếp.
+  const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma tu) = KM_NG_K × tổng trần điểm trận × số điểm nghịch
+  const kmHeOK = (it, nv) => {
+    if (!it || (S.kmCore && S.kmCore.has(it.id))) return true;
+    if (S.kmHeChi && S.kmHeChi.length) {   // 8.3.2-thu.2: "Chỉ dùng các hệ": món phải có MỌI hệ (trừ vô sắc) nằm trong danh sách; món vô sắc chỉ qua khi danh sách có vô sắc
+      const hc = (it.he || []).filter((h) => h && h !== 'vo_sac');
+      return hc.length ? hc.every((h) => S.kmHeChi.includes(h)) : S.kmHeChi.includes('vo_sac');
+    }
+    if (!S.prio) return true;
+    const lc = (((nv && nv.linhCan && nv.linhCan.he) || []).filter((h) => h && h !== 'vo_sac')).map(gocHe); if (!lc.length) return true;
+    const hs = ((it.he || []).filter((h) => h && h !== 'vo_sac')).map(gocHe); if (!hs.length) return true;
+    return !hs.some((h) => lc.some((l) => KHAC_HE[l] === h || KHAC_HE[h] === l));
+  };
   const kmCamOut = (id) => !!(S.kmCam && S.kmCam.has(id)) && !(S.kmCore && S.kmCore.has(id));
+  // 8.3.2-thu.4: món biến thể do mod khác tạo (id `<gốc>~<mã>`): kinh mạch chỉ đặt MỘT món mỗi id gốc. Tool chỉ ĐỌC (không gọi addItemVariant / hook mod nào).
+  const kmGoc = (id) => { try { return String(TT.itemBase ? TT.itemBase(id) : String(id).split('~')[0]); } catch (e) { return String(id).split('~')[0]; } };
+  // Món biến thể mà người chơi CHƯA có (túi / kinh mạch / trang bị): ẩn khỏi các danh sách duyệt toàn bộ dữ liệu game.
+  const kmBienLa = (id, nv) => { try { if (kmGoc(id) === String(id)) return false; const n = nv || G().state.run.nhanVat; return !((n.tuiDo && n.tuiDo[id] > 0) || JSON.stringify(n.kinhMach || {}).includes('"' + id + '"') || JSON.stringify(n.trangBi || {}).includes('"' + id + '"')); } catch (e) { return false; } };
   const kmNoTa = () => { if (S.dir === 'tien') return true; const b = kbBuild(S.kmBuild); return !!b && b.nhom !== 'Tà đạo'; };
   const kmTaIn = (nv) => { const c = C(); return [...new Set(((nv.kinhMach && nv.kinhMach.manh) || []).map((m) => m.item))].filter((id) => kmIsTa(c.items.get(id))); };
   // Tỉ lệ ô thông do món tà chiếm trong cách xếp `res` ({ manh, R }); dùng để cảnh báo khi không cấm tà.
@@ -1679,6 +1791,12 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     // thu.29: Phẩm tối thiểu. Lọc làm một loại rỗng hẳn thì loại đó không lọc (tránh bộ rỗng khi túi chỉ có đồ thấp).
     let pool = pool0.filter((id) => kmPhOK(c.items.get(id), nv0.canhGioi));
     for (const lo of ['cong_phap', 'phap_khi']) if (!pool.some((id) => c.items.get(id).loai === lo)) pool = pool.concat(pool0.filter((id) => c.items.get(id).loai === lo));
+    // 8.3.1-thu.2: lọc cứng theo hệ linh căn (loại nào lọc xong rỗng thì không lọc loại đó)
+    if (S.prio || (S.kmHeChi && S.kmHeChi.length)) { const p0 = pool, p1 = pool.filter((id) => kmHeOK(c.items.get(id), nv0)); pool = p1; for (const lo of ['cong_phap', 'phap_khi']) if (!pool.some((id) => c.items.get(id).loai === lo)) pool = pool.concat(p0.filter((id) => c.items.get(id).loai === lo)); }
+    // 8.3.2-thu.4: mỗi id gốc chỉ giữ MỘT món (món chủ đạo trước, rồi phẩm cao, rồi chính id gốc)
+    { const best = new Map(), rk = (id) => [S.kmCore && S.kmCore.has(id) ? 1 : 0, (c.items.get(id).pham_cap || 0), id === kmGoc(id) ? 1 : 0];
+      for (const id of pool) { const k = kmGoc(id), o = best.get(k); if (o === undefined) { best.set(k, id); continue; } const a = rk(id), b = rk(o); for (let i = 0; i < 3; i++) { if (a[i] !== b[i]) { if (a[i] > b[i]) best.set(k, id); break; } } }
+      pool = pool.filter((id) => best.get(kmGoc(id)) === id); }
     const g = K.luoiKinhMach(c, nv0), cand = {};
     // Hình chữ nhật bao các ô đã mở (không phải 'an', nằm trong khuôn): chỉ quét trong đó (nới theo cỡ món).
     const st = (nv0.kinhMach && nv0.kinhMach.trangThai) || [];
@@ -1719,7 +1837,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     }
     return { cand, g };
   }
-  const candKey = (nv0) => { try { const km = nv0.kinhMach || {}; return JSON.stringify([nv0.canhGioi, nv0.tieuCanhGioi, nv0.theChat, nv0.tuiDo, km, S.dir, S.kmBuild, S.kmCore ? [...S.kmCore] : null, S.phMin || null, S.kmCam ? [...S.kmCam].sort() : null]); } catch (e) { return ''; } };
+  const candKey = (nv0) => { try { const km = nv0.kinhMach || {}; return JSON.stringify([nv0.canhGioi, nv0.tieuCanhGioi, nv0.theChat, nv0.tuiDo, km, S.dir, S.kmBuild, S.kmCore ? [...S.kmCore] : null, S.phMin || null, S.kmCam ? [...S.kmCam].sort() : null, !!S.prio, !!S.kmPhBo, S.kmHeChi || null]); } catch (e) { return ''; } };
   const candCopy = (v) => { const cand = {}; for (const id of Object.keys(v.cand)) cand[id] = v.cand[id].slice(); return { cand, g: v.g }; };
   function buildCandidatesSync(nv0) {
     const key = candKey(nv0); if (key && _candCache.key === key) return candCopy(_candCache.val);
@@ -1897,7 +2015,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       for (const id of Object.keys(cand)) for (const cn of cand[id]) cn.cells.forEach((x) => tot.add(x));
       const used = new Set(); best.manh.forEach((m) => (K.oCuaManh(g, m, c.items.get(m.item)) || []).forEach((x) => used.add(x)));
       for (const x of used) tot.add(x);
-      return `<div class="vk-mu" style="font-size:12px;margin-top:6px">Độ phủ lưới: <b>${used.size}/${tot.size}</b> ô${used.size < tot.size ? ' (túi chưa đủ món vừa hình để lấp hết ô còn lại)' : ' · đã lấp đầy'}.</div>`;
+      return `<div class="vk-mu" style="font-size:12px;margin-top:6px">Độ phủ lưới: <b>${used.size}/${tot.size}</b> ô${used.size < tot.size ? ' (túi chưa đủ món vừa hình để lấp hết ô còn lại)' : ' · đã lấp đầy'}.${best.filledBo ? ' Lấp ' + best.filledBo + ' chỗ trống bằng món dưới phẩm tối thiểu.' : ''}</div>`;
     } catch (e) { return ''; }
   }
   function stripDead(nv, res, mode) {
@@ -1935,7 +2053,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     for (const id of ids) {
       const info = { n: 0, cn: null, real: -Infinity, bias: 0, tot: 0, cut: false, pham: 0, nc: 0 };
       out.set(id, info);
-      if (manh.some((p) => p.m.item === id)) continue;
+      if (manh.some((p) => p.m.item === id || kmGoc(p.m.item) === kmGoc(id))) continue;
       const all = ((X.cand[id]) || []).filter((cn) => !cn.cells.some((x) => used.has(x)) && (!ke || cn.cells.some((x) => ke.has(x))));
       info.n = all.length; if (!all.length) continue;
       const pham = fill ? ((X.c.items.get(id) || {}).pham_cap || 0) : 0;
@@ -1964,7 +2082,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       const c = X.c, manh = chenManh(X, ms); if (!manh.length) return '';
       const e0 = X.ev(manh), r0 = e0.s - e0.bias, den = Math.max(1, Math.abs(r0)), phOf = (id) => (c.items.get(id) || {}).pham_cap || 0;
       const minPh = Math.min(...manh.map((p) => phOf(p.m.item)));
-      const cs = ids.filter((id) => X.cand[id] && X.cand[id].length && !kmCamOut(id) && phOf(id) > minPh && !manh.some((p) => p.m.item === id)).sort((a, b) => phOf(b) - phOf(a)).slice(0, 5);
+      const cs = ids.filter((id) => X.cand[id] && X.cand[id].length && !kmCamOut(id) && phOf(id) > minPh && !manh.some((p) => p.m.item === id || kmGoc(p.m.item) === kmGoc(id))).sort((a, b) => phOf(b) - phOf(a)).slice(0, 5);
       const t0 = Date.now(), lines = [], tenOf = (id) => esc(tcClean((c.items.get(id) || {}).ten || id));
       for (const id of cs) {
         const it = c.items.get(id), spots = X.cand[id], sp = spots.length > 60 ? spots.length / 60 : 1; let best = null;
@@ -1986,23 +2104,118 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   // Lấp ô trống: lặp chèn món (7.17.4-thu.4: nhận món khi điểm thật KHÔNG giảm, xem chenThu; tổng điểm không tụt quá max(1, 0,5%)). Trả res cũ nếu không chèn được gì.
   async function fillEmpty(nv, res, mode) {
     try {
-      const X = chenCtx(nv, mode); let ms = res.manh.map((m) => ({ item: m.item, x: m.x, y: m.y, xoay: m.xoay })), added = 0;
-      const pool = Object.keys(X.cand);
-      for (let round = 0; round < 12; round++) {
-        if (kmAborted()) break;
-        const e0 = X.ev(chenManh(X, ms)), tol = Math.max(1, 0.005 * Math.abs(e0.s));
-        const got = chenThu(X, ms, pool, 60, 4000 * (S.tocBoi || 1), { tol });
-        const eps = Math.max(0.5, 0.002 * Math.abs(e0.s - e0.bias));
-        let bestId = null;
-        for (const [id, f] of got) if (f.cn && chenHon(f, bestId ? got.get(bestId) : null, eps)) bestId = id;
-        if (!bestId) break;
-        const m = got.get(bestId).cn.m; ms.push({ item: m.item, x: m.x, y: m.y, xoay: m.xoay }); added++;
-        await yieldNow();
+      let X = chenCtx(nv, mode), ms = res.manh.map((m) => ({ item: m.item, x: m.x, y: m.y, xoay: m.xoay })), added = 0, bo = 0;
+      const vong = async () => {
+        const pool = Object.keys(X.cand); let n = 0;
+        for (let round = 0; round < 12; round++) {
+          if (kmAborted()) break;
+          const e0 = X.ev(chenManh(X, ms)), tol = Math.max(1, 0.005 * Math.abs(e0.s));
+          const got = chenThu(X, ms, pool, 60, 4000 * (S.tocBoi || 1), { tol });
+          const eps = Math.max(0.5, 0.002 * Math.abs(e0.s - e0.bias));
+          let bestId = null;
+          for (const [id, f] of got) if (f.cn && chenHon(f, bestId ? got.get(bestId) : null, eps)) bestId = id;
+          if (!bestId) break;
+          const m = got.get(bestId).cn.m; ms.push({ item: m.item, x: m.x, y: m.y, xoay: m.xoay }); n++;
+          await yieldNow();
+        }
+        return n;
+      };
+      added = await vong();
+      // 8.3.1-thu.2: còn ô trống thì thử thêm vòng bỏ qua Phẩm tối thiểu (vẫn giữ lọc hệ linh căn, Cấm món, tà; điều kiện nhận như cũ)
+      const m0 = S.phMin; if (!kmAborted() && m0 && (m0.cp > 0 || m0.pk > 0 || m0.auto)) {
+        try { S.kmPhBo = true; X = chenCtx(nv, mode); bo = await vong(); } finally { S.kmPhBo = false; }
+        added += bo;
       }
       if (!added) return res;
       const nv3 = clone(nv); nv3.kinhMach.manh = ms;
-      return { ...evalCurrent(nv3, mode), manh: ms, filled: added };
-    } catch (e) { console.error(e); return res; }
+      return { ...evalCurrent(nv3, mode), manh: ms, filled: added, filledBo: bo };
+    } catch (e) { S.kmPhBo = false; console.error(e); return res; }
+  }
+  // 8.3.2-thu.4: vì sao còn ô thông trống? Với từng ô thông chưa mảnh nào phủ, xét món kinh mạch trong túi (chưa đặt, khác id gốc với món đã đặt). Chỉ đọc, chấm bằng makeEval như chenThu.
+  // Thứ tự lý do (tốt nhất trước): có thể lấp > vừa và thông nhưng làm giảm điểm / thêm điểm nghịch / thêm mảnh chết > vừa nhưng không thông > vừa nhưng bị lọc > không món nào vừa.
+  function kmOTrong(nv, manh, mode) {
+    const t0 = Date.now(), lim = 3000 * (S.tocBoi || 1), X = chenCtx(nv, mode), g = X.g, c = X.c, K = X.K;
+    const nv0 = clone(nv); nv0.kinhMach.manh = [];
+    const ms = (manh || []).map((m) => ({ item: m.item, x: m.x, y: m.y, xoay: m.xoay })), mm = chenManh(X, ms), e0 = X.ev(mm);
+    const used = new Set(mm.flatMap((p) => p.cells)), st = (nv.kinhMach && nv.kinhMach.trangThai) || [];
+    const gocDat = new Set(ms.map((m) => kmGoc(m.item))), noTa = kmNoTa();
+    const eps = Math.max(0.5, 0.002 * Math.abs(e0.s - e0.bias)), tol = Math.max(1, 0.005 * Math.abs(e0.s));
+    const nDead0 = ((e0.R && e0.R.manh) || []).filter((m) => m && !m.thong).length, ng0 = (e0.R && e0.R.diemNghich) || 0;
+    const ten = (id) => esc(tcClean((c.items.get(id) || {}).ten || id));
+    const trong = [];
+    for (let i = 0; i < g.rong * g.cao; i++) if (g.vung[i] >= 0 && st[i] === 'thong' && i !== g.danDien && !used.has(i)) trong.push(i);
+    // món trong túi: chưa đặt (so id gốc), loại pháp khí / công pháp có hình, đủ cảnh giới; loc = lý do bị lọc ('' nếu không)
+    const tui = Object.keys(nv.tuiDo || {}).filter((id) => { const it = c.items.get(id); return nv.tuiDo[id] > 0 && it && (it.loai === 'cong_phap' || it.loai === 'phap_khi') && it.hinh && (it.canh_gioi ?? 0) <= nv.canhGioi && !gocDat.has(kmGoc(id)); });
+    const loc = new Map(tui.map((id) => { const it = c.items.get(id), core = S.kmCore && S.kmCore.has(id); let ly = '';
+      if (kmCamOut(id)) ly = 'bị Cấm'; else if (!kmPhOK(it, nv.canhGioi)) ly = 'dưới Phẩm tối thiểu'; else if (!kmHeOK(it, nv)) ly = 'hệ không hợp'; else if (noTa && kmIsTa(it) && !core) ly = 'món tà';
+      else if (!X.cand[id]) ly = 'trùng id gốc với món khác';
+      return [id, ly]; }));
+    const memo = new Map();
+    const danhGia = (cn) => { if (memo.has(cn.key)) return memo.get(cn.key); const e = X.ev([...mm, cn]), li = e.R && e.R.manh ? e.R.manh[mm.length] : null; let r;
+      if (li && !li.thong) r = 'khong_thong';
+      else if (((e.R && e.R.manh) || []).filter((m) => m && !m.thong).length > nDead0) r = 'chet';
+      else if (((e.R && e.R.diemNghich) || 0) > ng0) r = 'nghich';
+      else if ((e.s - e.bias) - (e0.s - e0.bias) < -eps || e.s - e0.s < -tol) r = 'giam';
+      else r = 'ok';
+      memo.set(cn.key, r); return r; };
+    const out = []; let cut = false;
+    for (const i of trong) {
+      const xet = (id) => ((X.cand[id]) || []).filter((cn) => cn.cells.includes(i) && !cn.cells.some((x) => used.has(x)));
+      const rank = { ok: 5, giam: 4, nghich: 4, chet: 3, khong_thong: 3 }; let best = null, nVua = 0;
+      for (const id of tui) {
+        if (loc.get(id)) continue;
+        const all = xet(id); if (!all.length) continue; nVua++;
+        const sp = all.length > 6 ? all.length / 6 : 1;
+        for (let k = 0; k < all.length; k += sp) {
+          if (Date.now() - t0 > lim) { cut = true; break; }
+          const r = danhGia(all[Math.floor(k)]);
+          if (!best || rank[r] > rank[best.r]) best = { r, id };
+          if (r === 'ok') break;
+        }
+        if (best && best.r === 'ok') break;
+        if (cut) break;
+      }
+      let ly;
+      if (best) {
+        ly = best.r === 'ok' ? '<span class="vk-ok">có thể lấp:</span> ' + ten(best.id)
+          : best.r === 'giam' ? 'vừa và thông nhưng làm giảm điểm (' + ten(best.id) + ')'
+          : best.r === 'nghich' ? 'vừa và thông nhưng làm thêm điểm nghịch (' + ten(best.id) + ')'
+          : best.r === 'chet' ? 'vừa nhưng làm thêm món không thông (' + ten(best.id) + ')'
+          : 'vừa nhưng không thông (không nối được mạch)';
+      } else {
+        // chỉ còn món bị lọc: xem có món nào vừa hình không
+        const vua = [];
+        for (const id of tui) {
+          const ly0 = loc.get(id); if (!ly0 || ly0 === 'trùng id gốc với món khác') continue;
+          const it = c.items.get(id); let ok = false;
+          const mg = Math.max(it.hinh.length, ...it.hinh.map((r) => String(r).length)) + 1, cx = i % g.rong, cy = Math.floor(i / g.rong);
+          for (let xoay = 0; xoay < 4 && !ok; xoay++) for (let y = Math.max(0, cy - mg); y <= Math.min(g.cao - 1, cy + mg) && !ok; y++) for (let x = Math.max(0, cx - mg); x <= Math.min(g.rong - 1, cx + mg) && !ok; x++) {
+            const m = { item: id, x, y, xoay }; let err; try { err = K.kiemTraDat(nv0, c, m); } catch (e) { err = 'x'; }
+            if (err) continue; const cells = K.oCuaManh(g, m, it); if (cells && cells.includes(i) && !cells.some((q) => used.has(q))) ok = true;
+          }
+          if (ok) vua.push({ id, ly: ly0 });
+          if (Date.now() - t0 > lim) { cut = true; break; }
+        }
+        ly = vua.length ? 'có ' + vua.length + ' món vừa nhưng bị lọc: ' + vua.slice(0, 3).map((v) => ten(v.id) + ' (' + v.ly + ')').join(', ') : 'không món nào trong túi vừa ô này';
+      }
+      out.push({ i, ly });
+      if (cut) break;
+    }
+    return { out, g, cut, tong: trong.length };
+  }
+  // Gắn nút "Vì sao còn ô trống?" vào hộp `box` (chạy cho bộ `manh` khi bấm; dùng cho thẻ Đang xếp và kết quả Xếp)
+  function kmOTrongNut(box, nv, manh, id) {
+    if (!box || box.querySelector('#' + id)) return;
+    box.insertAdjacentHTML('beforeend', '<div style="margin-top:6px"><button class="vk-btn sec" id="' + id + '" style="padding:2px 10px;font-size:12px">Vì sao còn ô trống?</button><div id="' + id + '-o"></div></div>');
+    const bt = box.querySelector('#' + id), o = box.querySelector('#' + id + '-o');
+    bt.onclick = () => { bt.disabled = true; o.innerHTML = '<div class="vk-mu" style="font-size:12px;margin-top:4px">Đang xét…</div>'; setTimeout(() => { o.innerHTML = kmOTrongHtml(nv, manh); bt.disabled = false; }, 30); };
+  }
+  function kmOTrongHtml(nv, manh) {
+    try {
+      const r = kmOTrong(nv, manh, AU.cfg.km.mode), pos = (i) => `cột ${i % r.g.rong + 1}, hàng ${Math.floor(i / r.g.rong) + 1}`;
+      if (!r.tong) return '<div class="vk-ok" style="font-size:13px;margin-top:6px">Không còn ô thông nào trống.</div>';
+      return '<div style="font-size:13px;margin-top:6px"><b>' + r.tong + ' ô thông còn trống</b>' + r.out.map((o) => '<div style="margin-top:3px">' + pos(o.i) + ': ' + o.ly + '</div>').join('') + (r.cut ? '<div class="vk-mu" style="font-size:12px">Chưa xét hết các ô (hết thời gian).</div>' : '') + '<div class="vk-mu" style="font-size:12px;margin-top:4px">Chỉ tính thử trên bản sao, không đụng game.</div></div>';
+    } catch (e) { return errBox(e); }
   }
   function evalCurrent(nv, mode) {
     const enemies = benchEnemies(nv.canhGioi, nv.tieuCanhGioi || 0, mode);
@@ -2010,7 +2223,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     const Kc = S.core, Cc2 = C(), g2 = Kc.luoiKinhMach(Cc2, nv);
     const manh = nv.kinhMach.manh.map((m) => ({ m, key: m.item + ':' + m.x + ',' + m.y + ',' + m.xoay, cells: Kc.oCuaManh(g2, m, Cc2.items.get(m.item)) || [] }));
     const e = ev(manh);
-    return { manh: clone(nv.kinhMach.manh), score: e.s, wins: e.wins, n: enemies.filter((e) => !e.hi).length, P: e.P, R: e.R };
+    return { manh: clone(nv.kinhMach.manh), score: e.s, wins: e.wins, n: enemies.filter((e) => !e.hi).length, P: e.P, R: e.R, bias: e.bias, parts: e.parts, enemies };
   }
 
   // ───────────────────────── 5. Vẽ kinh mạch ─────────────────────────
@@ -2247,7 +2460,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   let hkBP = false; // đã thấy keydown thật = có bàn phím
   try { hkBP = !!(window.matchMedia && window.matchMedia('(any-pointer: fine)').matches); } catch (e) { /* bỏ qua */ }
   const vkxCoBanPhim = () => hkBP;
-  if (!hkBP) { const bat = (e) => { if (e && e.isTrusted === false) return; hkBP = true; window.removeEventListener('keydown', bat, true); try { hkHint(); const h = document.querySelector('#vk-hk'); if (h && h.isConnected) hkMount(h); } catch (er) { /* bỏ qua */ } }; window.addEventListener('keydown', bat, true); }
+  if (!hkBP) { const bat = (e) => { if (e && e.isTrusted === false) return; hkBP = true; window.removeEventListener('keydown', bat, true); try { hkHint(); const h = UI.win.querySelector('#vk-hk'); if (h && h.isConnected) hkMount(h); } catch (er) { /* bỏ qua */ } }; window.addEventListener('keydown', bat, true); }
   const HK_DEF = { on: true, alt: true, ctrl: false, shift: false, code: 'KeyT', esc: true, nums: true };
   let HK = Object.assign({}, HK_DEF), hkRec = null;
   try { const j = JSON.parse(localStorage.getItem('vkx_hotkey') || 'null'); if (j && typeof j === 'object') HK = Object.assign({}, HK_DEF, j); } catch (e) { /* dùng mặc định */ }
@@ -2262,19 +2475,20 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     const sp = el.firstChild; if (sp) sp.onclick = () => { S.hkFocus = true; goTab('hts'); };
   }
   hkHint();
-  window.addEventListener('keydown', (e) => {
+  const hkKd1 = (e) => {
     try {
       if (hkRec) return;
       if (hkKhop(e)) { e.preventDefault(); e.stopPropagation(); if (UI.isOpen()) UI.close(); else UI.open(); return; }
-      if (!HK.esc || HDN.on || e.key !== 'Escape' || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || !UI.isOpen()) return;
+      if (!HK.esc || HDN.on || e.key !== 'Escape' || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || !UI.isOpen() || UI.tach) return;   // đang tách: Esc không đóng / gắn lại Tool
       const t = e.target, tg = t && t.tagName;
       if (tg === 'INPUT' || tg === 'TEXTAREA' || tg === 'SELECT' || (t && t.isContentEditable)) return;
       e.preventDefault(); e.stopPropagation(); UI.close();
     } catch (err) { /* bỏ qua */ }
-  }, true);
+  };
+  window.addEventListener('keydown', hkKd1, true); UI.tachThem('keydown', hkKd1, true);
 
   // Phím 1..9 đổi nhóm khi Tool đang mở và tiêu điểm không ở ô nhập.
-  window.addEventListener('keydown', (e) => {
+  const hkKd2 = (e) => {
     try {
       if (!HK.nums || hkRec || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey || !/^[1-9]$/.test(e.key) || !UI.isOpen()) return;
       const t = e.target, tg = t && t.tagName;
@@ -2282,7 +2496,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       const g = GROUPS[Number(e.key) - 1]; if (!g) return;
       e.preventDefault(); if (!ltBusy()) S.abort = true; S.tab = glastTab(g); render();
     } catch (err) { /* bỏ qua */ }
-  });
+  };
+  window.addEventListener('keydown', hkKd2); UI.tachThem('keydown', hkKd2, false);
   // Thẻ "Phím tắt" (tab Hệ Thống): tick bật/tắt từng phím, bắt tổ hợp mới, về mặc định.
   function hkMount(host) {
     if (!host) return;
@@ -2351,13 +2566,14 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     '.vkx-hdn-b.pri{background:var(--acc,#5eead4);color:var(--ink,#001a16);border-color:transparent;font-weight:600}';
   try { ['vkx-hdn', 'vkx-hdn-css'].forEach((id) => { const o = document.getElementById(id); if (o) o.remove(); }); } catch (e) { /* bỏ qua */ }
   function hdnOv() {
-    let ov = document.getElementById('vkx-hdn');
+    const dc = vkDoc();
+    let ov = dc.getElementById('vkx-hdn');
     if (!ov) {
-      const st = document.createElement('style'); st.id = 'vkx-hdn-css'; st.textContent = HDN_CSS; document.head.appendChild(st);
-      ov = document.createElement('div'); ov.id = 'vkx-hdn'; ov.innerHTML = '<div class="vkx-hdn-fr"></div><div class="vkx-hdn-bx"></div>';
-      document.body.appendChild(ov);
+      const st = dc.createElement('style'); st.id = 'vkx-hdn-css'; st.textContent = HDN_CSS; dc.head.appendChild(st);
+      ov = dc.createElement('div'); ov.id = 'vkx-hdn'; ov.innerHTML = '<div class="vkx-hdn-fr"></div><div class="vkx-hdn-bx"></div>';
+      dc.body.appendChild(ov);
     }
-    try { const cs = getComputedStyle(UI.win); ['--bg2', '--bg3', '--txt', '--acc', '--line', '--ink'].forEach((v) => { const x = cs.getPropertyValue(v); if (x && x.trim()) ov.style.setProperty(v, x.trim()); }); } catch (e) { /* dùng màu mặc định */ }
+    try { const cs = (dc.defaultView || window).getComputedStyle(UI.win); ['--bg2', '--bg3', '--txt', '--acc', '--line', '--ink'].forEach((v) => { const x = cs.getPropertyValue(v); if (x && x.trim()) ov.style.setProperty(v, x.trim()); }); } catch (e) { /* dùng màu mặc định */ }
     return ov;
   }
   function hdnTim(sels) { // thử lần lượt từng selector, bỏ qua phần tử đang ẩn (vd #vkx-cn ẩn trên điện thoại thì lấy #vkx-more)
@@ -2366,7 +2582,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   }
   // Đặt hộp chữ: dưới khung nếu đủ chỗ, không thì trên, không thì nằm trong khung (sát đáy); kẹp trong màn hình.
   function hdnDat(bx, r) {
-    const vw = window.innerWidth, vh = window.innerHeight, bw = bx.offsetWidth, bh = bx.offsetHeight;
+    const vwin = vkDoc().defaultView || window, vw = vwin.innerWidth, vh = vwin.innerHeight, bw = bx.offsetWidth, bh = bx.offsetHeight;
     let top;
     if (vh - r.bottom >= bh + 14) top = r.bottom + 10; else if (r.top >= bh + 14) top = r.top - bh - 10; else top = r.bottom - bh - 12;
     let left = r.left + (r.width - bw) / 2;
@@ -2392,9 +2608,10 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     }
     if (dir > 0) hdnDong(true); else hdnHien(0, 1);
   }
+  UI.onTach(() => { try { hdnDong(false); } catch (e) { /* bỏ qua */ } });   // tour nằm trong tài liệu đang chứa Tool: đổi cửa sổ thì đóng tour
   function hdnDong(luu) {
     const was = HDN.mode; HDN.on = false; HDN.mode = ''; hdnTok++;
-    const ov = document.getElementById('vkx-hdn'); if (ov) ov.classList.remove('on');
+    const ov = vkDoc().getElementById('vkx-hdn'); if (ov) ov.classList.remove('on');
     if (was === 'tour') {
       if (luu) { try { localStorage.setItem('vkx_hdn_xong', String(HDN_BAN)); } catch (e) { /* bỏ qua */ } }
       if (HDN.tab0 && S.tab !== HDN.tab0) goTab(HDN.tab0);
@@ -2414,7 +2631,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       '• Có bản mới: nút ⟳ (điện thoại: ⋯) hiện chấm cam, bấm vào → Cập nhật.<br>• 📜 có chấm đỏ: vừa lên bản, bấm xem có gì mới.<br>• ✕ chỉ thu gọn, Tool và Auto vẫn chạy.<br>• Gặp lỗi: Hệ Thống → Báo Lỗi (điện thoại: ⋯ → Báo lỗi).</div>' +
       '<div class="vkx-hdn-bt"><button class="vkx-hdn-b pri" data-a="tour">Xem hướng dẫn nhanh</button><button class="vkx-hdn-b" data-a="hoidap">Hỏi đáp</button><button class="vkx-hdn-b" data-a="dong">Đóng</button></div>';
     ov.classList.add('on');
-    const hd = UI.win.querySelector('#vkx-hd'), r = hd ? hd.getBoundingClientRect() : { left: 8, right: window.innerWidth - 8, bottom: 40, top: 0, width: 0 };
+    const hd = UI.win.querySelector('#vkx-hd'), r = hd ? hd.getBoundingClientRect() : { left: 8, right: (vkDoc().defaultView || window).innerWidth - 8, bottom: 40, top: 0, width: 0 };
     hdnDat(bx, { left: r.right - bx.offsetWidth, top: r.top, bottom: r.bottom, width: bx.offsetWidth });
   }
   (function hdnKhoiTao() {
@@ -2423,7 +2640,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       const a = e.target && e.target.dataset && e.target.dataset.a; if (!a) return;
       if (a === 'toi') hdnHien(HDN.i + 1, 1); else if (a === 'lui') hdnHien(HDN.i - 1, -1);
       else if (a === 'bo') hdnDong(true); else if (a === 'dong') hdnDong(false); else if (a === 'tour') hdnMo();
-      else if (a === 'hoidap') { hdnDong(false); try { if (!UI.isOpen()) UI.open(); UI.setSection('tl'); goTab('hts'); setTimeout(() => { try { const c = document.getElementById('vk-hdn'); if (c && c.scrollIntoView) c.scrollIntoView({ block: 'start' }); } catch (e) { /* bỏ qua */ } }, 80); } catch (e) { /* bỏ qua */ } }
+      else if (a === 'hoidap') { hdnDong(false); try { if (!UI.isOpen()) UI.open(); UI.setSection('tl'); goTab('hts'); setTimeout(() => { try { const c = UI.win.querySelector('#vk-hdn'); if (c && c.scrollIntoView) c.scrollIntoView({ block: 'start' }); } catch (e) { /* bỏ qua */ } }, 80); } catch (e) { /* bỏ qua */ } }
     });
     window.addEventListener('keydown', (e) => {
       if (!HDN.on || e.key !== 'Escape') return;
@@ -2433,7 +2650,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     window.addEventListener('resize', () => { if (!HDN.on) return; clearTimeout(tm); tm = setTimeout(() => { if (HDN.mode === 'tour') hdnHien(HDN.i, 1); else hdnDong(false); }, 150); });
     const lg = UI.win.querySelector('#vkx-log');
     if (lg && lg.parentNode) {
-      const bt = document.createElement('button'); bt.className = 'vkx-ib'; bt.id = 'vkx-help'; bt.title = 'Mục này làm gì'; bt.setAttribute('aria-label', 'Mục này làm gì'); bt.textContent = '?';
+      const bt = vkDoc().createElement('button'); bt.className = 'vkx-ib'; bt.id = 'vkx-help'; bt.title = 'Mục này làm gì'; bt.setAttribute('aria-label', 'Mục này làm gì'); bt.textContent = '?';
       bt.onclick = (e) => { e.stopPropagation(); hdnTroGiup(); };
       lg.parentNode.insertBefore(bt, lg);
     }
@@ -2464,7 +2681,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   function cnCham(btn, cls, on) {
     if (!btn) return;
     let c = btn.querySelector('.vkx-cham'); // nút cần position:relative để chấm bám góc
-    if (on && !c) { c = document.createElement('span'); c.className = 'vkx-cham' + (cls ? ' ' + cls : ''); btn.style.position = 'relative'; btn.appendChild(c); }
+    if (on && !c) { c = vkDoc().createElement('span'); c.className = 'vkx-cham' + (cls ? ' ' + cls : ''); btn.style.position = 'relative'; btn.appendChild(c); }
     if (!on && c) c.remove();
   }
   function cnVeNut() {
@@ -2482,7 +2699,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     const hien = !!j && !CN.tai && !CN.cho && (!bo || vkxSoBan(j.version, bo) > 0);
     if (!hien) { if (bg) bg.style.display = 'none'; return; }
     if (!bg) {
-      bg = document.createElement('div'); bg.id = 'vkx-cnbang';
+      bg = vkDoc().createElement('div'); bg.id = 'vkx-cnbang';
       bg.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:0 0 auto;padding:5px 12px;font-size:12.5px;background:rgba(245,158,11,.16);border-bottom:1px solid rgba(245,158,11,.5)';
       const hd = UI.win.querySelector('#vkx-hd'); if (hd && hd.parentNode) hd.parentNode.insertBefore(bg, hd.nextSibling); else UI.win.appendChild(bg);
     }
@@ -2492,7 +2709,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     bs[1].onclick = () => { cnS('cn_bo', j.version); bg.style.display = 'none'; };
     bg.style.display = 'flex';
   }
-  function cnMoThe() { try { if (!UI.isOpen()) UI.open(); UI.setSection('tl'); goTab('hts'); setTimeout(() => { try { const c = document.getElementById('vk-cn'); if (c && c.scrollIntoView) c.scrollIntoView({ block: 'start' }); } catch (e) { /* bỏ qua */ } }, 80); } catch (e) { /* bỏ qua */ } }
+  function cnMoThe() { try { if (!UI.isOpen()) UI.open(); UI.setSection('tl'); goTab('hts'); setTimeout(() => { try { const c = UI.win.querySelector('#vk-cn'); if (c && c.scrollIntoView) c.scrollIntoView({ block: 'start' }); } catch (e) { /* bỏ qua */ } }, 80); } catch (e) { /* bỏ qua */ } }
   async function cnKiem(tay) {
     if (CN.kiem) return;
     if (!tay && cnG('cn_bat') === '0') return;
@@ -2589,21 +2806,22 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       if (lg && lg.parentNode && !UI.win.querySelector('#vkx-more')) {
         const stM = document.createElement('style'); stM.id = 'vkx-more-css';
         stM.textContent = '#vkx-win .vkx-hd{gap:4px}#vkx-win:not(.vkx-wide) .vkx-ttl{flex:1 1 0;min-width:0}#vkx-win .vkx-ver{white-space:nowrap;flex:0 0 auto}'
-          + '#vkx-win:not(.vkx-wide) #vkx-cn,#vkx-win:not(.vkx-wide) #vkx-help{display:none}#vkx-win.vkx-wide #vkx-more,#vkx-win.vkx-wide #vkx-mnu{display:none!important}'
+          + '#vkx-win:not(.vkx-wide) #vkx-cn,#vkx-win:not(.vkx-wide) #vkx-help,#vkx-win:not(.vkx-wide) #vkx-tach{display:none}#vkx-win.vkx-wide #vkx-more,#vkx-win.vkx-wide #vkx-mnu{display:none!important}'
           + '#vkx-mnu{display:none;position:absolute;top:56px;right:10px;z-index:70;min-width:190px;padding:6px;border-radius:12px;background:var(--bg2,#111b18);border:1px solid var(--line,#233832);box-shadow:0 10px 30px rgba(0,0,0,.45)}'
           + '#vkx-mnu.on{display:block}#vkx-mnu button{display:block;width:100%;text-align:left;border:0;background:none;color:var(--txt,#e7f1ec);font-size:14px;padding:11px 12px;border-radius:9px;cursor:pointer;position:relative}#vkx-mnu button:hover{background:var(--hi,#16231f)}';
         const ost = document.getElementById('vkx-more-css'); if (ost) ost.remove(); document.head.appendChild(stM);
         const mb = document.createElement('button'); mb.className = 'vkx-ib'; mb.id = 'vkx-more'; mb.title = 'Thêm'; mb.setAttribute('aria-label', 'Thêm'); mb.textContent = '⋯';
-        const mnu = document.createElement('div'); mnu.id = 'vkx-mnu';
-        [['⟳  Cập nhật', '#vkx-cn'], ['?  Mục này làm gì', '#vkx-help'], ['🐞  Báo lỗi', '']].forEach((m) => {
-          const b = document.createElement('button'); b.textContent = m[0];
+        const mnu = document.createElement('div'); mnu.id = 'vkx-mnu'; let mnTach = null;
+        [['⟳  Cập nhật', '#vkx-cn'], ['?  Mục này làm gì', '#vkx-help'], ['⧉  Tách ra cửa sổ riêng', '#vkx-tach'], ['🐞  Báo lỗi', '']].forEach((m) => {
+          const b = document.createElement('button'); b.textContent = m[0]; if (m[1] === '#vkx-tach') { b.className = 'vkx-mt'; mnTach = b; }
           b.onclick = (e) => { e.stopPropagation(); mnu.classList.remove('on'); if (!m[1]) { blMo(); return; } const o = UI.win.querySelector(m[1]); if (o) o.click(); };
           mnu.appendChild(b);
         });
-        mb.onclick = (e) => { e.stopPropagation(); mnu.classList.toggle('on'); };
+        mb.onclick = (e) => { e.stopPropagation(); if (mnTach) mnTach.textContent = UI.tach ? '⧉  Gắn lại vào trang game' : '⧉  Tách ra cửa sổ riêng'; mnu.classList.toggle('on'); };
         lg.parentNode.insertBefore(mb, lg);
         UI.win.appendChild(mnu);
-        document.addEventListener('click', (e) => { if (mnu.classList.contains('on') && !mnu.contains(e.target) && e.target !== mb) mnu.classList.remove('on'); }, true);
+        const dongMnu = (e) => { if (mnu.classList.contains('on') && !mnu.contains(e.target) && e.target !== mb) mnu.classList.remove('on'); };
+        document.addEventListener('click', dongMnu, true); UI.tachThem('click', dongMnu, true);
       }
       const nk = UI.win.querySelector('#vkx-sec-nk');
       if (nk) new MutationObserver(() => { if (nk.classList.contains('on') && cnG('cn_vua')) { cnX('cn_vua'); cnVeNut(); } }).observe(nk, { attributes: true, attributeFilter: ['class'] });
@@ -2987,6 +3205,16 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   }
   function evalReal(nv, mode) { S.lnReal = true; try { return evalCurrent(nv, mode); } finally { S.lnReal = false; } }
   const lnPrep = (nv) => lnApply(clone(nv));
+  // 8.3.2-thu.2: chấm MỘT bộ (nvB.kinhMach.manh = các mảnh của bộ) ở hai mức: 're' = độ thuần thục thật lúc này, 'fu' = Lĩnh Ngộ đầy (cách Auto chọn bộ).
+  // Kèm tốc độ tu luyện (tocDoTuLuyen của game, nhân) và số năm tới khi mọi món trong bộ Lĩnh Ngộ đầy. Chỉ đọc, không đổi game.
+  function kmSoBo(nvB, mode) {
+    const K = S.core, c = C(), pieces = nvB.kinhMach.manh, nvR = lnReal(nvB, pieces);
+    const re = evalReal(nvR, mode), fu = evalCurrent(nvB, mode);
+    const tdl = (x) => { try { return K && typeof K.tocDoTuLuyen === 'function' ? Number(K.tocDoTuLuyen(x, c)) : null; } catch (e) { return null; } };
+    let nam = 0; const moi = [];
+    for (const m of pieces) { const it = c.items.get(m.item); if (!it) continue; const ms = nvR.kinhMach.mastery[m.item]; if (ms === undefined || ms >= 1) continue; const y = lnYears(it); if (y != null) nam = Math.max(nam, (1 - ms) * y); moi.push(m.item); }
+    return { re, fu, tocRe: tdl(nvR), tocFu: tdl(lnPrep(nvB)), nam, chuaDay: moi };
+  }
   function lnYears(it) {
     try {
       const K = S.core, nv = G().state.run.nhanVat;
@@ -3388,21 +3616,78 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     return html;
   }
 
+  // 8.3.2-thu.3: sát thương / lượt + linh lực của một bộ trên các trận mẫu thường (không tính trận cao). Chỉ đọc (fight đánh trên bản sao).
+  // Linh lực tiêu hao là ƯỚC: core chỉ trả DuKienTocChien (không có skillUses; moPhongTran chạy bản sao rồi không trả TranState). Dùng ước lượng:
+  // linh lực dùng được / lượt = hồi / lượt + linh lực tối đa / số hiệp TB; tiêu hao ≈ min(dùng được, tổng phí mỗi chiêu đang dùng, mỗi chiêu 1 lần / lượt).
+  function kmTranTk(P, enemies) {
+    const ds = [];
+    for (const E of (enemies || [])) {
+      if (!E || E.hi) continue;
+      const q = fight(P, E.E), nh = Math.max(1, q.nHiep || 1);
+      ds.push({ ten: E.id, thang: !!q.thang, nHiep: nh, stTa: q.stTa || 0, stLuot: (q.stTa || 0) / nh });
+    }
+    const tb = (k) => (ds.length ? ds.reduce((s, d) => s + d[k], 0) / ds.length : 0);
+    const stLuotTB = tb('stLuot'), nHiepTB = Math.max(1, tb('nHiep'));
+    const hoi = P.linhLucMoiLuot || 0, tmax = P.linhLucToiDa ?? hoi * 3, dung = hoi + tmax / nHiepTB;
+    const act = (P.chieu || []).filter((x) => x.dang !== undefined && (x.phi || 0) > 0), phiSum = act.reduce((s, x) => s + x.phi, 0), phiTB = act.length ? phiSum / act.length : 0;
+    const tieu = Math.min(dung, phiSum), du = dung - tieu;
+    let canh = '';
+    if (act.length) {
+      if (du > 0.5 * phiSum) canh = 'du';
+      else if (dung < phiTB) canh = 'thieu';
+    }
+    return { ds, stLuotTB, nHiepTB, dung, llTieuHaoTB: tieu, llUoc: true, llDu: du, canh };
+  }
+  const kmCanhLL = (t) => t.canh === 'du' ? '<div class="vk-mu" style="font-size:12px;margin-top:6px">Linh lực dư nhiều so với chiêu: bộ có thể thừa tâm pháp, thiếu chiêu. Thử Chế Độ Ưu Tiên Đánh Nhau, tỉ lệ Tâm Pháp : Chiến Pháp nghiêng về chiến pháp, hoặc tắt Ưu tiên phẩm cao.</div>'
+    : t.canh === 'thieu' ? '<div class="vk-bad" style="font-size:12px;margin-top:6px">Thiếu linh lực: chiêu đắt hơn linh lực hồi.</div>' : '';
   // ── Tab Kinh mạch
   function statRows(a, b) {
     const ch = (r) => r.P.chieu.filter((x) => x.dang !== undefined).map((x) => `${esc(x.ten)} (${Math.round(x.uy)})`).join(', ');
+    let ta = null, tb2 = null;
+    try {
+      let en = a.enemies || b.enemies;
+      if (!en) { const nv = G().state.run.nhanVat; en = benchEnemies(nv.canhGioi, nv.tieuCanhGioi || 0, AU.cfg.km.mode); }
+      ta = kmTranTk(a.P, en); tb2 = kmTranTk(b.P, en);
+    } catch (e) { ta = tb2 = null; }
     const rows = [
+      ['Điểm Tool', Math.round(a.score ?? a.s ?? 0), Math.round(b.score ?? b.s ?? 0)],
       ['Thắng trận mẫu', `${a.wins}/${a.n}`, `${b.wins}/${b.n}`],
       ['Khí huyết', Math.round(a.P.khiHuyetToiDa), Math.round(b.P.khiHuyetToiDa)],
       ['Linh lực hồi / lượt', num(a.P.linhLucMoiLuot), num(b.P.linhLucMoiLuot)],
       ['Linh lực tối đa', num(a.P.linhLucToiDa ?? a.P.linhLucMoiLuot * 3), num(b.P.linhLucToiDa ?? b.P.linhLucMoiLuot * 3)],
       ['Chiêu tốn nhiều nhất', num(Math.max(0, ...a.P.chieu.map((x) => x.phi || 0))), num(Math.max(0, ...b.P.chieu.map((x) => x.phi || 0)))],
+      ...(ta && tb2 ? [
+        ['Sát thương TB / lượt', num(ta.stLuotTB, 0), num(tb2.stLuotTB, 0)],
+        ['Linh lực tiêu hao TB / lượt (ước)', num(ta.llTieuHaoTB, 1), num(tb2.llTieuHaoTB, 1)],
+        ['Linh lực dư / lượt (ước)', num(ta.llDu, 1), num(tb2.llDu, 1)],
+      ] : []),
       ['Tu luyện', '+' + pct(a.R.biDong.toc_do || 0), '+' + pct(b.R.biDong.toc_do || 0)],
       ['Đột phá', '+' + pct(a.R.biDong.dot_pha || 0, 1), '+' + pct(b.R.biDong.dot_pha || 0, 1)],
       ['Điểm nghịch', a.R.diemNghich || 0, b.R.diemNghich || 0],
     ];
     return `<table class="vk-t"><tr><th></th><th>Đang xếp</th><th>Bản mới</th></tr>${rows.map((r) => `<tr><td>${r[0]}</td><td>${r[1]}</td><td><b>${r[2]}</b></td></tr>`).join('')}
-    <tr><td>Chiêu</td><td>${ch(a)}</td><td>${ch(b)}</td></tr></table>`;
+    <tr><td>Chiêu</td><td>${ch(a)}</td><td>${ch(b)}</td></tr></table>` + (tb2 ? kmCanhLL(tb2) : '') + kmTranSo(a, b, ta, tb2);
+  }
+  // 8.3.2-thu.4: ghi chú mức Lĩnh Ngộ + so từng trận mẫu Đang xếp / Bản mới (ta, tb2 = kết quả kmTranTk của hai bên)
+  function kmTranSo(a, b, ta, tb2) {
+    let h = '<div class="vk-mu" style="font-size:12px;margin-top:6px">Cả hai cột tính ở Lĩnh Ngộ đầy. Món mới đặt trong game chỉ ×0,5 tới khi thuần thục, nên bảng Vận hành của game lúc này có thể thấp hơn cột Đang xếp.</div>';
+    try {
+      if (!ta || !tb2) return h;
+      const c = C(), ten = (id) => { const base = String(id).replace(/#.*$/, ''), d = c.enemies.get(base) || {}; return esc(d.ten || base) + (/#ta$/.test(id) ? ' (tinh anh)' : ''); };
+      const cel = (d) => (d.thang ? '<span class="vk-ok">thắng</span>' : '<span class="vk-bad">thua</span>') + ' · ' + d.nHiep + ' hiệp · ST/lượt ' + num(d.stLuot, 0);
+      const n = Math.min(ta.ds.length, tb2.ds.length);
+      let wa = 0, wb = 0, rows = '';
+      for (let i = 0; i < n; i++) {
+        const x = ta.ds[i], y = tb2.ds[i]; if (x.thang) wa++; if (y.thang) wb++;
+        const cl = x.thang !== y.thang ? (y.thang ? ' class="vk-ok"' : ' class="vk-bad"') : '';
+        rows += '<tr' + cl + '><td>' + ten(x.ten) + '</td><td>' + cel(x) + '</td><td>' + cel(y) + '</td></tr>';
+      }
+      if (n) {
+        if (wb < wa) h += '<div class="vk-bad" style="font-size:12px;margin-top:6px">Bản mới thắng ít hơn ' + (wa - wb) + ' trận mẫu nhưng tổng điểm ' + (Math.round(b.score ?? b.s ?? 0) >= Math.round(a.score ?? a.s ?? 0) ? 'cao hơn' : 'thấp hơn') + ' (sát thương / chỉ số bù lại). Xem trận thua bên dưới trước khi áp dụng.</div>';
+        h += '<details style="margin-top:8px"><summary>Trận mẫu từng trận</summary><table class="vk-t"><tr><th>Đối thủ</th><th>Đang xếp</th><th>Bản mới</th></tr>' + rows + '</table><div class="vk-mu" style="font-size:12px">Chỉ các trận thường (bỏ trận cao). Dòng tô màu = hai bên khác kết quả.</div></details>';
+      }
+    } catch (e) { console.warn('[VKX] trận từng trận', e); }
+    return h;
   }
 
   async function optimizeMode(nv, mode, iters, prog, f0, f1, label) {
@@ -3435,7 +3720,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       <div class="vk-mu" style="font-size:13px">Tính thử trên bản sao nhân vật, không đụng game, dựa trên cách bạn đang xếp. Trận mẫu luôn là đối thủ cùng cảnh giới với nhân vật giả định.</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="vk-btn sec" id="vk-wi-up">Nếu Lên Tiểu Cảnh Giới Kế</button><button class="vk-btn sec" id="vk-wi-rm">Nếu Gỡ Từng Món</button><button class="vk-btn sec" id="vk-wi-col">Nếu Đổi Màu Một Ô</button><button class="vk-btn sec" id="vk-wi-root">Giả Định Full Tẩy Tủy Theo Linh Căn</button><select class="vk-sel" id="vk-wi-q" title="Độ kỹ của Giả Định Full Tẩy Tủy"><option value="400">Nhanh</option><option value="800" selected>Chuẩn</option><option value="1500">Kỹ</option></select></div>
       ${progressHtml('vk-prw')}<div id="vk-outw"></div></div>
-    <div class="vk-card"><h3>Đang xếp trong game</h3><div id="vk-cur"></div></div>
+    <div class="vk-card"><h3>Đang xếp trong game</h3><div id="vk-cur"></div>
+      <div class="vk-mu" style="font-size:13px;margin-top:10px">Đánh thử từng bộ kinh mạch bạn đã lưu trong game bằng trận mẫu của Tool (bản sao, không đụng game), để so bộ tự xếp với bộ Auto.</div>
+      <button class="vk-btn sec" id="vk-cmp" style="margin-top:6px">Chấm Các Bộ Đã Lưu</button>${progressHtml('vk-prc')}<div id="vk-outc"></div></div>
     <details class="vk-card"><summary><b>Nguyên Lý Kinh Mạch (Đọc Từ Code Game)</b></summary><ul style="margin:6px 0 0;padding-left:18px;font-size:14px">
       <li><b>Thông:</b> tâm pháp/đấu pháp thông khi chạm đan điền hoặc chạm một công pháp đã thông (nối thành chuỗi). Pháp khí thông khi chạm đan điền hoặc chạm công pháp đã thông. Món không thông = không có tác dụng.</li>
       <li><b>Màu ô:</b> hệ số = 0,85 + 0,45 × độ hợp trung bình các ô (đúng hệ = 1; cùng gốc như Băng–Thủy hoặc có Vô sắc = 0,5; khác hệ = 0). Đặt đúng màu tối đa ×1,3.</li>
@@ -3455,7 +3742,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   }
   function kmManualBind(nv) {
     const tac = kmOpenable(nv), mo = (nv.kinhMach.cho && nv.kinhMach.cho.mo) || 0;
-    try { body.querySelector('#vk-cur').innerHTML = drawGrid(nv, nv.kinhMach.manh); } catch (e) { body.querySelector('#vk-cur').innerHTML = errBox(e); }
+    try { body.querySelector('#vk-cur').innerHTML = drawGrid(nv, nv.kinhMach.manh); kmOTrongNut(body.querySelector('#vk-cur'), nv, nv.kinhMach.manh, 'vk-ot'); } catch (e) { body.querySelector('#vk-cur').innerHTML = errBox(e); }
     if (S.best && S.best.nvKey === JSON.stringify([nv.tuiDo, nv.kinhMach.trangThai, nv.canhGioi, nv.tieuCanhGioi])) showBest(nv);
     body.querySelector('#vk-go').onclick = async (ev) => {
       if (kmAutoRunning()) { UI.notify('Auto Kinh Mạch đang chạy, hãy dừng trước.'); return; }
@@ -3484,6 +3771,92 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         body.querySelector('#vk-pr').style.display = 'none';
         showBest(nv);
       } catch (e) { console.error(e); body.querySelector('#vk-out').innerHTML = errBox(e); }
+      kmRestore(); ev.target.disabled = false;
+    };
+    // Chấm các bộ kinh mạch đã lưu trong game (chỉ đọc, đánh thử trên bản sao)
+    body.querySelector('#vk-cmp').onclick = async (ev) => {
+      if (kmAutoRunning()) { UI.notify('Auto Kinh Mạch đang chạy, hãy dừng trước.'); return; }
+      ev.target.disabled = true; S.abort = false;
+      const kmRestore = auKmPin(AU.cfg.km); const mode = AU.cfg.km.mode;
+      const prog = bindProgress(body.querySelector('#vk-prc')), out = body.querySelector('#vk-outc');
+      try {
+        const km = nv.kinhMach, act = km.activeLoadout || 0, los = km.loadouts || [];
+        const ds = [];
+        if (los.length) los.forEach((lo, i) => { if (i === act) { if ((km.manh || []).length) ds.push({ ten: 'Bộ ' + (i + 1), dung: true, pieces: km.manh }); } else if (lo && (lo.pieces || []).length) ds.push({ ten: 'Bộ ' + (i + 1), dung: false, pieces: lo.pieces }); });
+        else if ((km.manh || []).length) ds.push({ ten: 'Bộ đang đặt', dung: true, pieces: km.manh });
+        if (!ds.length) { out.innerHTML = '<div class="vk-mu">Chưa có bộ kinh mạch nào được xếp để chấm.</div>'; }
+        else {
+          const rs = [];
+          for (let k = 0; k < ds.length && !S.abort; k++) {
+            prog(k / ds.length, 'Chấm ' + ds[k].ten + '…'); await new Promise((r) => setTimeout(r, 0));
+            try { const nvB = clone(nv); nvB.kinhMach.manh = clone(ds[k].pieces); rs.push({ d: ds[k], x: kmSoBo(nvB, mode) }); }   // 8.3.2-thu.2: mỗi bộ chấm 2 mức (Hiện tại, Lĩnh Ngộ đầy)
+            catch (e) { console.error(e); rs.push({ d: ds[k], loi: (e && e.message) || String(e) }); }
+          }
+          prog(1, 'Xong');
+          const c = C(), okc = rs.filter((x) => x.x); const bestS = okc.length ? Math.max(...okc.map((x) => x.x.fu.score)) : null;
+          const X = statCapCtx(nv), tx = (v) => (v == null || !Number.isFinite(v) ? '—' : '×' + num(v, 2));
+          const tkCell = (r) => { try { const t = kmTranTk(r.P, r.enemies); return '<td>' + num(t.stLuotTB, 0) + '</td><td>' + num(t.llTieuHaoTB, 1) + ' (ước)</td><td>' + num(t.llDu, 1) + '</td>'; } catch (e) { return '<td>—</td><td>—</td><td>—</td>'; } };
+          const cell = (r, toc) => {
+            const R = r.R || {}, P = r.P || {}, bd = R.biDong || {}, ms = R.manh || [], th = ms.filter((m) => m && m.thong).length, e = statEff(X, R);
+            const sg = (v, d = 0) => (v >= 0 ? '+' : '') + pct(v, d);
+            return '<td>' + Math.round(r.score) + '</td><td>' + r.wins + '/' + r.n + '</td><td>' + (R.diemNghich || 0) + '</td><td>' + th + '/' + ms.length + '</td><td>' + num(P.linhLucMoiLuot || 0) + '</td><td>' + sg(bd.khi_huyet || 0) + '</td><td title="Thô ' + pct(e.ht, 1) + '">' + sg(e.htEff, 0) + '</td><td>' + sg(bd.dot_pha || 0, 0) + '</td><td title="Thô ' + pct(e.kt, 1) + '">' + sg(e.ktEff, 0) + '</td><td>' + (bd.an_tuc ? '+' + num(bd.an_tuc, 0) : '0') + '</td><td>' + tx(toc) + '</td>' + tkCell(r);
+          };
+          const rows = rs.map((x) => {
+            const nm = esc(x.d.ten) + (x.d.dung ? ' (đang dùng)' : '');
+            if (!x.x) return '<tr><td>' + nm + '</td><td colspan="15" class="vk-mu">không chấm được: ' + esc(x.loi) + '</td></tr>';
+            const k = x.x, cl = k.fu.score === bestS && okc.length > 1 ? ' class="vk-ok"' : '';
+            const nam = k.nam > 0.05 ? '<br><span class="vk-mu" style="font-size:11px">đầy sau ~' + num(k.nam, 1) + ' năm</span>' : '';
+            return '<tr' + cl + '><td rowspan="2">' + nm + nam + '</td><td>Hiện tại</td>' + cell(k.re, k.tocRe) + '</tr><tr' + cl + '><td>Lĩnh Ngộ đầy</td>' + cell(k.fu, k.tocFu) + '</tr>';
+          }).join('');
+          // Phần gập: trận mẫu, thành phần điểm, món trong bộ
+          const dhx = (r, E) => { try { const q = fight(r.P, E.E), hp = q.khiHuyetThapNhat / (r.P.khiHuyetToiDa || 1), dl = Math.min(1, (q.stTa || 0) * Math.max(1, q.nHiep) / (E.E.khiHuyetToiDa || 1)); return (q.thang ? '<span class="vk-ok">thắng</span>' : '<span class="vk-bad">thua</span>') + ' · còn ' + pct(Math.max(0, hp)) + ' · ' + (q.nHiep || 0) + ' hiệp · gây ' + pct(dl) + ' · ST/lượt ' + num((q.stTa || 0) / Math.max(1, q.nHiep || 1), 0); } catch (e) { return '—'; } };
+          const eTen = (E) => { const base = String(E.id).replace(/#.*$/, ''), d = c.enemies.get(base) || {}; return esc(d.ten || base) + (/#ta$/.test(E.id) ? ' (tinh anh)' : '') + (E.hi ? ' <span class="vk-mu">(trận cao)</span>' : ''); };
+          let tran = '', diem = '', mon = '';
+          if (okc.length) {
+            const en = okc[0].x.fu.enemies || [];
+            tran = '<table class="vk-t"><tr><th>Đối thủ</th>' + okc.map((x) => '<th>' + esc(x.d.ten) + '<br>Hiện tại</th><th>' + esc(x.d.ten) + '<br>Đầy</th>').join('') + '</tr>' + en.map((E, i) => '<tr><td>' + eTen(E) + '</td>' + okc.map((x) => '<td>' + dhx(x.x.re, (x.x.re.enemies || [])[i] || E) + '</td><td>' + dhx(x.x.fu, (x.x.fu.enemies || [])[i] || E) + '</td>').join('') + '</tr>').join('') + '</table><div class="vk-mu" style="font-size:12px">Tool đánh lại từng trận mẫu bằng hàm của game, chỉ để xem; trận cao chỉ tính tỉ lệ sát thương gây ra.</div>';
+            const pr = (r) => { const p = r.parts || {}; return '<td>' + Math.round(r.score) + '</td><td>' + Math.round(p.fs || 0) + '</td><td>' + Math.round(r.bias || 0) + '</td><td>' + Math.round(p.cp || 0) + '</td><td>-' + Math.round(p.ng || 0) + '</td><td>' + Math.round(r.score - (p.fs || 0) - (r.bias || 0) - (p.cp || 0) + (p.ng || 0)) + '</td>'; };
+            diem = '<table class="vk-t"><tr><th>Bộ</th><th>Mức</th><th>Điểm</th><th>Điểm trận</th><th>Thiên vị (hệ, huyệt, phẩm cao)</th><th>Trần chỉ số</th><th>Phạt điểm nghịch</th><th>Còn lại (tu, đột phá, linh lực, ô thông…)</th></tr>' + okc.map((x) => '<tr><td rowspan="2">' + esc(x.d.ten) + '</td><td>Hiện tại</td>' + pr(x.x.re) + '</tr><tr><td>Lĩnh Ngộ đầy</td>' + pr(x.x.fu) + '</tr>').join('') + '</table><div class="vk-mu" style="font-size:12px">Điểm Tool là điểm nội bộ để Auto so sánh, không phải chỉ số game. "Còn lại" gồm phần thưởng tu luyện / đột phá / thông, linh lực và phạt ô chết tùy chế độ chấm.</div>';
+            const own = new Map(); okc.forEach((x) => x.d.pieces.forEach((m) => { const st = own.get(m.item) || new Set(); st.add(x.d.ten); own.set(m.item, st); }));
+            mon = okc.map((x) => {
+              const R = x.x.fu.R || {}, km = nv.kinhMach || {};
+              const trs = x.d.pieces.map((m, i) => {
+                const it = c.items.get(m.item); if (!it) return '<tr><td colspan="7" class="vk-mu">' + esc(m.item) + ' (không còn)</td></tr>';
+                const r = (R.manh || [])[i] || {}, ms = (x.x.chuaDay || []).includes(m.item) ? ((km.mastery || {})[m.item] === undefined ? 0 : (km.mastery || {})[m.item]) : 1;
+                const rieng = own.get(m.item) && own.get(m.item).size === 1 && okc.length > 1;
+                return '<tr><td>' + esc(it.ten || m.item) + (rieng ? ' <span class="vk-ok">· chỉ bộ này</span>' : '') + '</td><td>' + esc(loaiTen(it.loai)) + '</td><td>' + esc(PHAM_TEN[(it.pham_cap || 1) - 1] || '?') + '</td><td>' + esc((it.he || []).map(heTen).join('/') || 'Vô sắc') + '</td><td>' + (r.thong ? 'thông' : '<span class="vk-bad">tắc</span>') + '</td><td>' + ((r.acupoints || 0) > 0 ? 'có huyệt' : '—') + '</td><td>' + (ms >= 1 ? 'đầy' : pct(ms)) + '</td></tr>';
+              }).join('');
+              return '<div style="margin:6px 0"><b>' + esc(x.d.ten) + '</b><table class="vk-t"><tr><th>Món</th><th>Loại</th><th>Phẩm</th><th>Hệ</th><th>Thông</th><th>Huyệt</th><th>Thuần thục</th></tr>' + trs + '</table></div>';
+            }).join('');
+          }
+          const dgHtml = okc.length ? '<div class="vk-mu" style="font-size:12px;margin-bottom:6px">Đo bằng cách gỡ từng món rồi đánh lại các trận mẫu: tính cả phần món cho cả bộ (tâm pháp, sinh khắc, kinh lộ), không chỉ sát thương của chiêu. Mất nhiều = món quan trọng; 3 món mất ít nhất tô đỏ.</div>' + okc.map((x, k) => '<div style="margin:6px 0"><b>' + esc(x.d.ten) + '</b> <button class="vk-btn sec vk-dg-go" data-k="' + k + '">Tính đóng góp</button><div id="vk-dg-o' + k + '"></div></div>').join('') : '';
+          const mn = (AU_KM_MODE.find((m) => m[0] === mode) || [mode, mode])[1];
+          const det = (t, h) => '<details style="margin-top:8px"><summary>' + t + '</summary>' + h + '</details>';
+          out.innerHTML = '<div style="overflow-x:auto"><table class="vk-t" style="margin-top:8px"><tr><th>Bộ</th><th>Mức</th><th>Điểm Tool</th><th>Thắng trận mẫu</th><th>Điểm nghịch</th><th>Món thông</th><th>Linh lực/lượt</th><th>Khí huyết</th><th>Hộ thể (Tool)</th><th>Đột phá</th><th>Kháng tâm ma (Tool)</th><th>Liễm tức</th><th>Tu luyện (Tool)</th><th>ST TB / lượt</th><th>Linh lực tiêu hao / lượt</th><th>Linh lực dư / lượt</th></tr>' + rows + '</table></div>'
+            + '<div class="vk-mu" style="font-size:12px;margin-top:6px"><b>Hiện tại</b> = sức lúc này (món mới đặt chỉ ×0,5 tới khi Lĩnh Ngộ). <b>Lĩnh Ngộ đầy</b> = sức sau khi thuần thục; Auto chọn bộ theo mức này, dòng xanh là bộ điểm cao nhất mức đó. Dòng Hiện tại của bộ đang dùng nên khớp bảng Vận hành trong game; Hộ thể và Kháng tâm ma là số sau trần mềm do Tool tính (rê chuột xem số thô), Tu luyện lấy từ hàm tốc độ tu luyện của game. Chế độ chấm: ' + esc(mn) + '. Điểm chỉ so được giữa các bộ cùng chế độ và cùng lúc chấm.</div>'
+            + (okc.length ? det('Trận mẫu từng trận', tran) + det('Thành phần điểm Tool', diem) + det('Món trong bộ', mon) + det('Đóng góp từng món', dgHtml) : '');
+          // 8.3.2-thu.3: "Đóng góp từng món": gỡ từng món rồi đánh lại trận mẫu (kmWhatIfRemove); chạy lâu nên chỉ chạy khi bấm
+          out.querySelectorAll('.vk-dg-go').forEach((bt) => { bt.onclick = async () => {
+            if (kmAutoRunning()) { UI.notify('Auto Kinh Mạch đang chạy, hãy dừng trước.'); return; }
+            const k = +bt.dataset.k, box = out.querySelector('#vk-dg-o' + k), x = okc[k]; if (!x || !box) return;
+            bt.disabled = true; S.abort = false; const rs2 = auKmPin(AU.cfg.km);
+            try {
+              box.innerHTML = '<div class="vk-mu" style="font-size:12px">Đang gỡ thử từng món…</div>';
+              const nvB = clone(nv); nvB.kinhMach.manh = clone(x.d.pieces);
+              const r = await kmWhatIfRemove(nvB, mode, (f, t) => { box.firstChild && (box.firstChild.textContent = t || ''); });
+              const n = r.out.length, yeu = new Set(n > 3 ? r.out.slice(-3).map((_, i) => n - 3 + i) : []);
+              box.innerHTML = '<table class="vk-t"><tr><th>Món</th><th>Mất khi gỡ</th><th>Thắng</th></tr>' + r.out.map((o, i) => {
+                const cl = yeu.has(i) ? ' class="vk-bad"' : '';
+                const ghi = o.loss < -1 ? ' <span class="vk-mu" style="font-size:11px">· gỡ ra mạnh hơn</span>' : '';
+                const yg = yeu.has(i) ? ' <span style="font-size:11px">· yếu nhất: cân nhắc thay</span>' : '';
+                return '<tr' + cl + '><td>' + esc(o.ten) + (o.thong ? '' : ' <span style="font-size:11px">· không thông</span>') + yg + ghi + '</td><td>' + (o.loss > 1 ? '−' + Math.round(o.loss) : o.loss < -1 ? '+' + Math.round(-o.loss) : '≈0') + '</td><td>' + (o.dw ? (o.dw > 0 ? '+' : '') + o.dw : '—') + '</td></tr>';
+              }).join('') + '</table>';
+            } catch (e) { console.error(e); box.innerHTML = errBox(e); }
+            rs2(); bt.disabled = false;
+          }; });
+        }
+      } catch (e) { console.error(e); out.innerHTML = errBox(e); }
+      body.querySelector('#vk-prc').style.display = 'none';
       kmRestore(); ev.target.disabled = false;
     };
     body.querySelector('#vk-2b').onclick = async (ev) => {
@@ -3576,8 +3949,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     });
   }
   function copyText(t) {
-    const fallback = () => { const ta = document.createElement('textarea'); ta.value = t; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove(); return ok; };
-    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t).then(() => true, () => fallback());
+    const dc = vkDoc(), nv = (dc.defaultView || window).navigator;   // đang tách: sao chép từ cửa sổ phụ (cửa sổ có tiêu điểm)
+    const fallback = () => { const ta = dc.createElement('textarea'); ta.value = t; ta.style.cssText = 'position:fixed;opacity:0'; dc.body.appendChild(ta); ta.select(); let ok = false; try { ok = dc.execCommand('copy'); } catch (e) {} ta.remove(); return ok; };
+    if (nv && nv.clipboard && nv.clipboard.writeText) return nv.clipboard.writeText(t).then(() => true, () => fallback());
     return Promise.resolve(fallback());
   }
   function showBest(nv) {
@@ -3586,6 +3960,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     out.innerHTML = (best.same ? '<div class="vk-ok" style="margin:6px 0">Cách đang xếp đã là cách tốt nhất Tool tìm được.</div>' : '<div class="vk-ok" style="margin:6px 0">Xếp lại trong game theo ảnh dưới:</div>' + drawGrid(nv, best.manh)) + statRows(cur, best) +
       ((best.R && best.R.diemNghich) ? `<div class="vk-mu" style="font-size:12px;margin-top:6px">Cách này còn ${best.R.diemNghich} điểm nghịch (−${Math.min(15, 3 * best.R.diemNghich)}% tỉ lệ đột phá). Lúc chuẩn bị đột phá, chọn chế độ "Ưu tiên tu luyện / đột phá" để Tool ưu tiên xóa điểm nghịch.</div>` : '') +
       biasSummary(nv, best) + capLine(nv, best.R) + boTomTat(nv, best.R) + (S.full ? coverNote(nv, best) : '') + '<div class="vk-mu" style="font-size:12px;margin-top:6px">Trận mẫu: 9 loại quái cùng cảnh giới với bạn, ở tiểu cảnh giới quanh mức của bạn (thấp hơn 1, bằng, cao hơn 1).</div>' + pieceTable(best.R) + sellAdvice(nv, best, S.best && S.best.mode);
+    kmOTrongNut(out, nv, best.manh, 'vk-otb');   // 8.3.2-thu.4
     if (!best.same) {
       out.insertAdjacentHTML('afterbegin', '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0"><button class="vk-btn" id="vk-apply">Áp dụng vào game</button><button class="vk-btn sec" id="vk-copy">Sao chép cách xếp</button></div>');
       out.querySelector('#vk-apply').onclick = async (e) => { if (kmAutoRunning()) { UI.notify('Auto Kinh Mạch đang chạy, hãy dừng trước.'); return; } e.target.disabled = true; if (await applyManh(best.manh)) await render(); else e.target.disabled = false; };
@@ -7732,9 +8107,11 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     const all = [], skip = { realm: 0, pham: 0, he: 0, huong: 0, own: 0 }, traits = new Map();
     for (const it of C().items.values()) {
       if (!isKmItem(it) || it.theo_kiep) continue;
+      if (kmBienLa(it.id, nvReal)) continue;   // 8.3.2-thu.4: món biến thể chưa có
       if ((it.canh_gioi ?? 0) > R) { skip.realm++; continue; }
       const ph = it.pham_cap || 1; if (ph < F.phMin || ph > F.phMax || !kmPhOK(it, R) || kmCamOut(it.id)) { skip.pham++; continue; }   // thu.29: Phẩm tối thiểu + Cấm món
       if (!hbHeOK(it, F)) { skip.he++; continue; }
+      if (!kmHeOK(it, nvReal)) { skip.lc = (skip.lc || 0) + 1; continue; }   // 8.3.1-thu.2: hệ khắc linh căn
       const have = (nvReal.tuiDo[it.id] || 0) > 0;
       if (F.src === 'own' && !have) { skip.own++; continue; }
       const m = hbMatch(b, it); if (!m) { skip.huong++; continue; }
@@ -8251,7 +8628,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     const A = [], Bq = [], must = [];
     for (const it of c.items.values()) {
       if (!isKmItem(it) || (it.canh_gioi ?? 0) > R) continue;
+      if (kmBienLa(it.id, nvReal)) continue;   // 8.3.2-thu.4: món biến thể chưa có
       if (!kmPhOK(it, R) || kmCamOut(it.id)) continue;   // thu.29: Phẩm tối thiểu (theo cảnh giới R của bước) + Cấm món
+      if (!kmHeOK(it, nvReal)) continue;   // 8.3.1-thu.2: hệ khắc linh căn
       const have = (bag[it.id] || 0) > 0 || placed.has(it.id) || !!(LT.kho && LT.kho.has(it.id)), forced = keep.has(it.id), tg = it.tag || [];
       if (!have && !forced) {
         if (it.theo_kiep || tg.includes('khong_nguon') || tg.includes('noi_bo')) continue;
@@ -8443,12 +8822,14 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     const steps = (HB_STEPS[b.k] && HB_STEPS[b.k][F.R]) ? `<li><b>${esc(HB_STEPS[b.k][F.R])}</b></li>` : '';
     const slots = (nv.kinhMach.loadouts || [1]).length, tayLeft = (nv.kinhMach.cho && nv.kinhMach.cho.doiMau) || 0, moLeft = (nv.kinhMach.cho && nv.kinhMach.cho.mo) || 0, openable = kmOpenable(nv).length;
     const kbSel = auRow('Hướng Build', `<select class="vk-sel" id="au-km-kb" style="width:210px"><option value="">Không Ép (Theo Hệ Số Game)</option>${groups.map((g) => `<optgroup label="${esc(g)}">${g === 'Theo hệ' ? `<option value="mix" ${cfg.kb === 'mix' ? 'selected' : ''}>Kết Hợp Nhiều Hệ (Tích Bên Dưới)</option>` : ''}${BUILDS.filter((x) => x.nhom === g).map((x) => `<option value="${esc(x.k)}" ${cfg.kb === x.k ? 'selected' : ''}>${esc(x.ten)}${x.k === ranked[0].b.k ? ' ★ Hợp Nhân Vật' : ''}</option>`).join('')}</optgroup>`).join('')}</select>`);
+    // 8.3.2-thu.2: "Chỉ dùng các hệ" (cfg.heChi): lọc cứng món theo hệ; rỗng = không giới hạn
+    const heChiHtml = `<div style="margin:6px 0"><div style="font-size:13px"><b>Chỉ dùng các hệ</b> <span class="vk-mu" style="font-size:11px">— không tích ô nào = không giới hạn</span></div><div style="display:flex;flex-wrap:wrap;gap:4px 12px;margin:4px 0">${Object.keys(HE).map((h) => `<label style="display:flex;gap:4px;align-items:center;font-size:13px"><input type="checkbox" id="au-km-hc-${h}" ${(cfg.heChi || []).includes(h) ? 'checked' : ''}>${esc(heTen(h))}</label>`).join('')}</div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><button class="vk-btn" id="au-km-hc-lc" type="button">Theo linh căn</button><button class="vk-btn" id="au-km-hc-bo" type="button">Bỏ chọn</button></div><div class="vk-mu" style="font-size:12px;margin-top:4px">Món có hệ ngoài các hệ đã chọn bị bỏ (món nhiều hệ phải có MỌI hệ nằm trong danh sách). Món Chủ Đạo vẫn dùng. Loại nào lọc xong không còn món thì loại đó không lọc.</div></div>`;
     const mixRow = cfg.kb === 'mix' ? `<div style="display:flex;flex-wrap:wrap;gap:4px 12px;margin:2px 0 6px">${HE9.map((h) => `<label style="display:flex;gap:4px;align-items:center;font-size:13px"><input type="checkbox" id="au-km-mh-${h}" ${(cfg.mixHe || []).includes(h) ? 'checked' : ''}>${esc(heTen(h))}</label>`).join('')}</div><div class="vk-mu" style="font-size:12px;margin-bottom:6px">Tích 2–3 hệ (tối đa 3). ${(cfg.mixHe || []).length < 2 ? '<span class="vk-bad">Mới tích ' + (cfg.mixHe || []).length + ' hệ, nên tích ít nhất 2.</span>' : 'Hướng đang dùng: <b>' + esc(b.ten) + '</b>.'}</div>` : '';
     const [kBag, kLoad, kOpen, kWhat, kCur, kThe] = kmManualHtml(nv), gridCard = hbGridHtml(nv, b);
     // 7.14.0-thu.6: thứ tự theo mức dùng (nhiều → ít): Món Chủ Đạo · Dò Hướng Build → Cài Đặt Chung → Auto Kinh Mạch → Tiến Trình → Nhật Ký Auto → Đang Xếp Trong Game
     // → Kiểm Tra Lưới → Xếp Từ Túi → Tư Vấn Hướng → Hai Bộ → Ô Nên Mở → Phép Tính Giả Định → Xếp Theo Cảnh Giới → Hướng Khả Dụng, Cốt Lõi → Cần Làm Gì, Thể Chất, Luật.
     // Vẽ lại do đổi tùy chọn trong chính tab này thì giữ chỗ cuộn (trước có lúc nhảy về đầu).
-    const scEl = body.querySelector('#au-km-kb') ? (() => { for (let e = body; e; e = e.parentElement) { if (e.scrollHeight > e.clientHeight + 1) { const oy = getComputedStyle(e).overflowY; if (oy === 'auto' || oy === 'scroll' || e === document.scrollingElement) return e; } } return null; })() : null, scY = scEl ? scEl.scrollTop : 0;
+    const scEl = body.querySelector('#au-km-kb') ? (() => { for (let e = body; e; e = e.parentElement) { if (e.scrollHeight > e.clientHeight + 1) { const oy = (vkDoc().defaultView || window).getComputedStyle(e).overflowY; if (oy === 'auto' || oy === 'scroll' || e === document.scrollingElement) return e; } } return null; })() : null, scY = scEl ? scEl.scrollTop : 0;
     body.innerHTML = `
     ${kmCoreHtml(nv, cfg)}
     <div class="vk-card"><h3>Auto Build · Cài Đặt Chung</h3>
@@ -8459,12 +8840,13 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       ${auSel('au-km-mode', 'Chế Độ', AU_KM_MODE, cfg.mode)}
       ${auSel('au-km-dir', 'Hướng Xếp', [['', 'Theo Hệ Số Game'], ['tien', 'Tiên Tu · Tương Sinh'], ['ma', 'Ma Tu · Tương Khắc']], cfg.dir)}
       ${auSel('au-km-it', 'Độ Kỹ', AU_KM_IT, cfg.iters)}
-      ${auChk('au-km-prio', 'Ưu Tiên Theo Hệ Linh Căn Và Huyệt Đạo', cfg.prio)}
+      ${auChk('au-km-prio', 'Ưu Tiên Theo Hệ Linh Căn Và Huyệt Đạo', cfg.prio, '— bỏ hẳn món có hệ khắc hoặc bị linh căn khắc (vd Hỏa+Mộc thì bỏ Thủy, Kim, Thổ); món Chủ Đạo vẫn dùng')}
+      ${heChiHtml}
       ${auChk('au-km-phamcao', 'Ưu tiên phẩm cao (mặc định)', cfg.phamCao, '— tắt để xếp thuần theo sức mạnh đánh thử. Thêm điểm thiên vị cho món phẩm cao đang thông, kể cả vô sắc; hơn 2 bậc phẩm thắng khi điểm thật chênh dưới ~8%')}
       ${auSel('au-km-phmcp', 'Công Pháp Phẩm Tối Thiểu', [['0', 'Không'], ...PHAM_TEN.map((t, i) => [String(i + 1), t + ' Phẩm'])], cfg.phMinCp)}
       ${auSel('au-km-phmpk', 'Pháp Khí Phẩm Tối Thiểu', [['0', 'Không'], ...PHAM_TEN.map((t, i) => [String(i + 1), t + ' Phẩm'])], cfg.phMinPk)}
       ${auChk('au-km-phauto', 'Theo cảnh giới (tự đề xuất)', cfg.phMinAuto, '— ô để "Không" thì lấy phẩm ứng với cảnh giới trừ 2 (hiện ' + (PHAM_TEN[Math.max(1, kmPhOf(cur) - 2) - 1] || '?') + ' Phẩm ở ' + realmName(cur) + '); chọn số thì dùng số đó. Món Chủ Đạo luôn qua; loại nào lọc xong không còn món nào thì loại đó không lọc')}</div>
-      <div class="vk-mu" style="font-size:12px;margin-top:4px">${cfg.kb ? 'Đã chọn <b>' + esc(b.ten) + '</b>: khi xếp, Tool cộng điểm cho món đúng hướng đang thông (thêm nếu nằm trên huyệt). ' : 'Chưa ép hướng: Auto và xếp từ túi theo hệ số game; phần Xếp Theo Cảnh Giới tạm dùng <b>' + esc(b.ten) + '</b>. '}Tâm Pháp (công pháp không chiêu) chiếm một nửa số ô thông, Đấu Pháp + Pháp Khí + Bảo Vật chiếm nửa còn lại khi chọn 5 : 5; mỗi ô lệch bị trừ ${HB_RATIO_W} điểm. Tool tính sức mỗi món ở mức Lĩnh Ngộ đã đầy.</div></div>
+      <div class="vk-mu" style="font-size:12px;margin-top:4px">${cfg.kb ? 'Đã chọn <b>' + esc(b.ten) + '</b>: khi xếp, Tool cộng điểm cho món đúng hướng đang thông (thêm nếu nằm trên huyệt). ' : 'Chưa ép hướng: Auto và xếp từ túi theo hệ số game; phần Xếp Theo Cảnh Giới tạm dùng <b>' + esc(b.ten) + '</b>. '}${(cfg.heChi || []).length ? 'Chỉ dùng hệ: <b>' + esc(cfg.heChi.map(heTen).join(', ')) + '</b>. ' : ''}Tâm Pháp (công pháp không chiêu) chiếm một nửa số ô thông, Đấu Pháp + Pháp Khí + Bảo Vật chiếm nửa còn lại khi chọn 5 : 5; mỗi ô lệch bị trừ ${HB_RATIO_W} điểm. Tool tính sức mỗi món ở mức Lĩnh Ngộ đã đầy.</div></div>
     <div class="vk-card"><h3>Auto Kinh Mạch</h3>
       <div class="vk-mu" style="font-size:13px">Tool tìm cách xếp tốt nhất theo Cài Đặt Chung rồi <b>tự áp dụng vào game bằng chính các hàm của game</b>: gỡ mảnh sai, đặt mảnh mới, đổi bộ, mở ô. Chỉ đổi khi điểm tăng đủ lớn vì đổi cách xếp làm món mới phải Lĩnh Ngộ lại từ đầu; game bận thì Tool đợi hoặc dừng.</div>
       <div style="margin:10px 0 2px"><b style="font-size:13px">Bộ Kinh Mạch</b> <span class="vk-mu" style="font-size:11px">(đang có ${slots}/3 bộ)</span></div>
@@ -8543,7 +8925,10 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       F.he = body.querySelector('#hb-he').value; F.dt = body.querySelector('#hb-dt').value; F.src = body.querySelector('#hb-src').value;
       F.assume = body.querySelector('#hb-assume').checked; F.vo = body.querySelector('#hb-vo').checked;
     };
-    body.querySelectorAll('[id^="au-km-"]').forEach((el) => { el.onchange = () => { if (el.id.startsWith('au-km-mh-') && el.checked && body.querySelectorAll('[id^="au-km-mh-"]:checked').length > 3) { el.checked = false; UI.notify('Tối đa 3 hệ'); return; } const oldKb = cfg.kb; auReadCfg('km'); if (cfg.kb !== oldKb) { F.dt = ''; const nb = kbBuild(cfg.kb); if (F.he && nb && (nb.elem || nb.mix)) F.he = ''; } S.hbRes = null; tabAutoKm(); }; });
+    { const bl = body.querySelector('#au-km-hc-lc'), bb = body.querySelector('#au-km-hc-bo');   // 8.3.2-thu.2
+      if (bl) bl.onclick = () => { let he = []; try { he = ((nvNow().linhCan || {}).he || []).filter((h) => h && h !== 'vo_sac' && HE[h]); } catch (e) { console.error(e); } cfg.heChi = [...new Set([...he, 'vo_sac'])]; auSave(); S.hbRes = null; tabAutoKm(); };
+      if (bb) bb.onclick = () => { cfg.heChi = []; auSave(); S.hbRes = null; tabAutoKm(); }; }
+    body.querySelectorAll('[id^="au-km-"]').forEach((el) => { if (el.tagName === 'BUTTON') return; el.onchange = () => { if (el.id.startsWith('au-km-mh-') && el.checked && body.querySelectorAll('[id^="au-km-mh-"]:checked').length > 3) { el.checked = false; UI.notify('Tối đa 3 hệ'); return; } const oldKb = cfg.kb; auReadCfg('km'); if (cfg.kb !== oldKb) { F.dt = ''; const nb = kbBuild(cfg.kb); if (F.he && nb && (nb.elem || nb.mix)) F.he = ''; } S.hbRes = null; tabAutoKm(); }; });
     body.querySelectorAll('[id^="hb-"]').forEach((el) => { if (el.tagName === 'SELECT' || el.type === 'checkbox') el.onchange = () => { rd(); S.hbRes = null; tabAutoKm(); }; });
     body.querySelectorAll('button[data-adv]').forEach((bt) => { bt.onclick = () => { cfg.kb = bt.dataset.adv; if (cfg.kb === 'mix') cfg.mixHe = (bt.dataset.advhe || '').split(',').filter((h) => HE9.includes(h)).slice(0, 3); F.dt = ''; if (F.he) F.he = ''; auSave(); S.hbRes = null; tabAutoKm(); }; });
     body.querySelectorAll('button[data-advj]').forEach((bt) => { bt.onclick = () => { const f = S.dd; f.q = bt.dataset.advn || ''; f.loai = ''; f.qg = ''; f.cl = ''; f.phai = ''; f.he = ''; f.kham = false; f.may = false; f.focus = bt.dataset.advj; f.n = 30; S.abort = true; S.tab = 'tcd'; render(); }; });
@@ -8652,6 +9037,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     if (S.tcx && S.tcx.src === Cc) return S.tcx;
     const X = { src: Cc, items: [], mons: [], itemById: new Map(), monById: new Map(), drops: new Map(), evItem: new Map(), evMon: new Map(), shops: [], recOut: new Map(), recIn: new Map(), teach: new Map(), tower: new Set(), eggOf: new Map(), evoFrom: new Map() };
     for (const it of Cc.items.values()) {
+      if (kmBienLa(it.id)) continue;   // 8.3.2-thu.4: món biến thể do mod khác tạo mà người chơi chưa có
       const x = { it, id: it.id, name: tcWord(it.ten), cat: categorize(it), nameKey: fold(it.ten), key: fold(it.ten + ' ' + String(it.id).replace(/^item\./, '').replace(/_/g, ' ')), full: null, ord: (it.canh_gioi ?? 0) * 100 + (it.pham_cap || 0) };
       X.items.push(x); X.itemById.set(it.id, x);
     }
@@ -10379,7 +10765,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   const AU_DEF = {
     buon: { maxY: 3, banY: 5, von: 60, giu: 100, lai: 20, chuyen: 5, hiem: 'ngang_suc', tho: 15, toc: 'nhanh', sk: true, sks: false, thoGia: 0, nhieu: true, banTui: false, tuiLoai: [], tuiPham: 3, tuiGiu: 5, tuiKhong: '', tuiRieng: '', tuiDs: '' },
     san: { maxY: 3, mau: ['an_toan', 'ngang_suc', 'hiem'], tran: 20, thuong: 2, tho: 15, rut: 30, mucLa: 'chay', cach: 'ngau', kt: true, neDebuff: true, giaiTu: 0, giaiDen: 5, muc: ['thuong'], toc: 'nhanh', sk: true, sks: false, dkt: true, dktThang: 90, dktNang: 10, dktSom: 30, duong: false, duongMax: 30, danThuong: true, nlMuc: [] },
-    km: { mode: 'bal', dir: 'tien', kb: '', prio: true, bk: 5, ratio: '55', iters: 3000, mo: false, moMax: 1, two: false, mixHe: [], bo: '1', fb: 'bal', ln: 'tho', tay: false, bos: [], thuTu: 'danh,tu,dot', keep: 'tu', moBo: false, watch: false, core: [], coreBo: '', coreW: 'manh', phamCao: true, phMinCp: 0, phMinPk: 0, phMinAuto: false, cam: [] },
+    km: { mode: 'bal', dir: 'tien', kb: '', prio: true, bk: 5, ratio: '55', iters: 3000, mo: false, moMax: 1, two: false, mixHe: [], bo: '1', fb: 'bal', ln: 'tho', tay: false, bos: [], thuTu: 'danh,tu,dot', keep: 'tu', moBo: false, watch: false, core: [], coreBo: '', coreW: 'manh', phamCao: true, phMinCp: 0, phMinPk: 0, phMinAuto: false, cam: [], heChi: [] },
     sd: { on: false, ds: [], duTru: 0, bao: true },
     dg: { ds: [], noi: '', tho: 15, giuLt: 0, toc: 'nhanh', cach: 'yen' },   // 7.17.4-thu.30: Auto Đấu Giá
     rr: { pham: ['thien', 'bien_di'], he: [], heMode: 'any', tc: [], join: 'and', max: 3000, toc: 'nhanh', swap: false, lp: false, dl: 'normal', lh: false, lhIds: [], lhKeep: 0, tm: { nuoc: '', xt: '', he: '', lc: '', tc: '' } },
@@ -11081,6 +11467,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     // 6.19: một lần duy nhất, đưa Auto Kinh Mạch về mặc định mới (ép hướng Mạnh, hướng xếp Tiên Tu) cho cả máy đã lưu cấu hình cũ.
     // 7.17.4-thu.29: Ưu Tiên Phẩm Cao mặc định BẬT; cấu hình cũ (mặc định tắt) được bật một lần, sau đó tôn trọng lựa chọn của người dùng.
     if (AU.cfg.km.v_pc1 !== 1) { AU.cfg.km.v_pc1 = 1; AU.cfg.km.phamCao = true; }
+    AU.cfg.km.heChi = (Array.isArray(AU.cfg.km.heChi) ? AU.cfg.km.heChi : []).filter((h) => HE[h]);   // 8.3.2-thu.2
     AU.cfg.km.cam = (Array.isArray(AU.cfg.km.cam) ? AU.cfg.km.cam : []).filter((id) => typeof id === 'string'); AU.cfg.km.phMinCp = Math.max(0, Math.min(8, Math.floor(+AU.cfg.km.phMinCp || 0))); AU.cfg.km.phMinPk = Math.max(0, Math.min(8, Math.floor(+AU.cfg.km.phMinPk || 0))); AU.cfg.km.phMinAuto = !!AU.cfg.km.phMinAuto;
     if (AU.cfg.km.v619 !== 1) { AU.cfg.km.v619 = 1; AU.cfg.km.bk = 5; if (!AU.cfg.km.dir) AU.cfg.km.dir = 'tien'; }
     { const k = AU.cfg.km; if (!(o.km && o.km.bo) && k.two) k.bo = '2'; if (k.bo === '2') { k.bo = 'n'; if (!(o.km && o.km.thuTu)) { k.bos = ['tu', 'danh']; k.thuTu = 'tu,danh,dot'; } } if (k.bo !== 'n') k.bo = '1'; k.two = k.bo === 'n'; if (!Array.isArray(k.bos)) k.bos = []; k.bos = k.bos.filter((m) => ['danh', 'tu', 'dot'].includes(m)); if (typeof k.thuTu !== 'string') k.thuTu = 'danh,tu,dot'; if (!['danh', 'tu', 'dot'].includes(k.keep)) k.keep = 'tu'; if (!['tu', 'danh', 'bal', 'dot'].includes(k.fb)) k.fb = 'bal'; if (!['tho', 'dai', 'nay'].includes(k.ln)) k.ln = 'tho'; if (!Array.isArray(k.mixHe)) k.mixHe = []; } // 7.12.4-thu.8: ô tích "Xếp 2 Bộ" thành ô chọn Số Bộ
@@ -11685,11 +12072,12 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
 
   // Đặt các thiết lập chung của bộ xếp theo cấu hình Auto, trả về hàm khôi phục.
   function auKmPin(c) {
-    const old = { dir: S.dir, prio: S.prio, full: S.full, biasK: S.biasK, kmBuild: S.kmBuild, hbRatio: S.hbRatio, hbLite: S.hbLite, huyetMs: S.huyetMs, kmCore: S.kmCore, kmCoreW: S.kmCoreW, phamCao: S.phamCao, tocBoi: S.tocBoi, phMin: S.phMin, kmCam: S.kmCam };
+    const old = { dir: S.dir, prio: S.prio, full: S.full, biasK: S.biasK, kmBuild: S.kmBuild, hbRatio: S.hbRatio, hbLite: S.hbLite, huyetMs: S.huyetMs, kmCore: S.kmCore, kmCoreW: S.kmCoreW, phamCao: S.phamCao, tocBoi: S.tocBoi, phMin: S.phMin, kmCam: S.kmCam, kmHeChi: S.kmHeChi };
     { const ids = (Array.isArray(c.core) ? c.core : []).filter((id) => { try { return !!C().items.get(id); } catch (e) { return false; } }); S.kmCore = ids.length ? new Set(ids) : null; S.kmCoreW = KM_CORE_W[c.coreW] ? KM_CORE_W[c.coreW][1] : KM_CORE_W.manh[1]; } // 7.14.0-thu.3
     S.huyetMs = c.iters <= 1500 ? 6000 : c.iters >= 6000 ? 25000 : 12000;   // Nhanh 6 giây, Vừa 12, Kỹ 25
     S.tocBoi = c.iters <= 1500 ? 0.5 : c.iters >= 6000 ? 2 : 1; S.phamCao = !!c.phamCao; S.phMin = { cp: Math.max(0, Math.min(8, Math.floor(+c.phMinCp || 0))), pk: Math.max(0, Math.min(8, Math.floor(+c.phMinPk || 0))), auto: !!c.phMinAuto }; if (!S.phMin.cp && !S.phMin.pk && !S.phMin.auto) S.phMin = null;
     { const ids = (Array.isArray(c.cam) ? c.cam : []).filter((id) => { try { return !!C().items.get(id); } catch (e) { return false; } }); S.kmCam = ids.length ? new Set(ids) : null; }   // thu.29
+    { const hc = (Array.isArray(c.heChi) ? c.heChi : []).filter((h) => HE[h]); S.kmHeChi = hc.length ? hc : null; }   // 8.3.2-thu.2
     // 7.17.4-thu.4: Độ Kỹ nhân thêm ngân sách giờ greedy / anneal / polish / lấp ô (×0,5 / ×1 / ×2); Ưu tiên phẩm cao
     try { hbScanBuilds(); } catch (e) { /* dùng danh sách tĩnh */ }
     const b = c.kb ? kbBuild(c.kb) : null;
@@ -12014,7 +12402,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   }
   // Tên món chỉ tính ở lần gõ đầu tiên (dlGoiY), không dựng datalist lúc focus: iOS đơ khi datalist lớn.
   function auNlBind() {
-    dlGoiY(document.getElementById('au-nl-box'), '[id^="au-nl-ten-"]', document.getElementById('au-nl-ds'), auNlGoiY);
+    dlGoiY(UI.win.querySelector('#au-nl-box'), '[id^="au-nl-ten-"]', UI.win.querySelector('#au-nl-ds'), auNlGoiY);
   }
   function auNlHtml(c) {
     const ds = Array.isArray(c.nlMuc) ? c.nlMuc : [];
@@ -12572,7 +12960,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     box.addEventListener('focusout', () => setTimeout(() => {
       // ô trống ở giữa danh sách: bỏ đi, luôn chừa đúng một ô trống ở cuối
       const rows = [...box.querySelectorAll('.au-bd-row')];
-      rows.forEach((r, i) => { const x = r.querySelector('.au-bd-in'); if (i < rows.length - 1 && !x.value.trim() && x !== document.activeElement) r.remove(); });
+      rows.forEach((r, i) => { const x = r.querySelector('.au-bd-in'); if (i < rows.length - 1 && !x.value.trim() && x !== vkDoc().activeElement) r.remove(); });
     }, 0));
   }
   function auBanTui(route) {
@@ -12749,6 +13137,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       c.mode = pick('au-km-mode', AU_KM_MODE.map((x) => x[0]), c.mode); c.dir = pick('au-km-dir', ['', 'tien', 'ma'], c.dir);
       c.kb = sel('au-km-kb', c.kb); if (c.kb && !kbBuild(c.kb)) c.kb = '';
       c.iters = Number(pick('au-km-it', AU_KM_IT.map((x) => x[0]), c.iters)); c.ratio = pick('au-km-ratio', Object.keys(HB_RATIO), c.ratio);
+      if (q('au-km-hc-kim')) c.heChi = Object.keys(HE).filter((h) => ck('au-km-hc-' + h, false));   // 8.3.2-thu.2
       c.bk = AU_KM_BK; c.prio = ck('au-km-prio', c.prio); c.phamCao = ck('au-km-phamcao', c.phamCao);
       if (q('au-km-phmcp')) { c.phMinCp = Math.floor(num0('au-km-phmcp', 0, 8, c.phMinCp)); c.phMinPk = Math.floor(num0('au-km-phmpk', 0, 8, c.phMinPk)); c.phMinAuto = ck('au-km-phauto', c.phMinAuto); }   // 7.17.4-thu.29
       c.bo = pick('au-km-bo', ['1', 'n'], c.bo); c.two = c.bo === 'n'; if (q('au-km-bos-danh')) c.bos = AU_KM_BO_ID.filter((m) => ck('au-km-bos-' + m, false)); c.thuTu = pick('au-km-thutu', AU_KM_THU_TU.map((x) => x[0]), c.thuTu); c.fb = pick('au-km-fb', ['tu', 'danh', 'bal', 'dot'], c.fb); c.ln = pick('au-km-ln', ['tho', 'dai', 'nay'], c.ln); c.keep = pick('au-km-keep', AU_KM_BO_ID, c.keep); c.moBo = ck('au-km-mobo', c.moBo);
@@ -13861,7 +14250,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     if (Cc.schools && typeof Cc.schools.entries === 'function') for (const [id, def] of Cc.schools.entries()) schools.push({ key: lpKey(id), id, def: def || {}, ten: tcWord((def && def.ten) || lpKey(id)), items: [] });
     const byKey = new Map(schools.map((s) => [s.key, s]));
     if (typeof itemSchool === 'function') for (const it of Cc.items.values()) {
-      if (!isKmItem(it) || it.theo_kiep) continue;
+      if (!isKmItem(it) || it.theo_kiep || kmBienLa(it.id)) continue;   // 8.3.2-thu.4: bỏ món biến thể chưa có
       let k; try { k = itemSchool(Cc, it); } catch (e) { k = undefined; }
       const s = k ? byKey.get(lpKey(k)) : null; if (s) s.items.push(it);
     }
@@ -15758,7 +16147,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   // Tìm đoạn chữ đầu tiên khớp trong tab đang mở, cuộn tới và nháy viền cho dễ thấy (mở cả <details> đang gập chứa nó).
   function timToSang(q) {
     const f = fold(q).trim(); if (!f) return;
-    const w = document.createTreeWalker(body, NodeFilter.SHOW_TEXT); let n;
+    const w = vkDoc().createTreeWalker(body, NodeFilter.SHOW_TEXT); let n;
     while ((n = w.nextNode())) {
       if (!fold(n.data).includes(f)) continue;
       let el = n.parentElement; if (!el) continue;
@@ -15819,7 +16208,25 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.3.1 · Bản Mod', d: '24/11/2026', now: true,
+            { t: 'Phiên Bản 8.4.0 · Bản Mod', d: '24/11/2026', now: true,
+            moi: [
+                '<b>Chấm Các Bộ Đã Lưu:</b> nút mới ở thẻ "Đang xếp trong game" (Auto Build): đánh thử từng bộ kinh mạch đã lưu bằng trận mẫu, không cần đánh thật. Mỗi bộ có 2 mức Hiện tại / Lĩnh Ngộ đầy (kèm số năm tới khi thuần thục), cột theo bảng Vận hành của game, sát thương TB / lượt, linh lực tiêu hao và dư (ước); phần gập Trận mẫu từng trận, Thành phần điểm, Món trong bộ. Đã kiểm.',
+                '<b>Đóng góp từng món:</b> trong bảng so bộ, bấm "Tính đóng góp" để biết gỡ từng món thì bộ mất bao nhiêu điểm; 3 món yếu nhất tô đỏ để cân nhắc thay. Chưa kiểm.',
+                '<b>Chỉ dùng các hệ:</b> Auto Build · Cài Đặt Chung có ô chọn các hệ được dùng (nút "Theo linh căn" chọn sẵn hệ linh căn + Vô sắc); món có hệ ngoài danh sách bị bỏ, món Chủ Đạo vẫn dùng. Chưa kiểm.',
+                '<b>Vì sao còn ô trống?:</b> nút ở thẻ "Đang xếp trong game" và dưới kết quả Xếp: mỗi ô thông còn trống có lý do (không món nào vừa, bị lọc hệ / phẩm, không thông, thêm điểm nghịch, giảm điểm, hoặc lấp được). Chưa kiểm.',
+                '<b>Tách cửa sổ:</b> nút ⧉ trên thanh đầu (hoặc menu ⋯) đưa Tool ra cửa sổ riêng, kéo sang màn hình khác được (Chrome/Edge: cửa sổ nổi; trình duyệt khác: popup). Đóng cửa sổ đó thì Tool về lại trong game. Chưa kiểm.'
+            ],
+            nang: [
+                '<b>Auto Build theo hệ linh căn:</b> khi bật "Ưu Tiên Theo Hệ Linh Căn Và Huyệt Đạo", Tool bỏ hẳn món có hệ khắc hoặc bị linh căn khắc (vd linh căn Hỏa + Mộc thì bỏ Thủy, Kim, Thổ), không còn chỉ trừ điểm nhẹ. Đã kiểm.',
+                '<b>Auto Build tránh điểm nghịch:</b> mỗi điểm nghịch trừ 3% tổng điểm trận mẫu (trước gần như không phạt); Ma tu giữ như cũ. Đã kiểm.',
+                '<b>Auto Build lấp ô trống:</b> sau khi xếp, nếu đặt Phẩm tối thiểu mà còn ô trống thì lấp thêm bằng món dưới phẩm tối thiểu (chỉ khi món thông, không thêm điểm nghịch, không giảm điểm). Chưa kiểm.',
+                '<b>Bảng Đang xếp / Bản mới:</b> thêm Điểm Tool, sát thương TB / lượt, linh lực tiêu hao và dư (ước), cảnh báo dư / thiếu linh lực, so từng trận mẫu và cảnh báo khi bản mới thắng ít trận hơn; ghi rõ cả hai cột tính ở Lĩnh Ngộ đầy. Đã kiểm.'
+            ],
+            sua: [
+                '<b>Món biến thể của mod khác:</b> theo bản game mới (món id dạng gốc~mã), Auto Build không xếp hai biến thể cùng một món gốc lên kinh mạch; Tra Cứu, Lưu Phái và các danh sách xếp theo hướng ẩn biến thể bạn chưa có. Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.3.1 · Bản Mod', d: '24/11/2026', now: false,
             nang: [
                 '<b>Hướng dẫn nhanh:</b> tour 10 bước, chữ kĩ hơn, thêm bước Cập nhật (chỉ đúng nút ⟳, trên điện thoại là nút ⋯), Nhật ký, Thu gọn và Báo lỗi. Ai đã xem tour cũ sẽ thấy lại một lần. Chưa kiểm.',
                 '<b>Hướng dẫn & Hỏi đáp:</b> thẻ trong Hệ Thống thêm 9 câu hỏi đáp gập/mở: cập nhật thế nào, chấm cam/chấm đỏ là gì, thu gọn và mở lại, Tool có khóa Tỉ thí không, gặp lỗi làm gì... Nút ? có thêm Mẹo chung và nút Hỏi đáp. Chưa kiểm.',

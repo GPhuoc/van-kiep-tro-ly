@@ -1,4 +1,21 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.3.1)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.4.0)
+
+## Bản 8.4.0 · So bộ kinh mạch, lọc hệ, tách cửa sổ
+### Tính năng mới
+- **Chấm Các Bộ Đã Lưu:** nút mới ở thẻ "Đang xếp trong game" (Auto Build): đánh thử từng bộ kinh mạch đã lưu bằng trận mẫu, không cần đánh thật. Mỗi bộ có 2 mức Hiện tại / Lĩnh Ngộ đầy (kèm số năm tới khi thuần thục), cột theo bảng Vận hành của game, sát thương TB / lượt, linh lực tiêu hao và dư (ước); phần gập Trận mẫu từng trận, Thành phần điểm, Món trong bộ. Đã kiểm.
+- **Đóng góp từng món:** trong bảng so bộ, bấm "Tính đóng góp" để biết gỡ từng món thì bộ mất bao nhiêu điểm; 3 món yếu nhất tô đỏ để cân nhắc thay. Chưa kiểm.
+- **Chỉ dùng các hệ:** Auto Build · Cài Đặt Chung có ô chọn các hệ được dùng (nút "Theo linh căn" chọn sẵn hệ linh căn + Vô sắc); món có hệ ngoài danh sách bị bỏ, món Chủ Đạo vẫn dùng. Chưa kiểm.
+- **Vì sao còn ô trống?:** nút ở thẻ "Đang xếp trong game" và dưới kết quả Xếp: mỗi ô thông còn trống có lý do (không món nào vừa, bị lọc hệ / phẩm, không thông, thêm điểm nghịch, giảm điểm, hoặc lấp được). Chưa kiểm.
+- **Tách cửa sổ:** nút ⧉ trên thanh đầu (hoặc menu ⋯) đưa Tool ra cửa sổ riêng, kéo sang màn hình khác được (Chrome/Edge: cửa sổ nổi; trình duyệt khác: popup). Đóng cửa sổ đó thì Tool về lại trong game. Chưa kiểm.
+
+### Nâng cấp tính năng
+- **Auto Build theo hệ linh căn:** khi bật "Ưu Tiên Theo Hệ Linh Căn Và Huyệt Đạo", Tool bỏ hẳn món có hệ khắc hoặc bị linh căn khắc (vd linh căn Hỏa + Mộc thì bỏ Thủy, Kim, Thổ), không còn chỉ trừ điểm nhẹ. Đã kiểm.
+- **Auto Build tránh điểm nghịch:** mỗi điểm nghịch trừ 3% tổng điểm trận mẫu (trước gần như không phạt); Ma tu giữ như cũ. Đã kiểm.
+- **Auto Build lấp ô trống:** sau khi xếp, nếu đặt Phẩm tối thiểu mà còn ô trống thì lấp thêm bằng món dưới phẩm tối thiểu (chỉ khi món thông, không thêm điểm nghịch, không giảm điểm). Chưa kiểm.
+- **Bảng Đang xếp / Bản mới:** thêm Điểm Tool, sát thương TB / lượt, linh lực tiêu hao và dư (ước), cảnh báo dư / thiếu linh lực, so từng trận mẫu và cảnh báo khi bản mới thắng ít trận hơn; ghi rõ cả hai cột tính ở Lĩnh Ngộ đầy. Đã kiểm.
+
+### Sửa lỗi
+- **Món biến thể của mod khác:** theo bản game mới (món id dạng gốc~mã), Auto Build không xếp hai biến thể cùng một món gốc lên kinh mạch; Tra Cứu, Lưu Phái và các danh sách xếp theo hướng ẩn biến thể bạn chưa có. Chưa kiểm.
 
 ## Bản 8.3.1 · Hướng dẫn kĩ hơn
 ### Nâng cấp tính năng

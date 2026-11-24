@@ -1,12 +1,22 @@
 {
-  "version": "8.3.1",
+  "version": "8.4.0",
   "ngay": "24/11/2026",
-  "kich_thuoc": 1691029,
-  "sha256": "57b7d2fbb66401ac9e5edc56eb9caa076796be84ba1b3b1632784bf6ab3907b9",
+  "kich_thuoc": 1733286,
+  "sha256": "f0e354d9965cc8e21135f0d9c0733e37b0b0cdca37810b4479e1c96f0e9c9d9c",
+  "moi": [
+    "<b>Chấm Các Bộ Đã Lưu:</b> nút mới ở thẻ \"Đang xếp trong game\" (Auto Build): đánh thử từng bộ kinh mạch đã lưu bằng trận mẫu, không cần đánh thật. Mỗi bộ có 2 mức Hiện tại / Lĩnh Ngộ đầy (kèm số năm tới khi thuần thục), cột theo bảng Vận hành của game, sát thương TB / lượt, linh lực tiêu hao và dư (ước); phần gập Trận mẫu từng trận, Thành phần điểm, Món trong bộ. Đã kiểm.",
+    "<b>Đóng góp từng món:</b> trong bảng so bộ, bấm \"Tính đóng góp\" để biết gỡ từng món thì bộ mất bao nhiêu điểm; 3 món yếu nhất tô đỏ để cân nhắc thay. Chưa kiểm.",
+    "<b>Chỉ dùng các hệ:</b> Auto Build · Cài Đặt Chung có ô chọn các hệ được dùng (nút \"Theo linh căn\" chọn sẵn hệ linh căn + Vô sắc); món có hệ ngoài danh sách bị bỏ, món Chủ Đạo vẫn dùng. Chưa kiểm.",
+    "<b>Vì sao còn ô trống?:</b> nút ở thẻ \"Đang xếp trong game\" và dưới kết quả Xếp: mỗi ô thông còn trống có lý do (không món nào vừa, bị lọc hệ / phẩm, không thông, thêm điểm nghịch, giảm điểm, hoặc lấp được). Chưa kiểm.",
+    "<b>Tách cửa sổ:</b> nút ⧉ trên thanh đầu (hoặc menu ⋯) đưa Tool ra cửa sổ riêng, kéo sang màn hình khác được (Chrome/Edge: cửa sổ nổi; trình duyệt khác: popup). Đóng cửa sổ đó thì Tool về lại trong game. Chưa kiểm."
+  ],
   "nang": [
-    "<b>Hướng dẫn nhanh:</b> tour 10 bước, chữ kĩ hơn, thêm bước Cập nhật (chỉ đúng nút ⟳, trên điện thoại là nút ⋯), Nhật ký, Thu gọn và Báo lỗi. Ai đã xem tour cũ sẽ thấy lại một lần. Chưa kiểm.",
-    "<b>Hướng dẫn & Hỏi đáp:</b> thẻ trong Hệ Thống thêm 9 câu hỏi đáp gập/mở: cập nhật thế nào, chấm cam/chấm đỏ là gì, thu gọn và mở lại, Tool có khóa Tỉ thí không, gặp lỗi làm gì... Nút ? có thêm Mẹo chung và nút Hỏi đáp. Chưa kiểm.",
-    "<b>Báo bản mới:</b> có bản mới thì hiện băng \"Có bản mới · Cập nhật ngay · Để sau\" ngay dưới thanh trên, thông báo nổi ghi rõ bấm vào để cập nhật; lên bản xong có thông báo \"Đã lên bản X · bấm xem có gì mới\". Chưa kiểm.",
-    "<b>Tìm mục:</b> gõ \"cap nhat\" hoặc \"huong dan\" ra Hệ Thống. Chưa kiểm."
+    "<b>Auto Build theo hệ linh căn:</b> khi bật \"Ưu Tiên Theo Hệ Linh Căn Và Huyệt Đạo\", Tool bỏ hẳn món có hệ khắc hoặc bị linh căn khắc (vd linh căn Hỏa + Mộc thì bỏ Thủy, Kim, Thổ), không còn chỉ trừ điểm nhẹ. Đã kiểm.",
+    "<b>Auto Build tránh điểm nghịch:</b> mỗi điểm nghịch trừ 3% tổng điểm trận mẫu (trước gần như không phạt); Ma tu giữ như cũ. Đã kiểm.",
+    "<b>Auto Build lấp ô trống:</b> sau khi xếp, nếu đặt Phẩm tối thiểu mà còn ô trống thì lấp thêm bằng món dưới phẩm tối thiểu (chỉ khi món thông, không thêm điểm nghịch, không giảm điểm). Chưa kiểm.",
+    "<b>Bảng Đang xếp / Bản mới:</b> thêm Điểm Tool, sát thương TB / lượt, linh lực tiêu hao và dư (ước), cảnh báo dư / thiếu linh lực, so từng trận mẫu và cảnh báo khi bản mới thắng ít trận hơn; ghi rõ cả hai cột tính ở Lĩnh Ngộ đầy. Đã kiểm."
+  ],
+  "sua": [
+    "<b>Món biến thể của mod khác:</b> theo bản game mới (món id dạng gốc~mã), Auto Build không xếp hai biến thể cùng một món gốc lên kinh mạch; Tra Cứu, Lưu Phái và các danh sách xếp theo hướng ẩn biến thể bạn chưa có. Chưa kiểm."
   ]
 }
