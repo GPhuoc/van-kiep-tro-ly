@@ -1,4 +1,18 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.1.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.2.0)
+
+## Bản 8.2.0 · Tự cập nhật, hướng dẫn nhanh
+### Tính năng mới
+- **Tự cập nhật:** Hệ Thống → Cập nhật kiểm bản mới trên GitHub (mỗi 5/15/30/60 phút, bật tắt được). Bấm Cập nhật là xong: Tool tải bản mới, chờ lúc không trong trận/sự kiện thì tự tải lại trang. Nút Nhật Ký có chấm đỏ khi vừa lên bản. Có nút Quay về bản đã cài; bản mới lỗi thì tự quay về. Chưa kiểm.
+- **Hướng dẫn nhanh:** 6 bước chỉ vào phím mở, cây mục, ô Tìm mục, Tổng Quan, Auto, Hệ Thống; tự hiện lần đầu, xem lại ở Hệ Thống. Chưa kiểm.
+- **Nút ? :** trên thanh trên, giải thích mục đang mở. Chưa kiểm.
+- **Bảng nhân vật của game:** cuối khối Chỉ số có dòng Trợ Lý với nút Ngưỡng chỉ số và Đột phá. Chưa kiểm.
+
+### Nâng cấp tính năng
+- **Kế Hoạch Đi:** số năm tới mùa thuốc sau đọc thẳng từ game (bản game 23/11). Chưa kiểm.
+- **Nhật Ký:** chia Tính năng mới / Nâng cấp tính năng / Sửa lỗi.
+
+### Sửa lỗi
+- **Dị Bảo:** Thái Hư Chu ghi đúng 7% và hồi chiêu 100 năm theo bản game 23/11 (hồi chiêu đọc từ game). Chưa kiểm.
 
 ## Bản 8.1.0 · Đấu giá, dọn kho, bế quan đúng năm
 - **Auto Đấu Giá:** thấy Đại hội đấu giá trong mọi nhóm thế cục, có Lịch Đấu Giá Sắp Tới (xếp theo điểm), Đi vòng các nhà, bế quan đúng tới năm mở, không bế quan lặp ở chỗ có biến.

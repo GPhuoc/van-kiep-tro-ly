@@ -1,9 +1,19 @@
 {
-  "version": "8.1.0-thu.5",
+  "version": "8.2.0",
   "ngay": "24/11/2026",
-  "kich_thuoc": 1656388,
-  "sha256": "92084350610bfd5ba78aa959eccbe15de9d346d534bde0ba722be30b341b2de9",
+  "kich_thuoc": 1663607,
+  "sha256": "d3e940f0b95ef98c14b70d75d821071c56518c9125e7523da24d853bb466ef68",
   "moi": [
-    "<b>Tự cập nhật:</b> bản thử để kiểm tra nút Cập nhật (không có thay đổi nào khác)."
+    "<b>Tự cập nhật:</b> Hệ Thống → Cập nhật kiểm bản mới trên GitHub (mỗi 5/15/30/60 phút, bật tắt được). Bấm Cập nhật là xong: Tool tải bản mới, chờ lúc không trong trận/sự kiện thì tự tải lại trang. Nút Nhật Ký có chấm đỏ khi vừa lên bản. Có nút Quay về bản đã cài; bản mới lỗi thì tự quay về. Chưa kiểm.",
+    "<b>Hướng dẫn nhanh:</b> 6 bước chỉ vào phím mở, cây mục, ô Tìm mục, Tổng Quan, Auto, Hệ Thống; tự hiện lần đầu, xem lại ở Hệ Thống. Chưa kiểm.",
+    "<b>Nút ? :</b> trên thanh trên, giải thích mục đang mở. Chưa kiểm.",
+    "<b>Bảng nhân vật của game:</b> cuối khối Chỉ số có dòng Trợ Lý với nút Ngưỡng chỉ số và Đột phá. Chưa kiểm."
+  ],
+  "nang": [
+    "<b>Kế Hoạch Đi:</b> số năm tới mùa thuốc sau đọc thẳng từ game (bản game 23/11). Chưa kiểm.",
+    "<b>Nhật Ký:</b> chia Tính năng mới / Nâng cấp tính năng / Sửa lỗi."
+  ],
+  "sua": [
+    "<b>Dị Bảo:</b> Thái Hư Chu ghi đúng 7% và hồi chiêu 100 năm theo bản game 23/11 (hồi chiêu đọc từ game). Chưa kiểm."
   ]
 }

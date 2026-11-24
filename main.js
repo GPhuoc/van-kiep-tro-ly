@@ -1,61 +1,152 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.1.0-thu.5
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.2.0
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.1.0-thu.5';
+const VKX_BAN_CAI = '8.2.0';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
   for (let i = 0; i < 4; i++) if (x[i] !== y[i]) return x[i] > y[i] ? 1 : -1;
   return 0;
 }
-function vkxNapBanMoi(tt, mod) {
+/* IndexedDB cho bản tự cập nhật (8.1.0-thu.6): db vkx_tro_ly, store ban, khóa 'main' -> { ver, code, ngay } */
+function cnDbTx(mode, fn) {
+  return new Promise((ok, loi) => {
+    let db = null;
+    const dong = () => { try { if (db) db.close(); } catch (e) { /* bỏ qua */ } };
+    try {
+      const r = indexedDB.open('vkx_tro_ly', 1);
+      r.onupgradeneeded = () => { try { r.result.createObjectStore('ban'); } catch (e) { /* bỏ qua */ } };
+      r.onerror = () => loi(r.error || new Error('idb'));
+      r.onsuccess = () => {
+        db = r.result; let res;
+        try {
+          const tx = db.transaction('ban', mode), rq = fn(tx.objectStore('ban'));
+          rq.onsuccess = () => { res = rq.result; };
+          tx.oncomplete = () => { dong(); ok(res); };
+          tx.onerror = tx.onabort = () => { dong(); loi(tx.error || new Error('idb')); };
+        } catch (e) { dong(); loi(e); }
+      };
+    } catch (e) { loi(e); }
+  });
+}
+const cnDbGet = () => cnDbTx('readonly', (s) => s.get('main'));
+const cnDbPut = (v) => cnDbTx('readwrite', (s) => s.put(v, 'main'));
+const cnDbDel = () => cnDbTx('readwrite', (s) => s.delete('main'));
+const VKX_UI_HAM = ['addSlot', 'addPanel', 'addDock'];
+function vkxGhiDk(mod) { // bọc mod.ui: ghi danh sách addSlot/addPanel/addDock vào cn_dk (sau 2 giây) để lần sau bộ nạp đăng ký trước
+  let u = null;
+  try { u = mod && mod.ui; } catch (e) { /* bỏ qua */ }
+  if (!u) return mod;
+  const ds = []; let hen = false;
+  const ghi = () => { try { localStorage.setItem('mod:van_kiep_tro_ly:cn_dk', JSON.stringify(ds)); } catch (e) { /* bỏ qua */ } };
+  const bo = (ten) => function () {
+    try {
+      const loai = ten === 'addSlot' ? 'slot' : ten === 'addPanel' ? 'panel' : 'dock', o = loai === 'slot' ? arguments[1] : arguments[0];
+      if (o && o.id) { ds.push({ loai: loai, ten: loai === 'slot' ? arguments[0] : undefined, id: o.id, title: o.title }); if (!hen) { hen = true; setTimeout(ghi, 2000); } }
+    } catch (e) { /* bỏ qua */ }
+    return u[ten].apply(u, arguments);
+  };
+  const uBoc = new Proxy(u, { get: (t, k) => { if (VKX_UI_HAM.indexOf(k) >= 0 && typeof t[k] === 'function') return bo(k); const v = t[k]; return typeof v === 'function' ? v.bind(t) : v; } });
+  return new Proxy(mod, { get: (t, k) => { if (k === 'ui') return uBoc; const v = t[k]; return typeof v === 'function' ? v.bind(t) : v; } });
+}
+function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy (thân cài hoặc bản mới, bất đồng bộ); false = không có bản chờ, gọi chạy thân cài ngay
   const P = 'mod:van_kiep_tro_ly:', MK = '(window.tuTienMods ??= [])' + '.push(';
   const g = (k) => { try { return localStorage.getItem(P + k); } catch (e) { return null; } };
   const s = (k, v) => { try { localStorage.setItem(P + k, v); } catch (e) { /* bỏ qua */ } };
   const x = (k) => { try { localStorage.removeItem(P + k); } catch (e) { /* bỏ qua */ } };
-  let ver = null;
+  let ver = null, cu = null;
   try {
     window.__vkxBanCai = window.__vkxBanCai || VKX_BAN_CAI;
     window.__vkxBanTu = 'cai';
-    const code = g('cn_code'); ver = g('cn_ver');
-    if (!code || !ver) return false;
-    if (vkxSoBan(ver, VKX_BAN_CAI) <= 0) { x('cn_code'); x('cn_ver'); x('cn_thu'); return false; } // người chơi đã tự cài bản mới hơn
+    ver = g('cn_ver'); cu = g('cn_code');
+    if (!ver) { if (cu) x('cn_code'); return false; }
+    if (vkxSoBan(ver, VKX_BAN_CAI) <= 0) { x('cn_code'); x('cn_ver'); x('cn_thu'); cnDbDel().catch(() => {}); return false; } // người chơi đã tự cài bản mới hơn
     if (ver === g('cn_hong')) return false;
     const thu = parseInt(g('cn_thu') || '0', 10) || 0;
     if (thu >= 2) { s('cn_hong', ver); console.error('[tro_ly] bản tự cập nhật ' + ver + ' khởi động lỗi 2 lần, quay về bản cài'); return false; }
     s('cn_thu', String(thu + 1));
-    const i = code.indexOf(MK);
-    if (i < 0) throw new Error('thiếu điểm nạp');
-    let obj = null;
-    new Function('__vkxNap', code.slice(0, i) + '__vkxNap(' + code.slice(i + MK.length))(function (o) { obj = o; });
-    if (!obj || typeof obj.ready !== 'function') throw new Error('bản mới không có ready');
-    window.__vkxTuNap = 1; window.__vkxBanTu = 'capnhat';
-    try { obj.ready(tt, mod); } finally { window.__vkxTuNap = 0; }
-    s('cn_thu', '0');
-    return true;
-  } catch (e) {
-    console.error('[tro_ly] nạp bản tự cập nhật lỗi, dùng bản cài', e);
-    if (ver) s('cn_hong', ver);
-    window.__vkxTuNap = 0; window.__vkxBanTu = 'cai';
-    return false;
-  }
+  } catch (e) { return false; }
+  // Có bản chờ: đăng ký trước (đồng bộ, trong ready) mọi mục giao diện của lần chạy trước, mount ủy quyền; bản mới gán mount thật sau.
+  const reg = {};
+  const khoa = (l, t, i) => l + ':' + (t || '') + ':' + i;
+  const dangKy = (loai, ten, o) => {
+    const d = { that: null, cho: [], h: undefined };
+    d.mount = function (el, t2) {
+      const r = Array.prototype.slice.call(arguments, 2);
+      if (d.that) return d.that.apply(null, [el, t2].concat(r));
+      const rec = { el: el, t: t2, r: r, xong: null, chet: false };
+      d.cho.push(rec);
+      return function () { rec.chet = true; if (typeof rec.xong === 'function') { try { rec.xong(); } catch (e) { /* bỏ qua */ } } const i = d.cho.indexOf(rec); if (i >= 0) d.cho.splice(i, 1); };
+    };
+    d.gan = (fn) => {
+      d.that = fn; const ds = d.cho.splice(0);
+      ds.forEach((rec) => { if (rec.chet || rec.el.isConnected === false) return; try { const c = fn.apply(null, [rec.el, rec.t].concat(rec.r)); if (typeof c === 'function') rec.xong = c; } catch (e) { console.warn('[tro_ly] mount ủy quyền', e); } });
+    };
+    const op = Object.assign({}, o, { mount: d.mount });
+    const u = mod.ui;
+    d.h = loai === 'slot' ? u.addSlot(ten, op) : loai === 'panel' ? u.addPanel(op) : u.addDock(op);
+    reg[khoa(loai, ten, o.id)] = d;
+    return d;
+  };
+  try {
+    if (mod && mod.ui) JSON.parse(g('cn_dk') || '[]').forEach((e) => {
+      try { if (e && e.id && !reg[khoa(e.loai, e.ten, e.id)]) dangKy(e.loai, e.ten, e.title ? { id: e.id, title: e.title } : { id: e.id }); } catch (er) { console.warn('[tro_ly] đăng ký trước', er); }
+    });
+  } catch (e) { /* bỏ qua */ }
+  const uBoc = !(mod && mod.ui) ? null : new Proxy(mod.ui, { get: (t, k) => {
+    if (VKX_UI_HAM.indexOf(k) >= 0 && typeof t[k] === 'function') {
+      return function () {
+        const loai = k === 'addSlot' ? 'slot' : k === 'addPanel' ? 'panel' : 'dock', ten = loai === 'slot' ? arguments[0] : undefined, o = loai === 'slot' ? arguments[1] : arguments[0];
+        if (!o || !o.id || typeof o.mount !== 'function') return t[k].apply(t, arguments);
+        const d = reg[khoa(loai, ten, o.id)] || dangKy(loai, ten, o);
+        d.gan(o.mount);
+        return d.h;
+      };
+    }
+    const v = t[k]; return typeof v === 'function' ? v.bind(t) : v;
+  } });
+  const modBoc = !uBoc ? mod : new Proxy(mod, { get: (t, k) => { if (k === 'ui') return uBoc; const v = t[k]; return typeof v === 'function' ? v.bind(t) : v; } });
+  (async function () {
+    let hong = false;
+    try {
+      let code = cu;
+      if (!code) { const rec = await cnDbGet(); if (rec && rec.ver === ver && rec.code) code = rec.code; }
+      if (!code) { x('cn_ver'); x('cn_thu'); throw new Error('mat'); } // IDB bị dọn mất: bỏ cờ, chạy bản cài, không đánh hỏng
+      hong = true;
+      if (cu) { try { await cnDbPut({ ver: ver, code: cu, ngay: Date.now() }); x('cn_code'); } catch (e) { /* giữ cn_code */ } } // chuyển từ bản cũ lưu ở localStorage
+      const i = code.indexOf(MK);
+      if (i < 0) throw new Error('thiếu điểm nạp');
+      let obj = null;
+      new Function('__vkxNap', code.slice(0, i) + '__vkxNap(' + code.slice(i + MK.length))(function (o) { obj = o; });
+      if (!obj || typeof obj.ready !== 'function') throw new Error('bản mới không có ready');
+      window.__vkxTuNap = 1; window.__vkxBanTu = 'capnhat';
+      try { obj.ready(tt, modBoc); } finally { window.__vkxTuNap = 0; }
+      s('cn_thu', '0');
+      return;
+    } catch (e) {
+      if (hong) { console.error('[tro_ly] nạp bản tự cập nhật lỗi, dùng bản cài', e); s('cn_hong', ver); }
+      window.__vkxTuNap = 0; window.__vkxBanTu = 'cai';
+    }
+    try { chay(tt, modBoc); } catch (e) { console.error('[tro_ly] chạy bản cài lỗi', e); }
+  })();
+  return true;
 }
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.1.0-thu.5',
+  version: '8.2.0',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
   ready(tt, mod) {
-    if (!window.__vkxTuNap && vkxNapBanMoi(tt, mod)) return;
-    (function (TT, MOD) {
+    function chay(tt, mod) {
+    (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
   if (gWin.__vkxMerged) { try { gWin.__vkxMerged.open(); } catch (e) {} return; }
-  var TOOL_VER = '8.1.0-thu.5';
+  var TOOL_VER = '8.2.0';
   const VKX_TG = Object.freeze(['Minhndt3', 'Shgphuoc']);
 var MOD_CSS_EXTRA = `
 /* Nút bay nhanh và tay nắm đổi kích thước cửa sổ */
@@ -2323,7 +2414,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   })();
 
   // ═════════════ TỰ CẬP NHẬT (8.1.0-thu.3) ═════════════
-  // Kiểm version.json trên GitHub (CN_REPO); có bản mới thì tải main.js, kiểm kích thước + sha256 + cú pháp, cất vào localStorage (cn_code),
+  // Kiểm version.json trên GitHub (CN_REPO); có bản mới thì tải main.js, kiểm kích thước + sha256 + cú pháp, cất vào IndexedDB (db vkx_tro_ly),
   // chờ lúc an toàn rồi tải lại trang: bộ nạp vkxNapBanMoi (đầu file) chạy bản đó thay bản cài. Chỉ fetch + localStorage, không đụng state game.
   const CN_REPO = 'GPhuoc/van-kiep-tro-ly';
   const CN_P = 'mod:van_kiep_tro_ly:';
@@ -2380,7 +2471,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       if (code.indexOf('(window.tuTienMods ??= [])' + '.push(') < 0) throw new Error('thiếu điểm nạp');
       if (code.indexOf("version: '" + j.version + "'") < 0) throw new Error('main.js không đúng bản ' + j.version);
       new Function(code); // chỉ kiểm cú pháp, không gọi
-      if (!cnS('cn_code', code)) { cnX('cn_code'); throw new Error('Không đủ chỗ lưu, hãy tải zip ở https://github.com/' + CN_REPO); }
+      try { await cnDbPut({ ver: j.version, code: code, ngay: Date.now() }); } catch (e) { throw new Error('Trình duyệt này không cho lưu bản tải về, hãy tải zip ở https://github.com/' + CN_REPO); }
+      cnX('cn_code'); try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { /* bỏ qua */ }
       cnS('cn_ver', j.version); cnS('cn_thu', '0'); cnS('cn_vua', j.version); cnX('cn_hong');
       CN.tai = false; CN.cho = j.version; cnVeNut(); cnCho();
     } catch (e) { CN.tai = false; CN.loi = 'Cập nhật lỗi: ' + (e && e.message || e); cnVeNut(); }
@@ -2400,7 +2492,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       setTimeout(() => { try { location.reload(); } catch (e) { /* bỏ qua */ } }, 1500);
     }, 2000);
   }
-  function cnQuayVe() { ['cn_code', 'cn_ver', 'cn_thu', 'cn_vua', 'cn_hong'].forEach(cnX); try { location.reload(); } catch (e) { /* bỏ qua */ } }
+  function cnQuayVe() { ['cn_code', 'cn_ver', 'cn_thu', 'cn_vua', 'cn_hong'].forEach(cnX); cnDbDel().catch(() => {}); try { location.reload(); } catch (e) { /* bỏ qua */ } }
   function cnLap() { // hẹn lần kiểm kế tiếp theo cn_ky (đọc lại mỗi lần để đổi kỳ có hiệu lực ngay)
     clearTimeout(CN.tkm); CN.tkm = setTimeout(() => { cnKiem(false).then(cnLap, cnLap); }, cnKy() * 60000);
   }
@@ -2420,7 +2512,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       '<label>Kiểm mỗi <select id="cn-ky">' + [5, 15, 30, 60].map((n) => '<option value="' + n + '"' + (n === cnKy() ? ' selected' : '') + '>' + n + '</option>').join('') + '</select> phút</label>' +
       '<label><input type="checkbox" id="cn-tu"' + (cnG('cn_tu') === '1' ? ' checked' : '') + '> Tự cập nhật luôn khi có bản mới</label></div>' +
       '<div style="margin-top:8px"><button id="cn-kiem"' + (CN.kiem ? ' disabled' : '') + '>' + (CN.kiem ? 'Đang kiểm…' : 'Kiểm ngay') + '</button> ' +
-      (tu || cnG('cn_code') ? '<button id="cn-ve">Quay về bản đã cài</button> ' : '') +
+      (tu || cnG('cn_ver') ? '<button id="cn-ve">Quay về bản đã cài</button> ' : '') +
       '<a href="https://github.com/' + CN_REPO + '" target="_blank" rel="noopener" style="font-size:12.5px">Tải zip thủ công</a></div>' +
       '<div class="vk-mu" style="font-size:11.5px;margin-top:8px">Bản tự cập nhật lưu trong trình duyệt này; máy khác / trình duyệt khác cần cập nhật riêng.</div>';
     const q = (s) => el.querySelector(s);
@@ -15495,7 +15587,22 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.1.0 · Bản Mod', d: '23/11/2026', now: true, pts: [
+            { t: 'Phiên Bản 8.2.0 · Bản Mod', d: '24/11/2026', now: true,
+            moi: [
+                '<b>Tự cập nhật:</b> Hệ Thống → Cập nhật kiểm bản mới trên GitHub (mỗi 5/15/30/60 phút, bật tắt được). Bấm Cập nhật là xong: Tool tải bản mới, chờ lúc không trong trận/sự kiện thì tự tải lại trang. Nút Nhật Ký có chấm đỏ khi vừa lên bản. Có nút Quay về bản đã cài; bản mới lỗi thì tự quay về. Chưa kiểm.',
+                '<b>Hướng dẫn nhanh:</b> 6 bước chỉ vào phím mở, cây mục, ô Tìm mục, Tổng Quan, Auto, Hệ Thống; tự hiện lần đầu, xem lại ở Hệ Thống. Chưa kiểm.',
+                '<b>Nút ? :</b> trên thanh trên, giải thích mục đang mở. Chưa kiểm.',
+                '<b>Bảng nhân vật của game:</b> cuối khối Chỉ số có dòng Trợ Lý với nút Ngưỡng chỉ số và Đột phá. Chưa kiểm.'
+            ],
+            nang: [
+                '<b>Kế Hoạch Đi:</b> số năm tới mùa thuốc sau đọc thẳng từ game (bản game 23/11). Chưa kiểm.',
+                '<b>Nhật Ký:</b> chia Tính năng mới / Nâng cấp tính năng / Sửa lỗi.'
+            ],
+            sua: [
+                '<b>Dị Bảo:</b> Thái Hư Chu ghi đúng 7% và hồi chiêu 100 năm theo bản game 23/11 (hồi chiêu đọc từ game). Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.1.0 · Bản Mod', d: '23/11/2026', now: false, pts: [
                 '<b>Auto Đấu Giá:</b> thấy Đại hội đấu giá và đấu giá trong thế cục mọi nhóm (Lễ hội…), ghi còn/đi bao lâu, kịp hay không; không còn bế quan lặp ở chỗ có biến (sang nơi yên hoặc dừng báo); Lịch Đấu Giá Sắp Tới (15 đợt, ~% và tổng, xếp theo điểm); Đi vòng các nhà; tick Hết linh thạch; Tool nhớ danh mục ngay khi vào xem; bế quan đúng tới năm mở. Chưa kiểm.',
                 '<b>Tìm & Săn Đồ:</b> giá cần trả và "thiếu X lt"; dò trước năm tiệm bày món rồi bế quan đúng số năm; Lặp tới khi thấy. Chưa kiểm.',
                 '<b>Kiếm Linh Thạch:</b> Dọn kho nâng cấp (khoảng phẩm, loại, nút Giữ, giữ món của lộ trình/Săn Đồ/Đấu Giá/bộ đang theo); thẻ Bán ở đâu lời nhất; Chợ chọn bán kính và vùng đất. Chưa kiểm.',
@@ -16464,5 +16571,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
 
     NhatKy.init();
     })(tt, mod);
+    }
+    if (!window.__vkxTuNap && vkxNapBanMoi(tt, mod, chay)) return;
+    chay(tt, mod);
   },
 });})();
