@@ -1,21 +1,12 @@
 {
-  "version": "8.3.0",
+  "version": "8.3.1",
   "ngay": "24/11/2026",
-  "kich_thuoc": 1683700,
-  "sha256": "a7c865c1064fb94fbc668a39c7391c2580f43f38857c8c416d387797afc812b4",
-  "moi": [
-    "<b>Báo Lỗi:</b> mục mới trong Hệ Thống, gửi báo lỗi / đề xuất cải tiến / tính năng mới thẳng từ Tool, kèm tối đa 4 ảnh, Báo cáo nhanh và dữ liệu Excel. Ở Tự Kiểm Tra có nút Gửi báo lỗi này. Đã kiểm.",
-    "<b>Nút ⋯ trên điện thoại:</b> gom Cập nhật, Mục này làm gì và Báo lỗi vào một nút cho thanh trên đỡ chật. Đã kiểm."
-  ],
+  "kich_thuoc": 1691029,
+  "sha256": "57b7d2fbb66401ac9e5edc56eb9caa076796be84ba1b3b1632784bf6ab3907b9",
   "nang": [
-    "<b>Bản Mệnh Gợi Ý:</b> theo bản game 24/11, văn Thiêu / Độc / Huyết tính giá theo sức (Độc cấp 1 ~×0,92, Dị văn cấp 5 ~×0,77), Hàn / Tuyệt Hồi / Trói đọc thẳng từ game; văn Hiệu ứng và Hệ ghi rõ áp cả chiêu khống chế. Chưa kiểm.",
-    "<b>Phím tắt:</b> máy không có bàn phím thì thẻ Phím tắt và Hướng dẫn nhanh báo phím tắt chỉ dùng trên máy tính. Đã kiểm.",
-    "<b>Thẻ Cập nhật:</b> nhật ký bản mới in đậm đúng, chia Tính năng mới / Nâng cấp tính năng / Sửa lỗi, nút đúng kiểu Tool. Đã kiểm."
-  ],
-  "sua": [
-    "<b>Điện thoại:</b> hết lỗi Nhận diện mod khác ở Tự Kiểm Tra; tên Tool và số bản không còn bị ép mất; nhóm Hệ Thống có icon. Đã kiểm.",
-    "<b>Thanh nhóm dưới:</b> không còn tự nhảy sang Hệ Thống hay đơ sau khi hiện thông báo có bản mới. Đã kiểm.",
-    "<b>Chữ nháy:</b> tiêu đề không còn nháy chữ thường khi chuyển mục. Đã kiểm.",
-    "<b>Bản đồ:</b> dấu nơi đặc biệt đủ 4 cạnh hình thoi, mũi tên đường ghim khép kín. Đã kiểm."
+    "<b>Hướng dẫn nhanh:</b> tour 10 bước, chữ kĩ hơn, thêm bước Cập nhật (chỉ đúng nút ⟳, trên điện thoại là nút ⋯), Nhật ký, Thu gọn và Báo lỗi. Ai đã xem tour cũ sẽ thấy lại một lần. Chưa kiểm.",
+    "<b>Hướng dẫn & Hỏi đáp:</b> thẻ trong Hệ Thống thêm 9 câu hỏi đáp gập/mở: cập nhật thế nào, chấm cam/chấm đỏ là gì, thu gọn và mở lại, Tool có khóa Tỉ thí không, gặp lỗi làm gì... Nút ? có thêm Mẹo chung và nút Hỏi đáp. Chưa kiểm.",
+    "<b>Báo bản mới:</b> có bản mới thì hiện băng \"Có bản mới · Cập nhật ngay · Để sau\" ngay dưới thanh trên, thông báo nổi ghi rõ bấm vào để cập nhật; lên bản xong có thông báo \"Đã lên bản X · bấm xem có gì mới\". Chưa kiểm.",
+    "<b>Tìm mục:</b> gõ \"cap nhat\" hoặc \"huong dan\" ra Hệ Thống. Chưa kiểm."
   ]
 }

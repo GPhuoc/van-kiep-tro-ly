@@ -1,10 +1,10 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.3.0
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.3.1
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.3.0';
+const VKX_BAN_CAI = '8.3.1';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
@@ -150,7 +150,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.3.0',
+  version: '8.3.1',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
@@ -159,7 +159,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
   if (gWin.__vkxMerged) { try { gWin.__vkxMerged.open(); } catch (e) {} return; }
-  var TOOL_VER = '8.3.0';
+  var TOOL_VER = '8.3.1';
   const VKX_TG = Object.freeze(['Minhndt3', 'Shgphuoc']);
 var MOD_CSS_EXTRA = `
 #vkx-toast:not(.on){pointer-events:none!important}
@@ -2195,7 +2195,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     lhs: 'Mở khóa Luân Hồi', lht: 'Thành tựu và phần thưởng', lhd: 'Dự tính điểm Luân Hồi và món mua thêm được', tkb: 'Thiên Kiêu Bảng và thứ hạng', nmn: 'Nhân Mạch: người quen và quan hệ',
     abb: 'Tự động buôn bán đường dài', asy: 'Tự động săn yêu', akm: 'Tự động xếp kinh mạch và hướng build', arr: 'Tự động reroll tư chất', atd: 'Tìm đồ ở đâu, danh sách đồ cần săn', adg: 'Chờ nhà đấu giá có món cần, xem danh mục các nhà đấu giá',
     aus: 'Bật/tắt Auto Sự Kiện, tùy chọn giao chiến, sự kiện bỏ qua, nhật ký',
-    hts: 'Tự kiểm tra, mod khác đang chạy, kho dữ liệu game, xuất Excel',
+    hts: 'Cập nhật bản mới, hướng dẫn và hỏi đáp, tự kiểm tra, mod khác đang chạy, kho dữ liệu game, xuất Excel',
     bl: 'Gửi báo lỗi, đề xuất cải tiến hoặc tính năng mới kèm ảnh và báo cáo nhanh'
   };
   const GICON = { nv: '🧘', cd: '⚡', kl: '💰', tc: '🔎', nl: '🐉', lh: '♾️', nm: '👥', au: '🤖', ht: '⚙️' };
@@ -2329,13 +2329,19 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   // Tour 6 bước chỉ vào từng phần của cửa sổ Tool (lớp phủ #vkx-hdn, khung sáng + hộp chữ), tự mở một lần đầu (vkx_hdn_xong),
   // xem lại ở Hệ Thống; nút "?" ở thanh trên giải thích mục đang mở. Chỉ vẽ giao diện, không đụng state game.
   const HDN = { on: false, mode: '', i: 0, tab0: null, daMo: false };
+  const HDN_BAN = 2; // số phiên bản tour: tăng khi tour đổi nhiều thì người đã xem bản cũ thấy lại một lần
+  const hdnXong = () => { try { return (parseInt(localStorage.getItem('vkx_hdn_xong') || '0', 10) || 0) >= HDN_BAN; } catch (e) { return true; } };
   const HDN_BUOC = [
-    { sel: ['.vkx-ttl'], tieu: 'Chào bạn', chu: () => 'Trợ Lý chỉ đọc dữ liệu và điều khiển bằng lệnh game, không sửa luật nên không khóa Tỉ thí. ' + (!vkxCoBanPhim() ? 'Mở/đóng bằng nút nổi Trợ Lý (phím tắt ' + hkTen(HK) + ' chỉ dùng trên máy tính có bàn phím).' : HK.on ? 'Mở/đóng bằng ' + hkTen(HK) + '.' : 'Phím tắt đang tắt, dùng nút nổi để mở.') },
-    { sel: ['#vkx-tree', '#vkx-groups'], tieu: 'Các nhóm mục', chu: () => 'Mục chia theo nhóm: Nhân Vật, Kiếm Lời, Tra Cứu, Tự Động... Bấm một mục để mở. Trên điện thoại thì vuốt thanh ngang để thấy thêm.' },
-    { sel: ['#vkx-q'], tieu: 'Tìm mục', chu: () => 'Gõ tên mục (không dấu cũng được), bấm Enter để nhảy vào mục đầu tiên.' },
-    { sel: ['#vkx-body'], tab: 'tq', tieu: 'Tổng Quan', chu: () => 'Tóm tắt kiếp hiện tại: tình trạng, cảnh báo, cơ duyên sắp hết hạn. Mở Tool là xem được ngay.' },
-    { sel: ['#vkx-body'], tab: 'akm', tieu: 'Nhóm Tự Động', chu: () => 'Các Auto (xếp kinh mạch, buôn bán, săn yêu, đấu giá...) mặc định TẮT. Khi chạy có thanh trạng thái và nút Dừng.' },
-    { sel: ['#vkx-body'], tab: 'hts', tieu: 'Hệ Thống', chu: () => 'Tự kiểm tra khi gặp lỗi, đổi phím tắt, xem lại hướng dẫn này. Nút ? ở thanh trên giải thích mục đang mở.' }
+    { sel: ['.vkx-ttl'], tieu: 'Chào bạn', chu: () => 'Trợ Lý chỉ đọc dữ liệu và điều khiển bằng lệnh game, không sửa luật nên không khóa Tỉ thí. ' + (!vkxCoBanPhim() ? 'Mở/đóng bằng nút nổi Trợ Lý (phím tắt ' + hkTen(HK) + ' chỉ dùng trên máy tính có bàn phím). ' : HK.on ? 'Mở/đóng bằng ' + hkTen(HK) + ' hoặc nút nổi Trợ Lý. ' : 'Phím tắt đang tắt, dùng nút nổi để mở. ') + 'Số bản đang chạy nằm ngay cạnh tên, ở thanh trên cùng.' },
+    { sel: ['#vkx-cn', '#vkx-more'], tieu: 'Cập nhật bản mới', chu: () => 'Tool tự kiểm bản mới trên mạng. Có bản mới thì nút ⟳ (trên điện thoại là nút ⋯) hiện chấm cam và có thông báo nổi. Bấm vào, chọn Cập nhật: Tool tự tải và tự tải lại trang khi xong trận/sự kiện, không cần tải zip, không cần cài lại. Muốn khỏi phải bấm thì bật "Tự cập nhật luôn" ở Hệ Thống → Cập nhật. Máy hoặc trình duyệt khác phải cập nhật riêng.' },
+    { sel: ['#vkx-tree', '#vkx-groups'], tieu: 'Các nhóm mục', chu: () => 'Mục chia theo nhóm: Nhân Vật, Kiếm Lời, Tra Cứu, Tự Động... Bấm một nhóm rồi chọn mục bên trong. Trên điện thoại thì vuốt thanh ngang ở dưới để thấy thêm nhóm.' },
+    { sel: ['#vkx-q'], tieu: 'Tìm mục', chu: () => 'Gõ tên mục hoặc việc muốn làm (không dấu cũng được, ví dụ "cap nhat", "dot pha"), bấm Enter để nhảy vào mục đầu tiên.' },
+    { sel: ['#vkx-body'], tab: 'tq', tieu: 'Tổng Quan', chu: () => 'Tóm tắt kiếp hiện tại: tình trạng, cảnh báo, cơ duyên sắp hết hạn. Mở Tool là xem được ngay, không cần bấm gì thêm.' },
+    { sel: ['#vkx-body'], tab: 'akm', tieu: 'Nhóm Tự Động', chu: () => 'Các Auto (xếp kinh mạch, buôn bán, săn yêu, đấu giá...) mặc định TẮT, bạn tự bật từng cái. Khi chạy có thanh trạng thái và nút Dừng để tắt bất cứ lúc nào.' },
+    { sel: ['#vkx-body'], tab: 'hts', tieu: 'Hệ Thống', chu: () => 'Chỗ của Tool: Cập nhật, Tự kiểm tra khi gặp lỗi, đổi phím tắt, xem lại hướng dẫn và đọc mục Hỏi đáp. Nút ? ở thanh trên (điện thoại: trong nút ⋯) giải thích mục đang mở.' },
+    { sel: ['#vkx-body'], tab: 'bl', tieu: 'Báo lỗi', chu: () => 'Gặp lỗi thì vào Hệ Thống → Báo Lỗi (hoặc nút ⋯ → Báo lỗi trên điện thoại): viết mô tả, thêm ảnh chụp rồi gửi. Nhớ cập nhật bản mới trước khi báo, vì lỗi đó có thể đã được sửa.' },
+    { sel: ['#vkx-log'], tieu: 'Nhật ký cập nhật', chu: () => 'Nút 📜. Chấm đỏ nghĩa là Tool vừa lên bản mới; bấm để xem bản này có gì mới, sửa gì.' },
+    { sel: ['#vkx-close'], tieu: 'Thu gọn Tool', chu: () => 'Nút ✕ chỉ thu gọn Tool chứ không tắt; các Auto đang chạy vẫn chạy tiếp. Mở lại bằng nút nổi Trợ Lý' + (vkxCoBanPhim() && HK.on ? ' hoặc phím ' + hkTen(HK) : '') + '.' }
   ];
   const HDN_CSS = '#vkx-hdn{position:fixed;inset:0;z-index:2147483002;pointer-events:none;display:none}#vkx-hdn.on{display:block}' +
     '.vkx-hdn-fr{position:fixed;border:2px solid var(--acc,#5eead4);border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,.55);pointer-events:none}' +
@@ -2354,7 +2360,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     try { const cs = getComputedStyle(UI.win); ['--bg2', '--bg3', '--txt', '--acc', '--line', '--ink'].forEach((v) => { const x = cs.getPropertyValue(v); if (x && x.trim()) ov.style.setProperty(v, x.trim()); }); } catch (e) { /* dùng màu mặc định */ }
     return ov;
   }
-  function hdnTim(sels) {
+  function hdnTim(sels) { // thử lần lượt từng selector, bỏ qua phần tử đang ẩn (vd #vkx-cn ẩn trên điện thoại thì lấy #vkx-more)
     for (const s of sels) { const el = UI.win.querySelector(s); if (!el) continue; const r = el.getBoundingClientRect(); if (r.width > 0 && r.height > 0) return r; }
     return null;
   }
@@ -2390,7 +2396,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     const was = HDN.mode; HDN.on = false; HDN.mode = ''; hdnTok++;
     const ov = document.getElementById('vkx-hdn'); if (ov) ov.classList.remove('on');
     if (was === 'tour') {
-      if (luu) { try { localStorage.setItem('vkx_hdn_xong', '1'); } catch (e) { /* bỏ qua */ } }
+      if (luu) { try { localStorage.setItem('vkx_hdn_xong', String(HDN_BAN)); } catch (e) { /* bỏ qua */ } }
       if (HDN.tab0 && S.tab !== HDN.tab0) goTab(HDN.tab0);
     }
   }
@@ -2404,7 +2410,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     const ov = hdnOv(), fr = ov.querySelector('.vkx-hdn-fr'), bx = ov.querySelector('.vkx-hdn-bx');
     HDN.on = true; HDN.mode = 'help'; fr.style.display = 'none';
     bx.innerHTML = '<b>' + esc(TNAME[S.tab] || 'Mục này') + '</b><div>' + esc(TAB_DESC[S.tab] || 'Chưa có mô tả.') + '</div>' +
-      '<div class="vkx-hdn-bt"><button class="vkx-hdn-b pri" data-a="tour">Xem hướng dẫn nhanh</button><button class="vkx-hdn-b" data-a="dong">Đóng</button></div>';
+      '<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--line,#233832);font-size:12.5px;opacity:.9"><b style="font-size:13px;margin-bottom:2px">Mẹo chung</b>' +
+      '• Có bản mới: nút ⟳ (điện thoại: ⋯) hiện chấm cam, bấm vào → Cập nhật.<br>• 📜 có chấm đỏ: vừa lên bản, bấm xem có gì mới.<br>• ✕ chỉ thu gọn, Tool và Auto vẫn chạy.<br>• Gặp lỗi: Hệ Thống → Báo Lỗi (điện thoại: ⋯ → Báo lỗi).</div>' +
+      '<div class="vkx-hdn-bt"><button class="vkx-hdn-b pri" data-a="tour">Xem hướng dẫn nhanh</button><button class="vkx-hdn-b" data-a="hoidap">Hỏi đáp</button><button class="vkx-hdn-b" data-a="dong">Đóng</button></div>';
     ov.classList.add('on');
     const hd = UI.win.querySelector('#vkx-hd'), r = hd ? hd.getBoundingClientRect() : { left: 8, right: window.innerWidth - 8, bottom: 40, top: 0, width: 0 };
     hdnDat(bx, { left: r.right - bx.offsetWidth, top: r.top, bottom: r.bottom, width: bx.offsetWidth });
@@ -2415,6 +2423,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       const a = e.target && e.target.dataset && e.target.dataset.a; if (!a) return;
       if (a === 'toi') hdnHien(HDN.i + 1, 1); else if (a === 'lui') hdnHien(HDN.i - 1, -1);
       else if (a === 'bo') hdnDong(true); else if (a === 'dong') hdnDong(false); else if (a === 'tour') hdnMo();
+      else if (a === 'hoidap') { hdnDong(false); try { if (!UI.isOpen()) UI.open(); UI.setSection('tl'); goTab('hts'); setTimeout(() => { try { const c = document.getElementById('vk-hdn'); if (c && c.scrollIntoView) c.scrollIntoView({ block: 'start' }); } catch (e) { /* bỏ qua */ } }, 80); } catch (e) { /* bỏ qua */ } }
     });
     window.addEventListener('keydown', (e) => {
       if (!HDN.on || e.key !== 'Escape') return;
@@ -2431,8 +2440,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     // Lần đầu mở Tool (chưa có vkx_hdn_xong): tự chạy tour sau ~400ms.
     const tuMo = () => {
       try {
-        if (HDN.on || HDN.daMo || !UI.isOpen() || localStorage.getItem('vkx_hdn_xong')) return;
-        HDN.daMo = true; setTimeout(() => { try { if (!HDN.on && UI.isOpen() && !localStorage.getItem('vkx_hdn_xong')) hdnMo(); } catch (e) { /* bỏ qua */ } }, 400);
+        if (HDN.on || HDN.daMo || !UI.isOpen() || hdnXong()) return;
+        HDN.daMo = true; setTimeout(() => { try { if (!HDN.on && UI.isOpen() && !hdnXong()) hdnMo(); } catch (e) { /* bỏ qua */ } }, 400);
       } catch (e) { /* localStorage hỏng: không tự mở */ }
     };
     try { new MutationObserver(tuMo).observe(UI.win, { attributes: true, attributeFilter: ['class'] }); } catch (e) { /* bỏ qua */ }
@@ -2464,6 +2473,24 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     const vua = cnG('cn_vua');
     cnCham(UI.win.querySelector('#vkx-log'), '', !!vua && vua === TOOL_VER);
     if (CN.el && CN.el.isConnected) cnPaint(CN.el);
+    try { cnBang(); } catch (e) { /* bỏ qua */ }
+  }
+  // Băng nhắc bản mới ngay dưới thanh trên: hiện khi có bản mới hơn và chưa tải/chờ; "Để sau" ẩn tới khi có bản còn mới hơn (cn_bo trong localStorage).
+  function cnBang() {
+    let bg = UI.win.querySelector('#vkx-cnbang');
+    const j = CN.moi, bo = cnG('cn_bo');
+    const hien = !!j && !CN.tai && !CN.cho && (!bo || vkxSoBan(j.version, bo) > 0);
+    if (!hien) { if (bg) bg.style.display = 'none'; return; }
+    if (!bg) {
+      bg = document.createElement('div'); bg.id = 'vkx-cnbang';
+      bg.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:0 0 auto;padding:5px 12px;font-size:12.5px;background:rgba(245,158,11,.16);border-bottom:1px solid rgba(245,158,11,.5)';
+      const hd = UI.win.querySelector('#vkx-hd'); if (hd && hd.parentNode) hd.parentNode.insertBefore(bg, hd.nextSibling); else UI.win.appendChild(bg);
+    }
+    bg.innerHTML = '<span style="flex:1 1 auto;min-width:0">Có bản mới <b>' + esc(j.version) + '</b></span><button class="vk-btn" style="margin:0;padding:3px 10px;font-size:12px">Cập nhật ngay</button><button class="vk-btn sec" style="margin:0;padding:3px 10px;font-size:12px">Để sau</button>';
+    const bs = bg.querySelectorAll('button');
+    bs[0].onclick = () => { cnMoThe(); };
+    bs[1].onclick = () => { cnS('cn_bo', j.version); bg.style.display = 'none'; };
+    bg.style.display = 'flex';
   }
   function cnMoThe() { try { if (!UI.isOpen()) UI.open(); UI.setSection('tl'); goTab('hts'); setTimeout(() => { try { const c = document.getElementById('vk-cn'); if (c && c.scrollIntoView) c.scrollIntoView({ block: 'start' }); } catch (e) { /* bỏ qua */ } }, 80); } catch (e) { /* bỏ qua */ } }
   async function cnKiem(tay) {
@@ -2478,7 +2505,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       CN.luc = Date.now(); CN.loi = '';
       if (vkxSoBan(j.version, TOOL_VER) > 0 && j.version !== cnG('cn_hong') && j.version !== cnG('cn_ver')) {
         CN.moi = j;
-        if (CN.bao !== j.version) { CN.bao = j.version; try { UI.notify('Trợ Lý có bản ' + j.version + ' — bấm để xem', 7000, cnMoThe); } catch (e) { /* bỏ qua */ } }
+        if (CN.bao !== j.version) { CN.bao = j.version; try { UI.notify('Trợ Lý có bản ' + j.version + ' mới. Bấm vào đây để cập nhật (không cần tải lại mod)', 12000, cnMoThe); } catch (e) { /* bỏ qua */ } }
         if (cnG('cn_tu') === '1') cnCapNhat();
       } else if (!CN.tai && !CN.cho) CN.moi = null;
     } catch (e) { if (tay) CN.loi = 'Không kiểm được: ' + (e && e.message || e); }
@@ -2581,6 +2608,13 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       const nk = UI.win.querySelector('#vkx-sec-nk');
       if (nk) new MutationObserver(() => { if (nk.classList.contains('on') && cnG('cn_vua')) { cnX('cn_vua'); cnVeNut(); } }).observe(nk, { attributes: true, attributeFilter: ['class'] });
       cnVeNut();
+      try { // vừa lên bản (cn_vua === TOOL_VER): báo một lần mỗi bản, bấm mở Nhật Ký
+        const vua = cnG('cn_vua');
+        if (vua && vua === TOOL_VER && cnG('cn_vua_bao') !== TOOL_VER) {
+          cnS('cn_vua_bao', TOOL_VER);
+          setTimeout(() => { try { UI.notify('Đã lên bản ' + TOOL_VER + ' · bấm xem có gì mới', 10000, () => { try { UI.win.querySelector('#vkx-log').click(); } catch (e) { /* bỏ qua */ } }); } catch (e) { /* bỏ qua */ } }, 2500);
+        }
+      } catch (e) { /* bỏ qua */ }
       setTimeout(() => { cnKiem(false).then(cnLap, cnLap); }, 10000);
     } catch (e) { console.error('[cn] init', e); }
   })();
@@ -6490,7 +6524,19 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     body.innerHTML = '<div class="vk-card" id="vk-hdn"></div><div class="vk-card" id="vk-cn"></div><div class="vk-card" id="vk-aw"></div><div class="vk-card" id="vk-modx"></div><div class="vk-card" id="vk-ds"></div><div class="vk-card" id="vk-xt"></div><div class="vk-card" id="vk-hk"></div>';
     try {
       const hc = body.querySelector('#vk-hdn');
-      hc.innerHTML = '<h3>Hướng dẫn nhanh</h3><div class="vk-mu" style="font-size:12.5px;margin-bottom:8px">Tour 6 bước chỉ từng phần của Tool. Nút ? ở thanh trên giải thích mục đang mở.</div><button class="vk-btn sec" id="hdn-xem">Xem lại hướng dẫn</button>';
+      const QA = [
+        ['Làm sao biết có bản mới, cập nhật thế nào?', 'Có bản mới thì nút ⟳ (điện thoại: nút ⋯) hiện chấm cam và có thông báo nổi. Bấm vào → Cập nhật, Tool tự tải và tự tải lại trang khi xong trận/sự kiện. Bật "Tự cập nhật luôn" để khỏi bấm. Không cần tải zip; zip thủ công chỉ dùng khi tự cập nhật lỗi. Bản mới bị lỗi thì bấm "Quay về bản đã cài".'],
+        ['Bản mình đang dùng là bản mấy?', 'Số bản nằm cạnh tên Tool ở thanh trên cùng; thẻ Cập nhật bên dưới cũng ghi "Bản đang chạy".'],
+        ['Chấm đỏ, chấm cam là gì?', 'Chấm cam trên ⟳ / ⋯: có bản mới để cập nhật. Chấm đỏ trên 📜: Tool vừa lên bản, bấm để xem có gì mới.'],
+        ['Thu gọn và mở lại Tool?', 'Nút ✕ chỉ thu gọn, không tắt, Auto vẫn chạy. Mở lại bằng nút nổi Trợ Lý hoặc phím tắt (đổi ở thẻ Phím tắt bên dưới; chỉ dùng trên máy có bàn phím).'],
+        ['Tool có khóa Tỉ thí, có gian lận không?', 'Không. Tool chỉ đọc dữ liệu và điều khiển bằng lệnh game như người chơi bấm tay, không sửa luật game nên không khóa Tỉ thí.'],
+        ['Auto nằm đâu, tắt thế nào?', 'Nhóm Tự Động. Mọi Auto mặc định TẮT; khi chạy có thanh trạng thái và nút Dừng.'],
+        ['Trên điện thoại các nút nằm đâu?', 'Nút ⋯ ở thanh trên gom Cập nhật, Mục này làm gì, Báo lỗi. Thanh nhóm ở dưới, vuốt ngang để thấy thêm nhóm.'],
+        ['Gặp lỗi thì làm gì?', 'Cập nhật bản mới trước. Vẫn lỗi: Hệ Thống → Tự kiểm tra xem Tool báo gì, rồi vào Báo Lỗi gửi kèm ảnh chụp.'],
+        ['Cập nhật rồi mà không thấy đổi?', 'Tool chờ hết trận/sự kiện mới tải lại trang; có thể tải lại trang (F5) cho nhanh. Máy hoặc trình duyệt khác cập nhật riêng.']
+      ];
+      hc.innerHTML = '<h3>Hướng dẫn & Hỏi đáp</h3><div class="vk-mu" style="font-size:12.5px;margin-bottom:8px">Tour ' + HDN_BUOC.length + ' bước chỉ từng phần của Tool. Nút ? ở thanh trên giải thích mục đang mở.</div><button class="vk-btn sec" id="hdn-xem">Xem lại hướng dẫn</button>' +
+        '<div style="margin-top:10px;font-size:12.5px;line-height:1.55">' + QA.map((q) => '<details style="margin:4px 0"><summary style="cursor:pointer;font-weight:600">' + esc(q[0]) + '</summary><div class="vk-mu" style="margin:3px 0 4px 14px">' + esc(q[1]) + '</div></details>').join('') + '</div>';
       hc.querySelector('#hdn-xem').onclick = () => hdnMo();
     } catch (e) { console.error('[hdn] mount', e); }
     try { cnPaint(body.querySelector('#vk-cn')); } catch (e) { console.error('[cn] mount', e); }
@@ -15773,7 +15819,15 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.3.0 · Bản Mod', d: '24/11/2026', now: true,
+            { t: 'Phiên Bản 8.3.1 · Bản Mod', d: '24/11/2026', now: true,
+            nang: [
+                '<b>Hướng dẫn nhanh:</b> tour 10 bước, chữ kĩ hơn, thêm bước Cập nhật (chỉ đúng nút ⟳, trên điện thoại là nút ⋯), Nhật ký, Thu gọn và Báo lỗi. Ai đã xem tour cũ sẽ thấy lại một lần. Chưa kiểm.',
+                '<b>Hướng dẫn & Hỏi đáp:</b> thẻ trong Hệ Thống thêm 9 câu hỏi đáp gập/mở: cập nhật thế nào, chấm cam/chấm đỏ là gì, thu gọn và mở lại, Tool có khóa Tỉ thí không, gặp lỗi làm gì... Nút ? có thêm Mẹo chung và nút Hỏi đáp. Chưa kiểm.',
+                '<b>Báo bản mới:</b> có bản mới thì hiện băng "Có bản mới · Cập nhật ngay · Để sau" ngay dưới thanh trên, thông báo nổi ghi rõ bấm vào để cập nhật; lên bản xong có thông báo "Đã lên bản X · bấm xem có gì mới". Chưa kiểm.',
+                '<b>Tìm mục:</b> gõ "cap nhat" hoặc "huong dan" ra Hệ Thống. Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.3.0 · Bản Mod', d: '24/11/2026', now: false,
             moi: [
                 '<b>Báo Lỗi:</b> mục mới trong Hệ Thống, gửi báo lỗi / đề xuất cải tiến / tính năng mới thẳng từ Tool, kèm tối đa 4 ảnh, Báo cáo nhanh và dữ liệu Excel. Ở Tự Kiểm Tra có nút Gửi báo lỗi này. Đã kiểm.',
                 '<b>Nút ⋯ trên điện thoại:</b> gom Cập nhật, Mục này làm gì và Báo lỗi vào một nút cho thanh trên đỡ chật. Đã kiểm.'

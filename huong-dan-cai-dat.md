@@ -1,4 +1,11 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.3.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.3.1)
+
+## Bản 8.3.1 · Hướng dẫn kĩ hơn
+### Nâng cấp tính năng
+- **Hướng dẫn nhanh:** tour 10 bước, chữ kĩ hơn, thêm bước Cập nhật (chỉ đúng nút ⟳, trên điện thoại là nút ⋯), Nhật ký, Thu gọn và Báo lỗi. Ai đã xem tour cũ sẽ thấy lại một lần. Chưa kiểm.
+- **Hướng dẫn & Hỏi đáp:** thẻ trong Hệ Thống thêm 9 câu hỏi đáp gập/mở: cập nhật thế nào, chấm cam/chấm đỏ là gì, thu gọn và mở lại, Tool có khóa Tỉ thí không, gặp lỗi làm gì... Nút ? có thêm Mẹo chung và nút Hỏi đáp. Chưa kiểm.
+- **Báo bản mới:** có bản mới thì hiện băng "Có bản mới · Cập nhật ngay · Để sau" ngay dưới thanh trên, thông báo nổi ghi rõ bấm vào để cập nhật; lên bản xong có thông báo "Đã lên bản X · bấm xem có gì mới". Chưa kiểm.
+- **Tìm mục:** gõ "cap nhat" hoặc "huong dan" ra Hệ Thống. Chưa kiểm.
 
 ## Bản 8.3.0 · Báo Lỗi, sửa lỗi điện thoại
 ### Tính năng mới
