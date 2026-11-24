@@ -1,4 +1,20 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.2.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.3.0)
+
+## Bản 8.3.0 · Báo Lỗi, sửa lỗi điện thoại
+### Tính năng mới
+- **Báo Lỗi:** mục mới trong Hệ Thống, gửi báo lỗi / đề xuất cải tiến / tính năng mới thẳng từ Tool, kèm tối đa 4 ảnh, Báo cáo nhanh và dữ liệu Excel. Ở Tự Kiểm Tra có nút Gửi báo lỗi này. Đã kiểm.
+- **Nút ⋯ trên điện thoại:** gom Cập nhật, Mục này làm gì và Báo lỗi vào một nút cho thanh trên đỡ chật. Đã kiểm.
+
+### Nâng cấp tính năng
+- **Bản Mệnh Gợi Ý:** theo bản game 24/11, văn Thiêu / Độc / Huyết tính giá theo sức (Độc cấp 1 ~×0,92, Dị văn cấp 5 ~×0,77), Hàn / Tuyệt Hồi / Trói đọc thẳng từ game; văn Hiệu ứng và Hệ ghi rõ áp cả chiêu khống chế. Chưa kiểm.
+- **Phím tắt:** máy không có bàn phím thì thẻ Phím tắt và Hướng dẫn nhanh báo phím tắt chỉ dùng trên máy tính. Đã kiểm.
+- **Thẻ Cập nhật:** nhật ký bản mới in đậm đúng, chia Tính năng mới / Nâng cấp tính năng / Sửa lỗi, nút đúng kiểu Tool. Đã kiểm.
+
+### Sửa lỗi
+- **Điện thoại:** hết lỗi Nhận diện mod khác ở Tự Kiểm Tra; tên Tool và số bản không còn bị ép mất; nhóm Hệ Thống có icon. Đã kiểm.
+- **Thanh nhóm dưới:** không còn tự nhảy sang Hệ Thống hay đơ sau khi hiện thông báo có bản mới. Đã kiểm.
+- **Chữ nháy:** tiêu đề không còn nháy chữ thường khi chuyển mục. Đã kiểm.
+- **Bản đồ:** dấu nơi đặc biệt đủ 4 cạnh hình thoi, mũi tên đường ghim khép kín. Đã kiểm.
 
 ## Bản 8.2.0 · Tự cập nhật, hướng dẫn nhanh
 ### Tính năng mới

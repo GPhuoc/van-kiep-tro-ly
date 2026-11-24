@@ -1,19 +1,21 @@
 {
-  "version": "8.2.0",
+  "version": "8.3.0",
   "ngay": "24/11/2026",
-  "kich_thuoc": 1663607,
-  "sha256": "d3e940f0b95ef98c14b70d75d821071c56518c9125e7523da24d853bb466ef68",
+  "kich_thuoc": 1683700,
+  "sha256": "a7c865c1064fb94fbc668a39c7391c2580f43f38857c8c416d387797afc812b4",
   "moi": [
-    "<b>Tự cập nhật:</b> Hệ Thống → Cập nhật kiểm bản mới trên GitHub (mỗi 5/15/30/60 phút, bật tắt được). Bấm Cập nhật là xong: Tool tải bản mới, chờ lúc không trong trận/sự kiện thì tự tải lại trang. Nút Nhật Ký có chấm đỏ khi vừa lên bản. Có nút Quay về bản đã cài; bản mới lỗi thì tự quay về. Chưa kiểm.",
-    "<b>Hướng dẫn nhanh:</b> 6 bước chỉ vào phím mở, cây mục, ô Tìm mục, Tổng Quan, Auto, Hệ Thống; tự hiện lần đầu, xem lại ở Hệ Thống. Chưa kiểm.",
-    "<b>Nút ? :</b> trên thanh trên, giải thích mục đang mở. Chưa kiểm.",
-    "<b>Bảng nhân vật của game:</b> cuối khối Chỉ số có dòng Trợ Lý với nút Ngưỡng chỉ số và Đột phá. Chưa kiểm."
+    "<b>Báo Lỗi:</b> mục mới trong Hệ Thống, gửi báo lỗi / đề xuất cải tiến / tính năng mới thẳng từ Tool, kèm tối đa 4 ảnh, Báo cáo nhanh và dữ liệu Excel. Ở Tự Kiểm Tra có nút Gửi báo lỗi này. Đã kiểm.",
+    "<b>Nút ⋯ trên điện thoại:</b> gom Cập nhật, Mục này làm gì và Báo lỗi vào một nút cho thanh trên đỡ chật. Đã kiểm."
   ],
   "nang": [
-    "<b>Kế Hoạch Đi:</b> số năm tới mùa thuốc sau đọc thẳng từ game (bản game 23/11). Chưa kiểm.",
-    "<b>Nhật Ký:</b> chia Tính năng mới / Nâng cấp tính năng / Sửa lỗi."
+    "<b>Bản Mệnh Gợi Ý:</b> theo bản game 24/11, văn Thiêu / Độc / Huyết tính giá theo sức (Độc cấp 1 ~×0,92, Dị văn cấp 5 ~×0,77), Hàn / Tuyệt Hồi / Trói đọc thẳng từ game; văn Hiệu ứng và Hệ ghi rõ áp cả chiêu khống chế. Chưa kiểm.",
+    "<b>Phím tắt:</b> máy không có bàn phím thì thẻ Phím tắt và Hướng dẫn nhanh báo phím tắt chỉ dùng trên máy tính. Đã kiểm.",
+    "<b>Thẻ Cập nhật:</b> nhật ký bản mới in đậm đúng, chia Tính năng mới / Nâng cấp tính năng / Sửa lỗi, nút đúng kiểu Tool. Đã kiểm."
   ],
   "sua": [
-    "<b>Dị Bảo:</b> Thái Hư Chu ghi đúng 7% và hồi chiêu 100 năm theo bản game 23/11 (hồi chiêu đọc từ game). Chưa kiểm."
+    "<b>Điện thoại:</b> hết lỗi Nhận diện mod khác ở Tự Kiểm Tra; tên Tool và số bản không còn bị ép mất; nhóm Hệ Thống có icon. Đã kiểm.",
+    "<b>Thanh nhóm dưới:</b> không còn tự nhảy sang Hệ Thống hay đơ sau khi hiện thông báo có bản mới. Đã kiểm.",
+    "<b>Chữ nháy:</b> tiêu đề không còn nháy chữ thường khi chuyển mục. Đã kiểm.",
+    "<b>Bản đồ:</b> dấu nơi đặc biệt đủ 4 cạnh hình thoi, mũi tên đường ghim khép kín. Đã kiểm."
   ]
 }

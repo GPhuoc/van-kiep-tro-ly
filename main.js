@@ -1,10 +1,10 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.2.0
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.3.0
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.2.0';
+const VKX_BAN_CAI = '8.3.0';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
@@ -36,6 +36,16 @@ const cnDbGet = () => cnDbTx('readonly', (s) => s.get('main'));
 const cnDbPut = (v) => cnDbTx('readwrite', (s) => s.put(v, 'main'));
 const cnDbDel = () => cnDbTx('readwrite', (s) => s.delete('main'));
 const VKX_UI_HAM = ['addSlot', 'addPanel', 'addDock'];
+function vkxBoc(goc, de) { // đối tượng con kế thừa `goc` (không dùng Proxy: trên điện thoại mod bị khóa nên Proxy ném TypeError); de: { tên: giá trị đè }
+  const w = Object.create(goc);
+  for (const k of Reflect.ownKeys(goc)) {
+    if (k in de) continue;
+    let v; try { v = goc[k]; } catch (e) { continue; }
+    if (typeof v === 'function') { try { Object.defineProperty(w, k, { value: v.bind(goc), configurable: true, writable: true }); } catch (e) { /* bỏ qua */ } }
+  }
+  Object.keys(de).forEach((k) => { Object.defineProperty(w, k, { value: de[k], configurable: true, writable: true }); });
+  return w;
+}
 function vkxGhiDk(mod) { // bọc mod.ui: ghi danh sách addSlot/addPanel/addDock vào cn_dk (sau 2 giây) để lần sau bộ nạp đăng ký trước
   let u = null;
   try { u = mod && mod.ui; } catch (e) { /* bỏ qua */ }
@@ -49,8 +59,9 @@ function vkxGhiDk(mod) { // bọc mod.ui: ghi danh sách addSlot/addPanel/addDoc
     } catch (e) { /* bỏ qua */ }
     return u[ten].apply(u, arguments);
   };
-  const uBoc = new Proxy(u, { get: (t, k) => { if (VKX_UI_HAM.indexOf(k) >= 0 && typeof t[k] === 'function') return bo(k); const v = t[k]; return typeof v === 'function' ? v.bind(t) : v; } });
-  return new Proxy(mod, { get: (t, k) => { if (k === 'ui') return uBoc; const v = t[k]; return typeof v === 'function' ? v.bind(t) : v; } });
+  const de = {};
+  VKX_UI_HAM.forEach((k) => { if (typeof u[k] === 'function') de[k] = bo(k); });
+  return vkxBoc(mod, { ui: vkxBoc(u, de) });
 }
 function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy (thân cài hoặc bản mới, bất đồng bộ); false = không có bản chờ, gọi chạy thân cài ngay
   const P = 'mod:van_kiep_tro_ly:', MK = '(window.tuTienMods ??= [])' + '.push(';
@@ -96,19 +107,21 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
       try { if (e && e.id && !reg[khoa(e.loai, e.ten, e.id)]) dangKy(e.loai, e.ten, e.title ? { id: e.id, title: e.title } : { id: e.id }); } catch (er) { console.warn('[tro_ly] đăng ký trước', er); }
     });
   } catch (e) { /* bỏ qua */ }
-  const uBoc = !(mod && mod.ui) ? null : new Proxy(mod.ui, { get: (t, k) => {
-    if (VKX_UI_HAM.indexOf(k) >= 0 && typeof t[k] === 'function') {
-      return function () {
+  const uBoc = !(mod && mod.ui) ? null : (function () {
+    const t = mod.ui, de = {};
+    VKX_UI_HAM.forEach((k) => {
+      if (typeof t[k] !== 'function') return;
+      de[k] = function () {
         const loai = k === 'addSlot' ? 'slot' : k === 'addPanel' ? 'panel' : 'dock', ten = loai === 'slot' ? arguments[0] : undefined, o = loai === 'slot' ? arguments[1] : arguments[0];
         if (!o || !o.id || typeof o.mount !== 'function') return t[k].apply(t, arguments);
         const d = reg[khoa(loai, ten, o.id)] || dangKy(loai, ten, o);
         d.gan(o.mount);
         return d.h;
       };
-    }
-    const v = t[k]; return typeof v === 'function' ? v.bind(t) : v;
-  } });
-  const modBoc = !uBoc ? mod : new Proxy(mod, { get: (t, k) => { if (k === 'ui') return uBoc; const v = t[k]; return typeof v === 'function' ? v.bind(t) : v; } });
+    });
+    return vkxBoc(t, de);
+  })();
+  const modBoc = !uBoc ? mod : vkxBoc(mod, { ui: uBoc });
   (async function () {
     let hong = false;
     try {
@@ -137,7 +150,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.2.0',
+  version: '8.3.0',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
@@ -146,9 +159,10 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
   if (gWin.__vkxMerged) { try { gWin.__vkxMerged.open(); } catch (e) {} return; }
-  var TOOL_VER = '8.2.0';
+  var TOOL_VER = '8.3.0';
   const VKX_TG = Object.freeze(['Minhndt3', 'Shgphuoc']);
 var MOD_CSS_EXTRA = `
+#vkx-toast:not(.on){pointer-events:none!important}
 /* Nút bay nhanh và tay nắm đổi kích thước cửa sổ */
 #vkx-win { --vkx-quick-tele:#4ade80; }
 #vkx-win[data-vkx-theme="tuTieu"] { --vkx-quick-tele:#c4b5fd; }
@@ -256,7 +270,7 @@ table.vk-t tr:nth-child(even) td { background:color-mix(in srgb,var(--bg3) 60%,t
 #vkx-groups button::before { font-size:18px; line-height:1; }
 #vkx-groups button.on { background:var(--hi); color:var(--acc); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 45%,transparent); }
 #vkx-groups button[data-g="nv"]::before{content:"🧘"} #vkx-groups button[data-g="cd"]::before{content:"⚡"} #vkx-groups button[data-g="kl"]::before{content:"💰"} #vkx-groups button[data-g="tc"]::before{content:"🔎"}
-#vkx-groups button[data-g="nl"]::before{content:"🐉"} #vkx-groups button[data-g="lh"]::before{content:"♾️"} #vkx-groups button[data-g="nm"]::before{content:"👥"} #vkx-groups button[data-g="au"]::before{content:"🤖"}
+#vkx-groups button[data-g="nl"]::before{content:"🐉"} #vkx-groups button[data-g="lh"]::before{content:"♾️"} #vkx-groups button[data-g="nm"]::before{content:"👥"} #vkx-groups button[data-g="au"]::before{content:"🤖"} #vkx-groups button[data-g="ht"]::before{content:"⚙️"}
 #vk-rf { border-radius:50%; width:36px; height:36px; padding:0 !important; }
 .pl { margin-top:10px; padding-top:8px; border-top:1px dashed var(--line); }
 .pl-o { margin:6px 0; padding:7px 10px; border-radius:11px; background:var(--bg3); border:1px solid var(--line); font-size:13px; }
@@ -460,7 +474,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         (function () {
             var RE = /(^|[\s(\[«“\/])(\p{L})(?!\d)(?![^\s]*(?:_|\.\p{L}))/gu;
             function tc(t) { return t.replace(RE, function (m, a, b) { return a + b.toUpperCase(); }); }
-            var SEL = 'h3,h4,summary,button,th,label,option,small,.vkx-ttl span,#vkx-toast';
+            var SEL = '#vkx-cht,h3,h4,summary,button,th,label,option,small,.vkx-ttl span,#vkx-toast';
             var busy = false, timer = null, pending = new Set();
             function fixNode(root) {
                 if (!root || !root.isConnected) return;
@@ -490,7 +504,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
                     if (m.type === 'characterData') pending.add(m.target);
                     else for (var j = 0; j < m.addedNodes.length; j++) { var nd = m.addedNodes[j]; if (nd.nodeName === 'OPTION' && nd.parentNode && nd.parentNode.nodeName === 'DATALIST') continue; if (nd.nodeName === 'DATALIST') continue; pending.add(nd); }
                 }
-                if (pending.size && !timer) timer = setTimeout(function () { timer = null; pass(); }, 40);
+                if (pending.size) { pass(); try { mo.takeRecords(); } catch (e) {} } // chạy đồng bộ trong callback (trước khi trình duyệt vẽ) để không nháy chữ thường
             }
             var mo = new MutationObserver(later);
             mo.observe(win, { childList: true, subtree: true, characterData: true });
@@ -513,13 +527,15 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
 
         /* ---- toast ---- */
         var toastTimer = null;
+        function toastReset() { toastEl.onclick = null; toastEl.style.pointerEvents = ''; toastEl.style.cursor = ''; }
         function notify(msg, ms, onClick) {
+            toastReset();
             toastEl.textContent = msg;
-            toastEl.onclick = onClick ? function () { toastEl.classList.remove('on'); try { onClick(); } catch (e) { /* bỏ qua */ } } : null;
+            toastEl.onclick = onClick ? function () { toastEl.classList.remove('on'); toastReset(); try { onClick(); } catch (e) { /* bỏ qua */ } } : null;
             toastEl.style.pointerEvents = onClick ? 'auto' : ''; toastEl.style.cursor = onClick ? 'pointer' : '';
             toastEl.classList.add('on');
             if (toastTimer) clearTimeout(toastTimer);
-            toastTimer = setTimeout(function () { toastEl.classList.remove('on'); }, ms > 0 ? ms : 2800);
+            toastTimer = setTimeout(function () { toastEl.classList.remove('on'); toastReset(); }, ms > 0 ? ms : 2800);
         }
 
         /* ---- mở / đóng / chuyển phần ---- */
@@ -931,6 +947,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   ];
   // Tính năng phụ: thiếu thì chỉ tính năng đó tắt, phần còn lại vẫn chạy.
   const CORE_OPTIONAL = [
+    ['dotShapeCost', 'balance/cultivation', 'dotShapeCost', 'giá văn độc/thiêu/huyết (Bản Mệnh)'],
     ['pillFitsRealm', 'progress/dot_pha', 'pillFitsRealm', 'đan hợp cảnh giới đột phá'], ['pillMaxRealm', 'progress/dot_pha', 'pillMaxRealm', 'cảnh giới tối đa của đan'],
     ['facilitiesAt', 'encounter/director', 'facilitiesAt', 'tên tiện ích ở một nơi'], ['placeActivities', 'encounter/director', 'placeActivities', 'mã tiện ích ở một nơi'], ['giaBan', 'world/phong_tho', 'giaBan', 'giá bán'],
     ['tinhDiemKiep', 'progress/luan_hoi', 'tinhDiemKiep', 'điểm luân hồi'], ['xepBang', 'character/nhan_vat', 'xepBang', 'bảng Thiên Kiêu'],
@@ -1057,6 +1074,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     live('DIFFICULTY_LABELS', 'balance/difficulty', 'DIFFICULTY_LABELS');
     live('DIFFICULTY_GROUP', 'balance/difficulty', 'DIFFICULTY_GROUP'); live('DIFFICULTY_GROUP_LABELS', 'balance/difficulty', 'DIFFICULTY_GROUP_LABELS'); // giải thích Đạo Lộ theo nhóm (tùy chọn)
     live('DIFFICULTY_MODES', 'balance/difficulty', 'DIFFICULTY_MODES'); live('DIFFICULTY_KNOB_INFO', 'balance/difficulty', 'DIFFICULTY_KNOB_INFO'); live('DIFFICULTY_POINTS', 'balance/difficulty', 'DIFFICULTY_POINTS'); // thu.36: giải thích Đạo Lộ ở Auto Reroll
+    live('SKILL_SHAPE_COST', 'balance/cultivation', 'SKILL_SHAPE_COST'); live('NATAL_EFFECT_UY_MULT', 'balance/natal', 'NATAL_EFFECT_UY_MULT'); live('NATAL_STATUS_TURNS', 'balance/natal', 'NATAL_STATUS_TURNS'); // 8.2.0-thu.6: giá văn Thiêu/Độc/Huyết (bmPN), tùy chọn
     live('CAP_BAC', 'balance/sect', 'CAP_BAC'); // tên cấp bậc tông môn: Tạp dịch … Trưởng lão
     if (!Array.isArray(K.CAP_BAC) || !K.CAP_BAC.length) throw new Error('Game vừa cập nhật nên Tool chưa nhận ra: balance/sect.CAP_BAC (tên cấp bậc tông môn). Hãy chụp màn hình này gửi Claude để sửa Tool.');
     const numArr = (a, n) => Array.isArray(a) && (n === undefined || a.length === n) && a.every(Number.isFinite);
@@ -2147,10 +2165,10 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   TABS.push(['nlw', 'Tổng Quan'], ['nlm', 'Của Tôi'], ['nls', 'Sinh Vật'], ['nlv', 'Vật Phẩm'], ['nlc', 'Cơ Duyên']);
   TABS.push(['abb', 'Auto Buôn Bán'], ['asy', 'Auto Săn Yêu'], ['akm', 'Auto Build'], ['arr', 'Auto Reroll Tư Chất'], ['atd', 'Tìm & Săn Đồ'], ['adg', 'Auto Đấu Giá']);
   TABS.push(['tbm', 'Bộ Món'], ['tkh', 'Kế Hoạch Đi'], ['lpk', 'Lưu Phái'], ['tcn', 'Thể Chất'], ['syt', 'Săn Yêu'], ['hth', 'Hái Thuốc']);
-  TABS.push(['hts', 'Hệ Thống'], ['aus', 'Auto Sự Kiện']);
+  TABS.push(['hts', 'Hệ Thống'], ['aus', 'Auto Sự Kiện'], ['bl', 'Báo Lỗi']);
   TABS.push(['lhs', 'Mở Khóa'], ['lht', 'Thành Tựu'], ['lhd', 'Dự Tính Điểm'], ['tkb', 'Thiên Kiêu Bảng'], ['nmn', 'Nhân Mạch']);
   const TNAME = Object.fromEntries(TABS);
-  const GROUPS = [['nv', 'Nhân Vật', ['tq', 'tcn', 'tkc', 'bm']], ['cd', 'Đột Phá', ['dp', 'tr', 'lpk']], ['kl', 'Kiếm Lời', ['tien', 'cho', 'ld', 'cph', 'lbo', 'tph', 'tt']], ['tc', 'Tra Cứu', ['tcv', 'tcq', 'tcd', 'tce', 'tbm', 'san', 'bd', 'tkh', 'syt', 'hth', 'db']], ['nl', 'Ngự Linh', ['nlw', 'nlm', 'nls', 'nlv', 'nlc']], ['lh', 'Luân Hồi', ['lhs', 'lht', 'lhd']], ['nm', 'Nhân Mạch', ['tkb', 'nmn']], ['au', 'Tự Động', ['abb', 'asy', 'akm', 'arr', 'atd', 'adg', 'aus']], ['ht', 'Hệ Thống', ['hts']]];
+  const GROUPS = [['nv', 'Nhân Vật', ['tq', 'tcn', 'tkc', 'bm']], ['cd', 'Đột Phá', ['dp', 'tr', 'lpk']], ['kl', 'Kiếm Lời', ['tien', 'cho', 'ld', 'cph', 'lbo', 'tph', 'tt']], ['tc', 'Tra Cứu', ['tcv', 'tcq', 'tcd', 'tce', 'tbm', 'san', 'bd', 'tkh', 'syt', 'hth', 'db']], ['nl', 'Ngự Linh', ['nlw', 'nlm', 'nls', 'nlv', 'nlc']], ['lh', 'Luân Hồi', ['lhs', 'lht', 'lhd']], ['nm', 'Nhân Mạch', ['tkb', 'nmn']], ['au', 'Tự Động', ['abb', 'asy', 'akm', 'arr', 'atd', 'adg', 'aus']], ['ht', 'Hệ Thống', ['hts', 'bl']]];
   const grpOf = (k) => GROUPS.find((g) => g[2].includes(k)) || GROUPS[0];
   S.tab = 'tq';
   // Dựng lại thanh tab nhưng giữ nguyên vị trí vuốt (trước đây mỗi lần bấm tab là thanh nhảy về đầu) và cuộn nút đang chọn vào vùng nhìn thấy.
@@ -2177,7 +2195,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     lhs: 'Mở khóa Luân Hồi', lht: 'Thành tựu và phần thưởng', lhd: 'Dự tính điểm Luân Hồi và món mua thêm được', tkb: 'Thiên Kiêu Bảng và thứ hạng', nmn: 'Nhân Mạch: người quen và quan hệ',
     abb: 'Tự động buôn bán đường dài', asy: 'Tự động săn yêu', akm: 'Tự động xếp kinh mạch và hướng build', arr: 'Tự động reroll tư chất', atd: 'Tìm đồ ở đâu, danh sách đồ cần săn', adg: 'Chờ nhà đấu giá có món cần, xem danh mục các nhà đấu giá',
     aus: 'Bật/tắt Auto Sự Kiện, tùy chọn giao chiến, sự kiện bỏ qua, nhật ký',
-    hts: 'Tự kiểm tra, mod khác đang chạy, kho dữ liệu game, xuất Excel'
+    hts: 'Tự kiểm tra, mod khác đang chạy, kho dữ liệu game, xuất Excel',
+    bl: 'Gửi báo lỗi, đề xuất cải tiến hoặc tính năng mới kèm ảnh và báo cáo nhanh'
   };
   const GICON = { nv: '🧘', cd: '⚡', kl: '💰', tc: '🔎', nl: '🐉', lh: '♾️', nm: '👥', au: '🤖', ht: '⚙️' };
   const qFold = (x) => String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
@@ -2225,6 +2244,10 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
 
   // 7.17.4-thu.42: phím mở/đóng tùy chọn (vkx_hotkey). Mặc định Alt+T (Alt+V trùng mod Trợ lý Vạn Kiếp). Esc đóng và phím 1..9 đổi nhóm là tùy chọn riêng.
   // Esc không đóng khi đang gõ trong ô nhập (Esc trong ô tìm mục chỉ xóa ô). Bắt ở pha capture vì cửa sổ Tool chặn nổi bọt phím.
+  let hkBP = false; // đã thấy keydown thật = có bàn phím
+  try { hkBP = !!(window.matchMedia && window.matchMedia('(any-pointer: fine)').matches); } catch (e) { /* bỏ qua */ }
+  const vkxCoBanPhim = () => hkBP;
+  if (!hkBP) { const bat = (e) => { if (e && e.isTrusted === false) return; hkBP = true; window.removeEventListener('keydown', bat, true); try { hkHint(); const h = document.querySelector('#vk-hk'); if (h && h.isConnected) hkMount(h); } catch (er) { /* bỏ qua */ } }; window.addEventListener('keydown', bat, true); }
   const HK_DEF = { on: true, alt: true, ctrl: false, shift: false, code: 'KeyT', esc: true, nums: true };
   let HK = Object.assign({}, HK_DEF), hkRec = null;
   try { const j = JSON.parse(localStorage.getItem('vkx_hotkey') || 'null'); if (j && typeof j === 'object') HK = Object.assign({}, HK_DEF, j); } catch (e) { /* dùng mặc định */ }
@@ -2264,7 +2287,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   function hkMount(host) {
     if (!host) return;
     const paint = () => {
+      const kbp = vkxCoBanPhim();
       host.innerHTML = `<h3>Phím tắt</h3>
+        ${kbp ? '' : '<div class="vk-mu" style="font-size:12.5px;margin-bottom:6px">Phím tắt chỉ dùng được khi có bàn phím (máy tính). Trên điện thoại mở Tool bằng nút nổi.</div>'}
         <div class="vk-row"><span>Phím mở / đóng Tool</span><b>${HK.on ? esc(hkTen(HK)) : 'đang tắt'}</b></div>
         <label style="display:block;margin:6px 0"><input type="checkbox" id="hk-on"${HK.on ? ' checked' : ''}> Bật phím mở/đóng Tool</label>
         <label style="display:block;margin:6px 0"><input type="checkbox" id="hk-esc"${HK.esc ? ' checked' : ''}> Esc đóng Tool (không khi đang gõ)</label>
@@ -2273,6 +2298,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         <div id="hk-out" class="vk-mu" style="font-size:12.5px;margin-top:6px"></div>
         <div class="vk-mu" style="font-size:12px;margin-top:6px">Trước đây phím mở/đóng là Alt+V, trùng với mod Trợ lý Vạn Kiếp nên mặc định đổi sang Alt+T. Muốn dùng lại Alt+V: bấm Đổi phím rồi bấm Alt+V. Tắt ô đầu nếu không muốn Tool bắt phím nào (vẫn mở được bằng nút nổi).</div>`;
       const $ = (id) => host.querySelector(id), out = $('#hk-out');
+      if (!kbp) { host.querySelectorAll('input,button').forEach((el) => { el.disabled = true; }); host.style.opacity = '.7'; } else host.style.opacity = '';
       $('#hk-on').onchange = (ev) => { HK.on = ev.target.checked; hkLuu(); paint(); };
       $('#hk-esc').onchange = (ev) => { HK.esc = ev.target.checked; hkLuu(); };
       $('#hk-nums').onchange = (ev) => { HK.nums = ev.target.checked; hkLuu(); };
@@ -2304,7 +2330,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   // xem lại ở Hệ Thống; nút "?" ở thanh trên giải thích mục đang mở. Chỉ vẽ giao diện, không đụng state game.
   const HDN = { on: false, mode: '', i: 0, tab0: null, daMo: false };
   const HDN_BUOC = [
-    { sel: ['.vkx-ttl'], tieu: 'Chào bạn', chu: () => 'Trợ Lý chỉ đọc dữ liệu và điều khiển bằng lệnh game, không sửa luật nên không khóa Tỉ thí. ' + (HK.on ? 'Mở/đóng bằng ' + hkTen(HK) + '.' : 'Phím tắt đang tắt, dùng nút nổi để mở.') },
+    { sel: ['.vkx-ttl'], tieu: 'Chào bạn', chu: () => 'Trợ Lý chỉ đọc dữ liệu và điều khiển bằng lệnh game, không sửa luật nên không khóa Tỉ thí. ' + (!vkxCoBanPhim() ? 'Mở/đóng bằng nút nổi Trợ Lý (phím tắt ' + hkTen(HK) + ' chỉ dùng trên máy tính có bàn phím).' : HK.on ? 'Mở/đóng bằng ' + hkTen(HK) + '.' : 'Phím tắt đang tắt, dùng nút nổi để mở.') },
     { sel: ['#vkx-tree', '#vkx-groups'], tieu: 'Các nhóm mục', chu: () => 'Mục chia theo nhóm: Nhân Vật, Kiếm Lời, Tra Cứu, Tự Động... Bấm một mục để mở. Trên điện thoại thì vuốt thanh ngang để thấy thêm.' },
     { sel: ['#vkx-q'], tieu: 'Tìm mục', chu: () => 'Gõ tên mục (không dấu cũng được), bấm Enter để nhảy vào mục đầu tiên.' },
     { sel: ['#vkx-body'], tab: 'tq', tieu: 'Tổng Quan', chu: () => 'Tóm tắt kiếp hiện tại: tình trạng, cảnh báo, cơ duyên sắp hết hạn. Mở Tool là xem được ngay.' },
@@ -2434,6 +2460,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   }
   function cnVeNut() {
     cnCham(UI.win.querySelector('#vkx-cn'), 'cam', !!CN.moi);
+    cnCham(UI.win.querySelector('#vkx-more'), 'cam', !!CN.moi);
     const vua = cnG('cn_vua');
     cnCham(UI.win.querySelector('#vkx-log'), '', !!vua && vua === TOOL_VER);
     if (CN.el && CN.el.isConnected) cnPaint(CN.el);
@@ -2499,20 +2526,20 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   function cnPaint(el) {
     CN.el = el;
     const j = CN.moi, tu = window.__vkxBanTu === 'capnhat';
-    const nhom = (t, a) => (Array.isArray(a) && a.length ? '<div style="margin-top:6px"><b>' + t + '</b><ul style="margin:3px 0 0 18px;padding:0">' + a.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul></div>' : '');
+    const nhom = (t, a) => (Array.isArray(a) && a.length ? '<div style="margin-top:6px"><b>' + t + '</b><ul style="margin:3px 0 0 18px;padding:0">' + a.map((x) => '<li>' + esc(x).replace(/&lt;(\/?)b&gt;/g, '<$1b>') + '</li>').join('') + '</ul></div>' : '');
     el.innerHTML = '<h3>Cập nhật</h3>' +
       '<div class="vk-mu" style="font-size:12.5px;line-height:1.55">Bản đang chạy: <b>' + esc(TOOL_VER) + '</b> (' + (tu ? 'bản tự cập nhật' : 'bản cài') + ') · Bản cài: ' + esc(cnBanCai()) +
       '<br>Bản mới nhất trên GitHub: ' + (CN.luc ? '<b>' + esc(j ? j.version : 'đã là bản mới nhất') + '</b> (kiểm lúc ' + cnGio(CN.luc) + ')' : 'chưa kiểm') + '</div>' +
       (CN.cho ? '<div class="vk-ok" style="margin:8px 0;font-size:12.5px">Đã tải bản ' + esc(CN.cho) + ', sẽ tải lại trang khi xong trận/sự kiện.</div>' : '') +
       (CN.tai ? '<div class="vk-mu" style="margin:8px 0;font-size:12.5px">Đang tải bản mới…</div>' : '') +
       (CN.loi ? '<div class="vk-bad" style="margin:8px 0;font-size:12.5px">' + esc(CN.loi) + '</div>' : '') +
-      (j && !CN.cho ? '<div style="margin:8px 0;font-size:12.5px"><b>Bản ' + esc(j.version) + (j.ngay ? ' · ' + esc(j.ngay) : '') + '</b>' + nhom('Mới', j.moi) + nhom('Nâng cấp', j.nang) + nhom('Sửa', j.sua) + '</div><button class="nut-chinh" id="cn-cap"' + (CN.tai ? ' disabled' : '') + '>Cập nhật</button> ' : '') +
+      (j && !CN.cho ? '<div style="margin:8px 0;font-size:12.5px"><b>Bản ' + esc(j.version) + (j.ngay ? ' · ' + esc(j.ngay) : '') + '</b>' + nhom('Tính năng mới', j.moi) + nhom('Nâng cấp tính năng', j.nang) + nhom('Sửa lỗi', j.sua) + '</div><button class="vk-btn" id="cn-cap"' + (CN.tai ? ' disabled' : '') + '>Cập nhật</button> ' : '') +
       '<div style="margin-top:8px;display:flex;flex-direction:column;gap:5px;font-size:12.5px">' +
       '<label><input type="checkbox" id="cn-bat"' + (cnG('cn_bat') === '0' ? '' : ' checked') + '> Kiểm tra bản mới</label>' +
       '<label>Kiểm mỗi <select id="cn-ky">' + [5, 15, 30, 60].map((n) => '<option value="' + n + '"' + (n === cnKy() ? ' selected' : '') + '>' + n + '</option>').join('') + '</select> phút</label>' +
       '<label><input type="checkbox" id="cn-tu"' + (cnG('cn_tu') === '1' ? ' checked' : '') + '> Tự cập nhật luôn khi có bản mới</label></div>' +
-      '<div style="margin-top:8px"><button id="cn-kiem"' + (CN.kiem ? ' disabled' : '') + '>' + (CN.kiem ? 'Đang kiểm…' : 'Kiểm ngay') + '</button> ' +
-      (tu || cnG('cn_ver') ? '<button id="cn-ve">Quay về bản đã cài</button> ' : '') +
+      '<div style="margin-top:8px"><button class="vk-btn sec" id="cn-kiem"' + (CN.kiem ? ' disabled' : '') + '>' + (CN.kiem ? 'Đang kiểm…' : 'Kiểm ngay') + '</button> ' +
+      (tu || cnG('cn_ver') ? '<button class="vk-btn sec" id="cn-ve">Quay về bản đã cài</button> ' : '') +
       '<a href="https://github.com/' + CN_REPO + '" target="_blank" rel="noopener" style="font-size:12.5px">Tải zip thủ công</a></div>' +
       '<div class="vk-mu" style="font-size:11.5px;margin-top:8px">Bản tự cập nhật lưu trong trình duyệt này; máy khác / trình duyệt khác cần cập nhật riêng.</div>';
     const q = (s) => el.querySelector(s);
@@ -2530,6 +2557,26 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         const bt = document.createElement('button'); bt.className = 'vkx-ib'; bt.id = 'vkx-cn'; bt.title = 'Cập nhật Trợ Lý'; bt.setAttribute('aria-label', 'Cập nhật Trợ Lý'); bt.textContent = '⟳';
         bt.onclick = (e) => { e.stopPropagation(); cnMoThe(); };
         const hp = UI.win.querySelector('#vkx-help'); lg.parentNode.insertBefore(bt, hp || lg);
+      }
+      // Điện thoại / cửa sổ hẹp: gom ⟳ và ? vào nút ⋯ cho thanh trên đỡ chật (máy tính vẫn thấy từng nút).
+      if (lg && lg.parentNode && !UI.win.querySelector('#vkx-more')) {
+        const stM = document.createElement('style'); stM.id = 'vkx-more-css';
+        stM.textContent = '#vkx-win .vkx-hd{gap:4px}#vkx-win:not(.vkx-wide) .vkx-ttl{flex:1 1 0;min-width:0}#vkx-win .vkx-ver{white-space:nowrap;flex:0 0 auto}'
+          + '#vkx-win:not(.vkx-wide) #vkx-cn,#vkx-win:not(.vkx-wide) #vkx-help{display:none}#vkx-win.vkx-wide #vkx-more,#vkx-win.vkx-wide #vkx-mnu{display:none!important}'
+          + '#vkx-mnu{display:none;position:absolute;top:56px;right:10px;z-index:70;min-width:190px;padding:6px;border-radius:12px;background:var(--bg2,#111b18);border:1px solid var(--line,#233832);box-shadow:0 10px 30px rgba(0,0,0,.45)}'
+          + '#vkx-mnu.on{display:block}#vkx-mnu button{display:block;width:100%;text-align:left;border:0;background:none;color:var(--txt,#e7f1ec);font-size:14px;padding:11px 12px;border-radius:9px;cursor:pointer;position:relative}#vkx-mnu button:hover{background:var(--hi,#16231f)}';
+        const ost = document.getElementById('vkx-more-css'); if (ost) ost.remove(); document.head.appendChild(stM);
+        const mb = document.createElement('button'); mb.className = 'vkx-ib'; mb.id = 'vkx-more'; mb.title = 'Thêm'; mb.setAttribute('aria-label', 'Thêm'); mb.textContent = '⋯';
+        const mnu = document.createElement('div'); mnu.id = 'vkx-mnu';
+        [['⟳  Cập nhật', '#vkx-cn'], ['?  Mục này làm gì', '#vkx-help'], ['🐞  Báo lỗi', '']].forEach((m) => {
+          const b = document.createElement('button'); b.textContent = m[0];
+          b.onclick = (e) => { e.stopPropagation(); mnu.classList.remove('on'); if (!m[1]) { blMo(); return; } const o = UI.win.querySelector(m[1]); if (o) o.click(); };
+          mnu.appendChild(b);
+        });
+        mb.onclick = (e) => { e.stopPropagation(); mnu.classList.toggle('on'); };
+        lg.parentNode.insertBefore(mb, lg);
+        UI.win.appendChild(mnu);
+        document.addEventListener('click', (e) => { if (mnu.classList.contains('on') && !mnu.contains(e.target) && e.target !== mb) mnu.classList.remove('on'); }, true);
       }
       const nk = UI.win.querySelector('#vkx-sec-nk');
       if (nk) new MutationObserver(() => { if (nk.classList.contains('on') && cnG('cn_vua')) { cnX('cn_vua'); cnVeNut(); } }).observe(nk, { attributes: true, attributeFilter: ['class'] });
@@ -2627,7 +2674,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       if (!G().state.run) { body.innerHTML = `<div class="vk-card">Chưa có kiếp nào đang chơi. Vào game (tạo hoặc nạp kiếp) rồi bấm <b>Làm mới</b>.</div>`; return; }
       S.abort = false; if (S.core && S.core.sync) S.core.sync();
       if (S.tab !== 'tce' && !(S.skx && S.skx.src === C()) && !S.skxP) setTimeout(() => { try { if (G().state.run) skIndexLo(); } catch (e) { /* bỏ qua */ } }, 1500); // thu.34: dựng ngầm chỉ mục sự kiện
-      ({ tq: () => { tabTongQuan(); tongQuanExtra(); }, dp: tabDotPha2, tr: tabTran, tkc: tabTKC, bm: tabBanMenh, cho: tabCho, ld: tabLuyenDan, cph: tabCheePhu, lbo: tabLuyenBao, tph: tabTranPhap, tien: tabTien, bd: tabBanDo, tt: tabTreoThuong, san: tabSan, tcv: tabVatPham, tcq: tabQuaiVat, tcd: tabDiaDanh, db: tabDiBao, tce: tabSuKien, nlw: tabNLW, nlm: tabNLM, nls: tabNLS, nlv: tabNLV, nlc: tabNLC, lhd: tabDuTinhDiem, tkb: tabThienKieu, nmn: tabNhanMach, abb: tabAutoBuon, asy: tabAutoSan, akm: tabAutoKm, arr: tabAutoReroll, atd: tabTimSanDo, adg: tabAutoDauGia, tbm: tabBoMon, tkh: tabKeHoachDi, lpk: tabLuuPhai, tcn: tabTheChat, syt: tabSanYeu, hth: tabHaiThuoc, hts: tabHeThong, aus: tabAutoSuKien })[S.tab]();
+      ({ tq: () => { tabTongQuan(); tongQuanExtra(); }, dp: tabDotPha2, tr: tabTran, tkc: tabTKC, bm: tabBanMenh, cho: tabCho, ld: tabLuyenDan, cph: tabCheePhu, lbo: tabLuyenBao, tph: tabTranPhap, tien: tabTien, bd: tabBanDo, tt: tabTreoThuong, san: tabSan, tcv: tabVatPham, tcq: tabQuaiVat, tcd: tabDiaDanh, db: tabDiBao, tce: tabSuKien, nlw: tabNLW, nlm: tabNLM, nls: tabNLS, nlv: tabNLV, nlc: tabNLC, lhd: tabDuTinhDiem, tkb: tabThienKieu, nmn: tabNhanMach, abb: tabAutoBuon, asy: tabAutoSan, akm: tabAutoKm, arr: tabAutoReroll, atd: tabTimSanDo, adg: tabAutoDauGia, tbm: tabBoMon, tkh: tabKeHoachDi, lpk: tabLuuPhai, tcn: tabTheChat, syt: tabSanYeu, hth: tabHaiThuoc, hts: tabHeThong, aus: tabAutoSuKien, bl: tabBaoLoi })[S.tab]();
       timChup(S.tab);
     } catch (e) {
       console.error(e); body.innerHTML = errBox(e) + '<button class="vk-btn sec" id="vk-retry">↻ Thử Lại</button><div class="vk-card" id="vk-ds" style="margin-top:10px"></div>';
@@ -4622,7 +4669,18 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   const BM_TANG = ['Tầng 1', 'Tầng 2', 'Tầng 3', 'Viên Mãn'];
   const BM_NHOM = { strike: 'Công', guard: 'Thủ', heal: 'Hồi', effect: 'Hiệu Ứng', form: 'Dạng', element: 'Hệ', inner: 'Nội Tại' };
   const BM_NHOM_TOIDA = { effect: 2, form: 1, element: 1 };
-  const BM_PN = 0.85; // uy chiêu nhân thêm cho mỗi văn hiệu ứng
+  // Uy chiêu nhân thêm của văn hiệu ứng (game 2026-11-24): Hàn / Tuyệt Hồi / Trói = NATAL_EFFECT_UY_MULT (0,85); Thiêu / Độc / Huyết = dotShapeCost(tỉ lệ, ratio, lượt)
+  // = 1 / (1 + dotWeight × tỉ lệ × ratio × lượt × dotMult). Tỉ lệ = effect_chance theo cấp (không chặn 100%), lượt = NATAL_STATUS_TURNS (2).
+  // ratio và dotWeight game không công bố trong tai-lieu: dự phòng 0,5 và 0,27 (tích 0,135) chỉnh cho khớp nhật ký game (Độc cấp 1 ≈ ×0,92; Dị văn cấp 5 ≈ ×0,77).
+  const BM_DOT = { w: 0.27, ratio: 0.5, mult: 1.3, turns: 2 };
+  function bmPN(id, chance) {
+    const K = S.core || {};
+    if (id !== 'van.thieu' && id !== 'van.doc' && id !== 'van.huyet') { const u = K.NATAL_EFFECT_UY_MULT; return Number.isFinite(u) ? u : 0.85; }
+    const sc = K.SKILL_SHAPE_COST || {}, num = (x, d) => (Number.isFinite(x) ? x : d);
+    const turns = num(K.NATAL_STATUS_TURNS, BM_DOT.turns), ratio = BM_DOT.ratio;
+    try { if (typeof K.dotShapeCost === 'function') { const x = K.dotShapeCost(chance, ratio, turns); if (Number.isFinite(x) && x > 0) return x; } } catch (e) { /* tự tính */ }
+    return 1 / (1 + num(sc.dotWeight, BM_DOT.w) * chance * ratio * turns * num(sc.dotMult, BM_DOT.mult));
+  }
   const bmD = () => Object.assign({}, BM_DEF, (S.core && S.core.bm) || {});
   const bmV = () => Object.assign({}, BM_RUNE_VAL, (S.core && S.core.bmRune) || {});
   const bmP = (x) => `${Math.round(x * 1000) / 10}%`.replace('.', ',');
@@ -4651,12 +4709,12 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       { id: 'van.hut_huyet', name: 'Hút Huyết', g: 'heal', atk: true, d: (l, m) => `Hút ${bmP(v('hutmau', l, m))} sát thương chiêu hóa khí huyết` },
       { id: 'van.tu_linh', name: 'Tụ Linh', g: 'heal', d: (l, m) => `Linh lực mỗi lượt +${bmP(v('tulinh', l, m))}` },
       // Xác suất gây hiệu ứng của văn hiệu ứng bị chặn ở 100% (game dùng Math.min(1, …)).
-      ...eff.map(([id, name, lb]) => ({ id, name, g: 'effect', atk: true, d: (l, m) => `${bmP(Math.min(1, v('effect_chance', l, m)))} gây ${lb}, uy chiêu ${bmX(BM_PN)}` })),
-      { id: 'van.troi', name: 'Trói', g: 'effect', atk: true, d: (l, m) => `${bmP(v('troi', l, m))} trói địch ${v('troi_turns', l, m)} lượt, uy chiêu ${bmX(BM_PN)}` },
+      ...eff.map(([id, name, lb]) => ({ id, name, g: 'effect', atk: true, kc: true, d: (l, m) => `${bmP(Math.min(1, v('effect_chance', l, m)))} gây ${lb}, uy chiêu ${bmX(bmPN(id, v('effect_chance', l, m)))}` })),
+      { id: 'van.troi', name: 'Trói', g: 'effect', atk: true, kc: true, d: (l, m) => `${bmP(v('troi', l, m))} trói địch ${v('troi_turns', l, m)} lượt, uy chiêu ${bmX(bmPN('van.troi', 0))}` },
       { id: 'van.phan_anh', name: 'Phân Ảnh', g: 'form', atk: true, d: (l, m) => `Chiêu đơn hóa lan, uy ${bmX(v('phan', l, m))}` },
       { id: 'van.van_anh', name: 'Vạn Ảnh', g: 'form', atk: true, tier: 3, d: (l, m) => `Chiêu hóa toàn trận, uy ${bmX(v('van', l, m))}` },
       { id: 'van.quy_nhat', name: 'Quy Nhất', g: 'form', atk: true, d: (l, m) => `Chiêu lan / toàn trận thu về đơn, uy ${bmX(v('quy', l, m))}` },
-      ...he.map(([id, name, h]) => ({ id, name, g: 'element', atk: true, d: (l, m) => `Nhuộm chiêu sang hệ ${h}${v('nhiem', l, m) ? `, uy +${bmP(v('nhiem', l, m))} khi khắc địch` : ''}` })),
+      ...he.map(([id, name, h]) => ({ id, name, g: 'element', atk: true, kc: true, d: (l, m) => `Nhuộm chiêu sang hệ ${h}${v('nhiem', l, m) ? `, uy +${bmP(v('nhiem', l, m))} khi khắc địch` : ''}` })),
     ];
     return Object.fromEntries(R.map((r) => [r.id, r]));
   }
@@ -4969,7 +5027,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     // ── 5. Bảng tham khảo
     const groups = {};
     Object.values(RN).forEach((r) => { (groups[r.g] = groups[r.g] || []).push(r); });
-    const runeHtml = Object.keys(BM_NHOM).filter((g) => groups[g]).map((g) => `<div class="tc-sec"><b>${esc(BM_NHOM[g])}${BM_NHOM_TOIDA[g] ? ` <span class="vk-mu">· tối đa ${BM_NHOM_TOIDA[g]} văn trên ô khắc</span>` : ''}</b>${groups[g].map((r) => `<div style="margin:2px 0"><b>${esc(r.name)}</b>${r.atk ? ' <span class="vk-mu">(chiêu công)</span>' : ''}${r.relic ? ' <span class="vk-mu">(pháp khí bị động)</span>' : ''}${r.tier ? ` <span class="vk-mu">(cần ${BM_TANG[r.tier]})</span>` : ''}<br><span class="vk-mu" style="font-size:12.5px">Cấp 1: ${esc(r.d(0))}<br>Cấp 3: ${esc(r.d(2))}<br>Cấp ${D.runeMax + 1}: ${esc(r.d(D.runeMax))}<br>Dị văn cấp ${D.runeMax + 1}: ${esc(r.d(D.runeMax, true))}</span></div>`).join('')}</div>`).join('');
+    const runeHtml = Object.keys(BM_NHOM).filter((g) => groups[g]).map((g) => `<div class="tc-sec"><b>${esc(BM_NHOM[g])}${BM_NHOM_TOIDA[g] ? ` <span class="vk-mu">· tối đa ${BM_NHOM_TOIDA[g]} văn trên ô khắc</span>` : ''}</b>${groups[g].map((r) => `<div style="margin:2px 0"><b>${esc(r.name)}</b>${r.atk ? ` <span class="vk-mu">(${r.kc ? 'chiêu công và khống chế' : 'chiêu công'})</span>` : ''}${r.relic ? ' <span class="vk-mu">(pháp khí bị động)</span>' : ''}${r.tier ? ` <span class="vk-mu">(cần ${BM_TANG[r.tier]})</span>` : ''}<br><span class="vk-mu" style="font-size:12.5px">Cấp 1: ${esc(r.d(0))}<br>Cấp 3: ${esc(r.d(2))}<br>Cấp ${D.runeMax + 1}: ${esc(r.d(D.runeMax))}<br>Dị văn cấp ${D.runeMax + 1}: ${esc(r.d(D.runeMax, true))}</span></div>`).join('')}</div>`).join('');
     html += `<div class="vk-card"><h3>Cách Bản Mệnh Lớn Lên</h3>
       <div style="font-size:13px;line-height:1.6">
         <div>• Tầng theo tâm huyết: ${D.tier.map((e, i) => `${BM_TANG[i]} từ ${e}`).join(' · ')}.</div>
@@ -6043,8 +6101,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       rows: vals(Cc.encounters).map((e) => [e.id, e.ten || e.tieu_de || '', e.giao_dien || '', e.cap_viec == null ? '' : e.cap_viec, e.tranh || '']) });
     return sheets;
   }
+  function xlBlob() { const sh = xlDuLieu(); return { sh: sh, blob: xlBook(sh) }; } // dùng chung cho tải về (xlXuat) và Báo Lỗi
   function xlXuat() {
-    const sh = xlDuLieu(), blob = xlBook(sh);
+    const x = xlBlob(), sh = x.sh, blob = x.blob;
     dsDownload('du-lieu-game-v' + String(TT.gameVersion).replace(/[^\w.-]/g, '') + '.xlsx', blob);
     return sh.map((x) => x.ten + ' ' + x.rows.length).join(' · ') + ' · ' + (blob.size / 1024).toFixed(0) + ' KB';
   }
@@ -6376,8 +6435,12 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         h += `<details style="margin-top:6px"><summary>Xem ${W.tests.length} mục đã kiểm</summary>${W.tests.map((r) => awRow(r[0], r[1], r[2])).join('')}</details>`;
       }
     }
+    const bad1 = W && !W.busy ? (W.fails && W.fails[0]) || null : null;
+    if (W && !W.busy && (W.err || bad1)) h += '<button class="vk-btn sec" id="aw-bl" style="margin-top:6px">Gửi báo lỗi này</button>';
     h += `<div class="vk-mu" style="font-size:12px;margin-top:6px">Tool ${TOOL_VER} · game ${esc(K.bundle || '')}</div>`;
     host.innerHTML = h;
+    const nb = host.querySelector('#aw-bl');
+    if (nb) nb.onclick = () => { const f = bad1; blMo({ loai: 'loi', tieu: 'Tự kiểm tra báo lỗi: ' + (f ? String(f[0]) : 'chưa đối chiếu được'), nd: 'Tự kiểm tra báo lỗi' + (f ? ' ở "' + f[0] + '"' : '') + ':\n' + String(f ? (f[2] == null ? '' : f[2]) : (W.err || '')).slice(0, 1500) + '\n\nTôi đang làm: ' }); };
   }
   function awAutoHtml() {
     const W = S.aw; if (!W || !W.A) return '<div class="vk-mu" style="font-size:13px">Đang tự đối chiếu…</div>';
@@ -6437,6 +6500,129 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     try { dsToolsMount(body.querySelector('#vk-xt'), true); } catch (e) { console.error('[ds] tools', e); }
     try { hkMount(body.querySelector('#vk-hk')); } catch (e) { console.error('[hk] mount', e); }
     if (S.hkFocus) { S.hkFocus = false; const c = body.querySelector('#vk-hk'); if (c && c.scrollIntoView) c.scrollIntoView({ block: 'start' }); }
+  }
+
+  // ═══════════════ BÁO LỖI (8.2.0-thu.4) ═══════════════
+  // Người chơi soạn báo lỗi / đề xuất / tính năng mới (kèm ảnh, báo cáo nhanh, Excel) rồi bấm Gửi: POST multipart tới Cloudflare Worker (cong-cu/bao-loi-worker.js),
+  // Worker giữ webhook Discord. Không gửi gì tự động. BL_URL rỗng = tắt gửi trực tiếp (chỉ chép nội dung để dán vào Discord); đã điền = gửi qua Worker.
+  const BL_URL = 'https://bao-loi.van-kiep-tool.workers.dev/gui';
+  const BL_MAX = 9 * 1024 * 1024, BL_ANH_MAX = 4, BL_ANH_BYTE = 1.5 * 1024 * 1024;
+  const BL_LOAI = [['loi', '🐞 Báo lỗi'], ['cai_tien', '✨ Đề xuất cải tiến'], ['tinh_nang', '💡 Tính năng mới']];
+  const BL_GOI_Y = { loi: 'Bạn bấm gì, mong thấy gì, thực tế thấy gì (càng cụ thể càng dễ sửa).', cai_tien: 'Chỗ nào chưa tiện, muốn đổi thành thế nào.', tinh_nang: 'Muốn Tool làm thêm việc gì, dùng lúc nào trong game.' };
+  const blLs = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } return null; };
+  const BL = { loai: 'loi', tieu: '', nd: '', lh: '', anh: [], bc: true, xl: false, busy: false, pre: null };
+  function blMo(pre) { BL.pre = pre || null; if (!UI.isOpen()) UI.open(); UI.setSection('tl'); goTab('bl'); }
+  function blThongTin() {
+    const w = UI.win, ua = String(navigator.userAgent || '').replace(/^Mozilla\/5\.0 /, '').slice(0, 110);
+    let ban = TOOL_VER; if (window.__vkxBanTu === 'capnhat') ban += ' (bản tự cập nhật)';
+    return { tool: ban, game: String(TT.gameVersion), thietBi: (w && w.classList.contains('vkx-t')) ? 'điện thoại / cảm ứng' : 'máy tính', manHinh: window.innerWidth + 'x' + window.innerHeight + ' @' + (window.devicePixelRatio || 1), ua: ua };
+  }
+  function blThuAnh(file) { // thu nhỏ: cạnh dài <= 1600 px, webp 0.8 (không có webp thì jpeg), <= 1,5 MB
+    return new Promise((ok, no) => {
+      const u = URL.createObjectURL(file), im = new Image();
+      im.onerror = () => { URL.revokeObjectURL(u); no(new Error('Không đọc được ảnh ' + file.name)); };
+      im.onload = () => {
+        URL.revokeObjectURL(u);
+        let k = Math.min(1, 1600 / Math.max(im.naturalWidth, im.naturalHeight, 1)), q = 0.8, lan = 0;
+        const thu = () => {
+          const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(im.naturalWidth * k)); cv.height = Math.max(1, Math.round(im.naturalHeight * k));
+          cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+          const xong = (b, ext) => { if (!b) return no(new Error('Không nén được ảnh')); if (b.size > BL_ANH_BYTE && lan < 4) { lan++; q = Math.max(0.5, q - 0.1); k *= 0.8; return thu(); } ok({ blob: b, ext: ext, url: URL.createObjectURL(b) }); };
+          cv.toBlob((b) => { if (b && b.type === 'image/webp') xong(b, 'webp'); else cv.toBlob((b2) => xong(b2, 'jpg'), 'image/jpeg', q); }, 'image/webp', q);
+        };
+        thu();
+      };
+      im.src = u;
+    });
+  }
+  async function blNoiDung(kem) { // văn bản đã soạn (+ báo cáo nhanh nếu kem) để chép dán Discord
+    const L = BL_LOAI.find((x) => x[0] === BL.loai), t = blThongTin();
+    let s = L[1] + ' · ' + BL.tieu + '\n' + BL.nd + '\n\nLiên lạc: ' + (BL.lh || '-') + '\nTool ' + t.tool + ' · game ' + t.game + ' · ' + t.thietBi + ' · ' + t.manHinh;
+    if (kem) { await sleep0(); s += '\n\n--- Báo cáo nhanh ---\n' + dsJson(dsReport(false), 0, 1); }
+    return s;
+  }
+  function tabBaoLoi() {
+    if (BL.pre) { const p = BL.pre; BL.pre = null; BL.loai = p.loai || 'loi'; if (p.tieu) BL.tieu = p.tieu; if (p.nd) BL.nd = p.nd; BL.bc = BL.loai === 'loi'; }
+    else if (!BL.tieu && !BL.nd) { try { const d = JSON.parse(blLs('vkx_bl_nhap') || 'null'); if (d) { BL.tieu = d.tieu || ''; BL.nd = d.nd || ''; if (d.loai) BL.loai = d.loai; } } catch (e) { /* bỏ qua */ } }
+    if (!BL.lh) BL.lh = blLs('vkx_bl_lienlac') || '';
+    const bat = !!BL_URL, t = blThongTin();
+    body.innerHTML = `<div class="vk-card" id="bl-card"><h3>Báo Lỗi / Góp Ý</h3>
+      <div class="vk-mu" style="font-size:12.5px;margin-bottom:8px">${bat ? 'Soạn xong bấm Gửi: tin đi thẳng tới người làm Tool. Chỉ gửi khi bạn bấm.' : 'Chưa bật gửi trực tiếp. Soạn nội dung rồi bấm "Chép nội dung" để dán vào Discord.'}</div>
+      <div id="bl-loai" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"></div>
+      <input id="bl-tieu" type="text" maxlength="120" placeholder="Tiêu đề (ngắn gọn)" style="width:100%;box-sizing:border-box;margin-bottom:6px">
+      <textarea id="bl-nd" rows="6" maxlength="3500" style="width:100%;box-sizing:border-box;margin-bottom:6px"></textarea>
+      <input id="bl-lh" type="text" maxlength="80" placeholder="Liên lạc (tùy chọn): tên Discord để hỏi lại" style="width:100%;box-sizing:border-box;margin-bottom:8px">
+      <div style="margin-bottom:6px"><input id="bl-file" type="file" accept="image/*" multiple style="max-width:100%"> <span class="vk-mu" style="font-size:12px">Tối đa ${BL_ANH_MAX} ảnh</span></div>
+      <div id="bl-pre" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px"></div>
+      <label style="display:block;margin:4px 0"><input type="checkbox" id="bl-bc"> Kèm Báo cáo nhanh</label>
+      <label style="display:block;margin:4px 0"><input type="checkbox" id="bl-xl"> Kèm dữ liệu Excel</label>
+      <div class="vk-mu" style="font-size:12px;margin:4px 0 8px">Báo cáo nhanh / Excel chứa dữ liệu kiếp đang chơi (nhân vật, túi đồ, vị trí), không có tài khoản hay mật khẩu.</div>
+      <div class="vk-mu" style="font-size:12px;margin-bottom:8px;word-break:break-word">Tự gắn: Tool ${esc(t.tool)} · game ${esc(t.game)} · ${esc(t.thietBi)} · ${esc(t.manHinh)}</div>
+      <div id="bl-tot" class="vk-mu" style="font-size:12px;margin-bottom:6px"></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="vk-btn" id="bl-gui"${bat ? '' : ' style="display:none"'}>Gửi</button><button class="vk-btn sec" id="bl-chep">Chép nội dung để dán vào Discord</button></div>
+      <div id="bl-out" style="margin-top:8px"></div></div>`;
+    const q = (s) => body.querySelector(s), out = q('#bl-out');
+    const nhap = () => blLs('vkx_bl_nhap', JSON.stringify({ tieu: BL.tieu, nd: BL.nd, loai: BL.loai }));
+    const veLoai = () => {
+      q('#bl-loai').innerHTML = BL_LOAI.map((x) => `<button class="vk-btn ${x[0] === BL.loai ? '' : 'sec'}" data-l="${x[0]}" style="margin:0">${x[1]}</button>`).join('');
+      q('#bl-nd').placeholder = BL_GOI_Y[BL.loai];
+    };
+    const veAnh = () => {
+      q('#bl-pre').innerHTML = BL.anh.map((a, i) => `<span style="position:relative;display:inline-block"><img src="${a.url}" style="height:64px;max-width:96px;object-fit:cover;border-radius:6px;display:block"><button data-x="${i}" title="Bỏ ảnh" style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:0;cursor:pointer">✕</button></span>`).join('');
+      const tong = BL.anh.reduce((s, a) => s + a.blob.size, 0);
+      q('#bl-tot').textContent = BL.anh.length ? 'Ảnh: ' + BL.anh.length + ' tệp, ' + (tong / 1024).toFixed(0) + ' KB (tổng gửi tối đa ' + (BL_MAX / 1048576) + ' MB).' : '';
+    };
+    q('#bl-tieu').value = BL.tieu; q('#bl-nd').value = BL.nd; q('#bl-lh').value = BL.lh; q('#bl-bc').checked = BL.bc; q('#bl-xl').checked = BL.xl;
+    veLoai(); veAnh();
+    q('#bl-loai').onclick = (e) => { const l = e.target.dataset && e.target.dataset.l; if (!l) return; BL.loai = l; BL.bc = l === 'loi'; q('#bl-bc').checked = BL.bc; veLoai(); nhap(); };
+    q('#bl-tieu').oninput = (e) => { BL.tieu = e.target.value; nhap(); };
+    q('#bl-nd').oninput = (e) => { BL.nd = e.target.value; nhap(); };
+    q('#bl-lh').oninput = (e) => { BL.lh = e.target.value; };
+    q('#bl-bc').onchange = (e) => { BL.bc = e.target.checked; };
+    q('#bl-xl').onchange = (e) => { BL.xl = e.target.checked; };
+    q('#bl-pre').onclick = (e) => { const i = e.target.dataset && e.target.dataset.x; if (i === undefined) return; const a = BL.anh.splice(+i, 1)[0]; if (a) URL.revokeObjectURL(a.url); veAnh(); };
+    q('#bl-file').onchange = async (e) => {
+      const fs = Array.from(e.target.files || []).filter((f) => /^image\//.test(f.type)); e.target.value = '';
+      for (const f of fs) {
+        if (BL.anh.length >= BL_ANH_MAX) { out.innerHTML = `<div class="vk-bad">Tối đa ${BL_ANH_MAX} ảnh.</div>`; break; }
+        try { out.innerHTML = '<div class="vk-mu">Đang thu nhỏ ảnh…</div>'; BL.anh.push(await blThuAnh(f)); out.innerHTML = ''; veAnh(); } catch (er) { out.innerHTML = `<div class="vk-bad">${esc(er.message || er)}</div>`; }
+      }
+    };
+    q('#bl-chep').onclick = async () => {
+      const b = q('#bl-chep'); b.disabled = true;
+      try { out.innerHTML = '<div class="vk-mu">Đang soạn…</div>'; const ok = await copyText(await blNoiDung(BL.bc)); out.innerHTML = ok ? '<div class="vk-ok">Đã chép. Dán vào kênh Discord báo lỗi.</div>' : '<div class="vk-bad">Không chép được (trình duyệt chặn).</div>'; }
+      catch (er) { out.innerHTML = `<div class="vk-bad">Lỗi: ${esc(er && er.message || er)}</div>`; }
+      b.disabled = false;
+    };
+    q('#bl-gui').onclick = async () => {
+      if (BL.busy || !BL_URL) return;
+      const b = q('#bl-gui');
+      if (!BL.tieu.trim() && !BL.nd.trim()) { out.innerHTML = '<div class="vk-bad">Cần ghi tiêu đề hoặc nội dung.</div>'; return; }
+      const cho = 60000 - (Date.now() - (parseInt(blLs('vkx_bl_luc') || '0', 10) || 0));
+      if (cho > 0) { out.innerHTML = `<div class="vk-bad">Vừa gửi xong, đợi ${Math.ceil(cho / 1000)} giây nữa.</div>`; return; }
+      BL.busy = true; b.disabled = true;
+      try {
+        out.innerHTML = '<div class="vk-mu">Đang chuẩn bị…</div>'; await sleep0();
+        const fd = new FormData(); let tong = 0;
+        fd.append('loai', BL.loai); fd.append('tieu_de', BL.tieu.trim()); fd.append('noi_dung', BL.nd.trim()); fd.append('lien_lac', BL.lh.trim());
+        fd.append('thong_tin', JSON.stringify(blThongTin()));
+        BL.anh.forEach((a, i) => { fd.append('anh' + i, a.blob, 'anh-' + (i + 1) + '.' + a.ext); tong += a.blob.size; });
+        if (BL.bc) { const bb = new Blob([dsJson(dsReport(false), 0, 1)], { type: 'application/json' }); fd.append('bao_cao', bb, 'bao-cao-nhanh.json'); tong += bb.size; }
+        if (BL.xl) { await sleep0(); const xb = xlBlob().blob; fd.append('excel', xb, 'du-lieu.xlsx'); tong += xb.size; }
+        if (tong > BL_MAX - 200000) throw new Error('Tổng ' + (tong / 1048576).toFixed(1) + ' MB, quá ' + (BL_MAX / 1048576) + ' MB. Bỏ bớt ảnh hoặc bỏ Excel.');
+        out.innerHTML = '<div class="vk-mu">Đang gửi…</div>';
+        const ac = new AbortController(), tm = setTimeout(() => ac.abort(), 30000);
+        let r, j = {};
+        try { r = await fetch(BL_URL, { method: 'POST', body: fd, signal: ac.signal }); try { j = await r.json(); } catch (e) { /* không có JSON */ } }
+        catch (er) { throw new Error(er && er.name === 'AbortError' ? 'Hết 30 giây chưa gửi được, kiểm tra mạng rồi thử lại.' : 'Lỗi mạng, chưa gửi được.'); }
+        finally { clearTimeout(tm); }
+        if (!r.ok || !j.ok) throw new Error(j.loi || ('Máy chủ trả lỗi ' + r.status));
+        blLs('vkx_bl_luc', String(Date.now())); blLs('vkx_bl_lienlac', BL.lh.trim()); blLs('vkx_bl_nhap', null);
+        BL.anh.forEach((a) => URL.revokeObjectURL(a.url)); Object.assign(BL, { tieu: '', nd: '', anh: [], xl: false });
+        tabBaoLoi(); body.querySelector('#bl-out').innerHTML = '<div class="vk-ok">Đã gửi, cảm ơn bạn!</div>';
+      } catch (er) { out.innerHTML = `<div class="vk-bad">${esc(er && er.message || er)}</div>`; }
+      BL.busy = false; try { b.disabled = false; } catch (e) { /* bỏ qua */ }
+    };
   }
 
   // ── Chợ: tìm bộ mua tốt nhất theo ngân sách
@@ -15587,7 +15773,24 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.2.0 · Bản Mod', d: '24/11/2026', now: true,
+            { t: 'Phiên Bản 8.3.0 · Bản Mod', d: '24/11/2026', now: true,
+            moi: [
+                '<b>Báo Lỗi:</b> mục mới trong Hệ Thống, gửi báo lỗi / đề xuất cải tiến / tính năng mới thẳng từ Tool, kèm tối đa 4 ảnh, Báo cáo nhanh và dữ liệu Excel. Ở Tự Kiểm Tra có nút Gửi báo lỗi này. Đã kiểm.',
+                '<b>Nút ⋯ trên điện thoại:</b> gom Cập nhật, Mục này làm gì và Báo lỗi vào một nút cho thanh trên đỡ chật. Đã kiểm.'
+            ],
+            nang: [
+                '<b>Bản Mệnh Gợi Ý:</b> theo bản game 24/11, văn Thiêu / Độc / Huyết tính giá theo sức (Độc cấp 1 ~×0,92, Dị văn cấp 5 ~×0,77), Hàn / Tuyệt Hồi / Trói đọc thẳng từ game; văn Hiệu ứng và Hệ ghi rõ áp cả chiêu khống chế. Chưa kiểm.',
+                '<b>Phím tắt:</b> máy không có bàn phím thì thẻ Phím tắt và Hướng dẫn nhanh báo phím tắt chỉ dùng trên máy tính. Đã kiểm.',
+                '<b>Thẻ Cập nhật:</b> nhật ký bản mới in đậm đúng, chia Tính năng mới / Nâng cấp tính năng / Sửa lỗi, nút đúng kiểu Tool. Đã kiểm.'
+            ],
+            sua: [
+                '<b>Điện thoại:</b> hết lỗi Nhận diện mod khác ở Tự Kiểm Tra; tên Tool và số bản không còn bị ép mất; nhóm Hệ Thống có icon. Đã kiểm.',
+                '<b>Thanh nhóm dưới:</b> không còn tự nhảy sang Hệ Thống hay đơ sau khi hiện thông báo có bản mới. Đã kiểm.',
+                '<b>Chữ nháy:</b> tiêu đề không còn nháy chữ thường khi chuyển mục. Đã kiểm.',
+                '<b>Bản đồ:</b> dấu nơi đặc biệt đủ 4 cạnh hình thoi, mũi tên đường ghim khép kín. Đã kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.2.0 · Bản Mod', d: '24/11/2026', now: false,
             moi: [
                 '<b>Tự cập nhật:</b> Hệ Thống → Cập nhật kiểm bản mới trên GitHub (mỗi 5/15/30/60 phút, bật tắt được). Bấm Cập nhật là xong: Tool tải bản mới, chờ lúc không trong trận/sự kiện thì tự tải lại trang. Nút Nhật Ký có chấm đỏ khi vừa lên bản. Có nút Quay về bản đã cài; bản mới lỗi thì tự quay về. Chưa kiểm.',
                 '<b>Hướng dẫn nhanh:</b> 6 bước chỉ vào phím mở, cây mục, ô Tìm mục, Tổng Quan, Auto, Hệ Thống; tự hiện lần đầu, xem lại ở Hệ Thống. Chưa kiểm.',
@@ -16282,8 +16485,12 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
             var g = new P.Graphics();
             if (it.type === 'poi') {
               var d = [0, -16, 16, 0, 0, 16, -16, 0];
-              g.poly(d).fill({ color: it.color, alpha: 0.16 }).stroke({ color: COL_INK, width: 4.4, alpha: 0.5 });
-              g.poly(d).stroke({ color: it.color, width: 2.4 });
+              var thoi = function () {
+                if (typeof g.closePath === 'function') return g.moveTo(0, -16).lineTo(16, 0).lineTo(0, 16).lineTo(-16, 0).closePath();
+                return g.poly(d.concat([0, -16]), true);
+              };
+              thoi().fill({ color: it.color, alpha: 0.16 }).stroke({ color: COL_INK, width: 4.4, alpha: 0.5 });
+              thoi().stroke({ color: it.color, width: 2.4 });
               if (it.open) g.circle(0, 0, 21).stroke({ color: it.soon ? COL_SOON : COL_OPEN, width: 1.8, alpha: 0.95 });
             } else {
               g.circle(0, 0, 13).fill({ color: it.color, alpha: 0.16 }).stroke({ color: COL_INK, width: 4.4, alpha: 0.5 });
@@ -16485,7 +16692,10 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
             g.stroke({ color: COL_RT, width: 2.6 * k });
             // mũi tên giữa đoạn
             var mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, s = 8 * k;
-            g.poly([mx + ux * s, my + uy * s, mx - ux * s * 0.7 - uy * s * 0.7, my - uy * s * 0.7 + ux * s * 0.7, mx - ux * s * 0.7 + uy * s * 0.7, my - uy * s * 0.7 - ux * s * 0.7])
+            var tg = [mx + ux * s, my + uy * s, mx - ux * s * 0.7 - uy * s * 0.7, my - uy * s * 0.7 + ux * s * 0.7, mx - ux * s * 0.7 + uy * s * 0.7, my - uy * s * 0.7 - ux * s * 0.7];
+            (typeof g.closePath === 'function'
+              ? g.moveTo(tg[0], tg[1]).lineTo(tg[2], tg[3]).lineTo(tg[4], tg[5]).closePath()
+              : g.poly(tg.concat([tg[0], tg[1]]), true))
               .fill({ color: COL_RT }).stroke({ color: COL_INK, width: 1 * k, alpha: 0.6 });
           }
           root.addChildAt(g, 0); line = g;
