@@ -1,10 +1,10 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.4.0
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.4.1
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.4.0';
+const VKX_BAN_CAI = '8.4.1';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
@@ -150,7 +150,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.4.0',
+  version: '8.4.1',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
@@ -159,7 +159,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
   if (gWin.__vkxMerged) { try { gWin.__vkxMerged.open(); } catch (e) {} return; }
-  var TOOL_VER = '8.4.0';
+  var TOOL_VER = '8.4.1';
   const VKX_TG = Object.freeze(['Minhndt3', 'Shgphuoc']);
 var MOD_CSS_EXTRA = `
 #vkx-toast:not(.on){pointer-events:none!important}
@@ -2710,15 +2710,30 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     bg.style.display = 'flex';
   }
   function cnMoThe() { try { if (!UI.isOpen()) UI.open(); UI.setSection('tl'); goTab('hts'); setTimeout(() => { try { const c = UI.win.querySelector('#vk-cn'); if (c && c.scrollIntoView) c.scrollIntoView({ block: 'start' }); } catch (e) { /* bỏ qua */ } }, 80); } catch (e) { /* bỏ qua */ } }
+  // raw.githubusercontent theo nhánh main có đệm CDN ~5 phút (version.json và main.js có thể lệch bản): lấy sha commit mới nhất qua API rồi đọc theo URL ghim commit (bất biến). Lỗi thì trả '' → quay về đọc theo main.
+  async function cnCommit() {
+    try {
+      const r = await fetch('https://api.github.com/repos/' + CN_REPO + '/commits/main', { headers: { Accept: 'application/vnd.github.sha' }, cache: 'no-store' });
+      if (!r.ok) return '';
+      const t = String(await r.text()).trim().toLowerCase();
+      return /^[0-9a-f]{40}$/.test(t) ? t : '';
+    } catch (e) { return ''; }
+  }
+  function cnUrl(sha, tep) { return 'https://raw.githubusercontent.com/' + CN_REPO + '/' + (sha || 'main') + '/' + tep + (sha ? '' : '?t=' + Date.now()); }
+  async function cnDocVer(sha) {
+    const r = await fetch(cnUrl(sha, 'version.json'), { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    if (!j || !j.version) throw new Error('version.json thiếu version');
+    j.__sha = sha || '';
+    return j;
+  }
   async function cnKiem(tay) {
     if (CN.kiem) return;
     if (!tay && cnG('cn_bat') === '0') return;
     CN.kiem = true; if (tay) { CN.loi = ''; cnVeNut(); }
     try {
-      const r = await fetch('https://raw.githubusercontent.com/' + CN_REPO + '/main/version.json?t=' + Date.now(), { cache: 'no-store' });
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      const j = await r.json();
-      if (!j || !j.version) throw new Error('version.json thiếu version');
+      const j = await cnDocVer(await cnCommit());
       CN.luc = Date.now(); CN.loi = '';
       if (vkxSoBan(j.version, TOOL_VER) > 0 && j.version !== cnG('cn_hong') && j.version !== cnG('cn_ver')) {
         CN.moi = j;
@@ -2730,13 +2745,23 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   }
   async function cnSha(txt) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt)); return Array.from(new Uint8Array(b)).map((x) => x.toString(16).padStart(2, '0')).join(''); }
   async function cnCapNhat() {
-    const j = CN.moi; if (!j || CN.tai || CN.cho) return;
+    let j = CN.moi; if (!j || CN.tai || CN.cho) return;
     CN.tai = true; CN.loi = ''; cnVeNut();
     try {
-      const r = await fetch('https://raw.githubusercontent.com/' + CN_REPO + '/main/main.js?t=' + Date.now(), { cache: 'no-store' });
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      const code = await r.text();
-      if (j.kich_thuoc && code.length !== j.kich_thuoc) throw new Error('sai kích thước (' + code.length + ' ≠ ' + j.kich_thuoc + ')');
+      let code = '';
+      for (let lan = 0; lan < 2; lan++) {
+        const r = await fetch(cnUrl(j.__sha, 'main.js'), { cache: 'no-store' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        code = await r.text();
+        let lech = '';
+        if (j.kich_thuoc && code.length !== j.kich_thuoc) lech = 'sai kích thước (' + code.length + ' ≠ ' + j.kich_thuoc + ')';
+        else if (j.sha256 && (await cnSha(code)).toLowerCase() !== String(j.sha256).toLowerCase()) lech = 'sai sha256';
+        if (!lech) break;
+        if (lan === 1) { try { console.warn('[Trợ Lý] cập nhật lệch:', lech); } catch (e) { /* bỏ qua */ } throw new Error('GitHub vừa có bản mới, dữ liệu chưa đồng bộ. Thử lại sau vài phút.'); }
+        // lệch: lấy lại commit mới nhất, đọc lại version.json + main.js theo đó, thử một lần nữa
+        const sha2 = await cnCommit();
+        j = await cnDocVer(sha2); CN.moi = j;
+      }
       if (!j.sha256) throw new Error('version.json thiếu sha256');
       if ((await cnSha(code)).toLowerCase() !== String(j.sha256).toLowerCase()) throw new Error('sai sha256');
       if (code.indexOf('(window.tuTienMods ??= [])' + '.push(') < 0) throw new Error('thiếu điểm nạp');
@@ -13150,7 +13175,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     { const sks = q('au-sks'); if (sks) c.sks = sks.checked; } // 7.17.4-thu.21: Auto Sự Kiện riêng của Săn / Buôn, mặc định tắt
     if (kind === 'buon') {
       c.maxY = num0('au-maxy', 0.5, 30, c.maxY); c.banY = num0('au-bany', 0.5, 60, c.banY); c.von = num0('au-von', 1, 100, c.von); c.giu = num0('au-giu', 0, 1e9, c.giu);
-      c.lai = num0('au-lai', 1, 500, c.lai); c.chuyen = Math.floor(num0('au-chuyen', 1, 999, c.chuyen)); c.tho = num0('au-tho', 0, 1e4, c.tho); c.hiem = sel('au-hiem', c.hiem); c.toc = sel('au-toc', c.toc);
+      c.lai = num0('au-lai', 1, 500, c.lai); [['au-von', c.von], ['au-lai', c.lai]].forEach((x) => { const e = q(x[0]); if (e && e.value !== '' && Number(e.value) !== x[1]) e.value = x[1]; }); // ghi lại giá trị đã kẹp vào ô c.chuyen = Math.floor(num0('au-chuyen', 1, 999, c.chuyen)); c.tho = num0('au-tho', 0, 1e4, c.tho); c.hiem = sel('au-hiem', c.hiem); c.toc = sel('au-toc', c.toc);
       c.thoGia = num0('au-thogia', 0, 1e9, c.thoGia); { const nk = q('au-nhieu'); if (nk) c.nhieu = nk.checked; }
       if (q('au-bt')) { // 7.12.4-thu.5: bán luôn đồ có sẵn trong túi
         c.banTui = q('au-bt').checked; c.tuiLoai = Object.keys(TC_LOAI).filter((k) => { const e = q('au-btk-' + k); return e && e.checked; });
@@ -13175,7 +13200,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     }
     auSave();
   }
-  const auFld = (id, lab, v, hint) => `<label style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin:5px 0;font-size:13px"><span>${lab}${hint ? ` <span class="vk-mu" style="font-size:11px">${hint}</span>` : ''}</span><input class="vk-sel" id="${id}" type="number" step="any" value="${v}" style="width:92px;text-align:right"></label>`;
+  const auFld = (id, lab, v, hint, mm) => `<label style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin:5px 0;font-size:13px"><span>${lab}${hint ? ` <span class="vk-mu" style="font-size:11px">${hint}</span>` : ''}</span><input class="vk-sel" id="${id}" type="number" step="any"${mm ? ` min="${mm.min}" max="${mm.max}"` : ''} value="${v}" style="width:92px;text-align:right"></label>`;
   const auHiemSel = (v) => `<label style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin:5px 0;font-size:13px"><span>Nơi Nguy Hiểm Tối Đa Được Đi</span><select class="vk-sel" id="au-hiem" style="width:150px"><option value="an_toan" ${v === 'an_toan' ? 'selected' : ''}>An Toàn</option><option value="ngang_suc" ${v === 'ngang_suc' ? 'selected' : ''}>Vừa Sức</option></select></label>`;
   const auMucLaSel = (v) => `<label style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin:5px 0;font-size:13px"><span>Gặp Loại Quái Không Tích <span class="vk-mu" style="font-size:11px">(Trận Đã Mở)</span></span><select class="vk-sel" id="au-mucla" style="width:150px"><option value="chay" ${v !== 'dung' ? 'selected' : ''}>Bỏ chạy</option><option value="dung" ${v === 'dung' ? 'selected' : ''}>Dừng</option></select></label>`;
   const auCachSel = (v) => `<label style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin:5px 0;font-size:13px"><span>Cách Săn</span><select class="vk-sel" id="au-cach" style="width:190px"><option value="ngau" ${v !== 'truy' && v !== 'nl' ? 'selected' : ''}>Săn ngẫu nhiên</option><option value="truy" ${v === 'truy' ? 'selected' : ''}>Truy tìm loài an toàn</option><option value="nl" ${v === 'nl' ? 'selected' : ''}>Săn nguyên liệu</option></select></label><div class="vk-mu" style="font-size:12px;margin:-2px 0 6px">Truy tìm: tốn thêm tháng truy tìm nhưng không phải bỏ chạy (đỡ tốn Thọ Nguyên Huyết Độn / đồ ném). Chọn loài màu an toàn nhất, ít tháng nhất; né loài dính debuff nếu bật; không có loài hợp thì săn ngẫu nhiên.</div>`;
@@ -15279,9 +15304,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       ${auFld('au-bany', 'Phạm Vi Bán Xuyên', c.banY, '(năm đường từ nơi mua)')}
       ${auHiemSel(c.hiem)}
       ${auTocSel(c.toc)}
-      ${auFld('au-von', 'Vốn Dùng Mỗi Chuyến', c.von, '(% Linh Thạch)')}
+      ${auFld('au-von', 'Vốn Dùng Mỗi Chuyến', c.von, '(% Linh Thạch, tối đa 100; luôn chừa phần Luôn Giữ Lại)', { min: 1, max: 100 })}
       ${auFld('au-giu', 'Luôn Giữ Lại', c.giu, '(Linh Thạch)')}
-      ${auFld('au-lai', 'Lãi Tối Thiểu Mỗi Món', c.lai, '(%)')}
+      ${auFld('au-lai', 'Lãi Tối Thiểu Mỗi Món', c.lai, '(%)', { min: 1, max: 500 })}
       ${auFld('au-chuyen', 'Dừng Sau Số Chuyến', c.chuyen)}
       ${auFld('au-thogia', 'Giá Một Năm Đường', c.thoGia, '(Linh Thạch/năm; 0 = không tính. Chuyến lãi mỗi năm thấp hơn số này bị bỏ)')}
       ${auChk('au-nhieu', '<b>Mua kèm món khác ở cùng tiệm</b>', c.nhieu !== false, '(còn vốn thì mua thêm món có lãi mà nơi bán đã chọn cũng thu)')}
@@ -16208,7 +16233,13 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.4.0 · Bản Mod', d: '24/11/2026', now: true,
+            { t: 'Phiên Bản 8.4.1 · Bản Mod', d: '24/11/2026', now: true,
+            sua: [
+                '<b>Tự cập nhật:</b> đọc version.json và main.js theo cùng một commit trên GitHub, nên vừa có bản mới là thấy ngay (trước có thể báo "đã là bản mới nhất" thêm vài phút) và không còn lỗi "sai kích thước (… ≠ …)" khi cập nhật đúng lúc GitHub chưa đồng bộ; lệch thì tự thử lại một lần. Chưa kiểm.',
+                '<b>Auto Buôn Bán:</b> ô Vốn Dùng Mỗi Chuyến tự về trong khoảng 1–100% (trước gõ 120 vẫn hiện 120 dù Tool chỉ dùng 100%), ghi rõ luôn chừa phần Luôn Giữ Lại; ô Lãi Tối Thiểu cũng tự kẹp. Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.4.0 · Bản Mod', d: '24/11/2026', now: false,
             moi: [
                 '<b>Chấm Các Bộ Đã Lưu:</b> nút mới ở thẻ "Đang xếp trong game" (Auto Build): đánh thử từng bộ kinh mạch đã lưu bằng trận mẫu, không cần đánh thật. Mỗi bộ có 2 mức Hiện tại / Lĩnh Ngộ đầy (kèm số năm tới khi thuần thục), cột theo bảng Vận hành của game, sát thương TB / lượt, linh lực tiêu hao và dư (ước); phần gập Trận mẫu từng trận, Thành phần điểm, Món trong bộ. Đã kiểm.',
                 '<b>Đóng góp từng món:</b> trong bảng so bộ, bấm "Tính đóng góp" để biết gỡ từng món thì bộ mất bao nhiêu điểm; 3 món yếu nhất tô đỏ để cân nhắc thay. Chưa kiểm.',

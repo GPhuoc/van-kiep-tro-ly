@@ -1,4 +1,9 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.4.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.4.1)
+
+## Bản 8.4.1 · Sửa tự cập nhật
+### Sửa lỗi
+- **Tự cập nhật:** đọc version.json và main.js theo cùng một commit trên GitHub, nên vừa có bản mới là thấy ngay (trước có thể báo "đã là bản mới nhất" thêm vài phút) và không còn lỗi "sai kích thước (… ≠ …)" khi cập nhật đúng lúc GitHub chưa đồng bộ; lệch thì tự thử lại một lần. Chưa kiểm.
+- **Auto Buôn Bán:** ô Vốn Dùng Mỗi Chuyến tự về trong khoảng 1–100% (trước gõ 120 vẫn hiện 120 dù Tool chỉ dùng 100%), ghi rõ luôn chừa phần Luôn Giữ Lại; ô Lãi Tối Thiểu cũng tự kẹp. Chưa kiểm.
 
 ## Bản 8.4.0 · So bộ kinh mạch, lọc hệ, tách cửa sổ
 ### Tính năng mới
