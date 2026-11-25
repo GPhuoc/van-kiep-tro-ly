@@ -1,4 +1,18 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.4.1)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.5.0)
+
+## Bản 8.5.0 · Đàn linh vật, Ngũ Hành, chuyển tab nhanh
+### Tính năng mới
+- **Auto Build · Đàn Linh Vật:** ô mới "Đàn Linh Vật" (Không Xét / Đủ Ngự Lực / Pet Đánh Chính / Bầy Đàn) và "Số Con Muốn Mang"; Auto Build chọn bộ kinh mạch đủ ngự lực để dắt đàn, tính cả giảm giá của tâm pháp đúng loại. Có dòng "Ngự lực hiện tại: dùng X / Y" kèm giá từng con; chọn Ngự Thú Tu thì tự bật Đủ Ngự Lực. Chưa kiểm.
+- **Auto Reroll · Ước tính tỉ lệ:** hiện tỉ lệ khớp mỗi lần và số lần dò kỳ vọng, cảnh báo khi quá hiếm so với số lần đã đặt, gợi ý chọn thẳng bằng Thiên Mệnh; đếm số lần gặp phẩm/thể chất muốn sau mỗi lượt dò. Chưa kiểm.
+
+### Nâng cấp tính năng
+- **Auto Reroll · Ngũ Hành linh căn:** thêm phẩm Ngũ Hành (danh sách phẩm đọc thẳng từ game). Chọn Ngũ Hành thì 5 hệ Kim Mộc Thủy Hỏa Thổ tự có, chỉ chọn thêm hệ ngoài; hệ do thể chất mang cũng được tính (Cửu U Thể → Ám). Đã kiểm.
+- **Auto Reroll · Số lần Dò Tỉ Lệ:** tự đặt số lần dò (10–20.000), Tool nhớ số đã đặt. Chưa kiểm.
+- **Chuyển tab nhanh hơn:** bấm liên tục nhiều tab chỉ dựng tab cuối; Bộ món hết lag (trước ~1,5 giây mỗi lần mở); Đột phá & Thọ, Bản đồ, Bản mệnh pháp bảo vào lại gần như ngay; chỉ mục sự kiện dựng ngầm, không làm đơ game. Đã kiểm.
+
+### Sửa lỗi
+- **Thẻ nhân vật:** linh căn Ngũ Hành hiện đúng tên thay vì mã ngu_hanh. Đã kiểm.
+- **Ô gợi ý tên:** không còn dồn thêm bộ nghe gõ phím mỗi lần mở tab (gõ càng lâu càng lag). Đã kiểm.
 
 ## Bản 8.4.1 · Sửa tự cập nhật
 ### Sửa lỗi

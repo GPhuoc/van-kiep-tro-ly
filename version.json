@@ -1,10 +1,19 @@
 {
-  "version": "8.4.1",
-  "ngay": "24/11/2026",
-  "kich_thuoc": 1735615,
-  "sha256": "da9a844bd1ea05f1cb31d72a79037d171eae1168829e912414af48f184731bcc",
+  "version": "8.5.0",
+  "ngay": "25/11/2026",
+  "kich_thuoc": 1768877,
+  "sha256": "8a4687f655bab9eda16f70c5bcc875e8652841640aa74d28699c74857ff9a7fd",
+  "moi": [
+    "<b>Auto Build · Đàn Linh Vật:</b> ô mới \"Đàn Linh Vật\" (Không Xét / Đủ Ngự Lực / Pet Đánh Chính / Bầy Đàn) và \"Số Con Muốn Mang\"; Auto Build chọn bộ kinh mạch đủ ngự lực để dắt đàn, tính cả giảm giá của tâm pháp đúng loại. Có dòng \"Ngự lực hiện tại: dùng X / Y\" kèm giá từng con; chọn Ngự Thú Tu thì tự bật Đủ Ngự Lực. Chưa kiểm.",
+    "<b>Auto Reroll · Ước tính tỉ lệ:</b> hiện tỉ lệ khớp mỗi lần và số lần dò kỳ vọng, cảnh báo khi quá hiếm so với số lần đã đặt, gợi ý chọn thẳng bằng Thiên Mệnh; đếm số lần gặp phẩm/thể chất muốn sau mỗi lượt dò. Chưa kiểm."
+  ],
+  "nang": [
+    "<b>Auto Reroll · Ngũ Hành linh căn:</b> thêm phẩm Ngũ Hành (danh sách phẩm đọc thẳng từ game). Chọn Ngũ Hành thì 5 hệ Kim Mộc Thủy Hỏa Thổ tự có, chỉ chọn thêm hệ ngoài; hệ do thể chất mang cũng được tính (Cửu U Thể → Ám). Đã kiểm.",
+    "<b>Auto Reroll · Số lần Dò Tỉ Lệ:</b> tự đặt số lần dò (10–20.000), Tool nhớ số đã đặt. Chưa kiểm.",
+    "<b>Chuyển tab nhanh hơn:</b> bấm liên tục nhiều tab chỉ dựng tab cuối; Bộ món hết lag (trước ~1,5 giây mỗi lần mở); Đột phá & Thọ, Bản đồ, Bản mệnh pháp bảo vào lại gần như ngay; chỉ mục sự kiện dựng ngầm, không làm đơ game. Đã kiểm."
+  ],
   "sua": [
-    "<b>Tự cập nhật:</b> đọc version.json và main.js theo cùng một commit trên GitHub, nên vừa có bản mới là thấy ngay (trước có thể báo \"đã là bản mới nhất\" thêm vài phút) và không còn lỗi \"sai kích thước (… ≠ …)\" khi cập nhật đúng lúc GitHub chưa đồng bộ; lệch thì tự thử lại một lần. Chưa kiểm.",
-    "<b>Auto Buôn Bán:</b> ô Vốn Dùng Mỗi Chuyến tự về trong khoảng 1–100% (trước gõ 120 vẫn hiện 120 dù Tool chỉ dùng 100%), ghi rõ luôn chừa phần Luôn Giữ Lại; ô Lãi Tối Thiểu cũng tự kẹp. Chưa kiểm."
+    "<b>Thẻ nhân vật:</b> linh căn Ngũ Hành hiện đúng tên thay vì mã ngu_hanh. Đã kiểm.",
+    "<b>Ô gợi ý tên:</b> không còn dồn thêm bộ nghe gõ phím mỗi lần mở tab (gõ càng lâu càng lag). Đã kiểm."
   ]
 }

@@ -1,10 +1,10 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.4.1
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.5.0
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.4.1';
+const VKX_BAN_CAI = '8.5.0';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
@@ -150,16 +150,18 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.4.1',
+  version: '8.5.0',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
   ready(tt, mod) {
     function chay(tt, mod) {
-    (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
+    const vkxT0 = performance.now(), vkxMocL = [];   // 8.4.2-thu.7: đo thời gian khởi động (console.info [VKX] khởi động)
+    const vkxMoc = (n) => { try { const ms = Math.round(performance.now() - vkxT0); vkxMocL.push(n + " " + ms); if (n === "xong") console.info("[VKX] khởi động", ms + " ms", "(" + vkxMocL.join(" · ") + ")"); } catch (e) { /* bỏ qua */ } };
+    try { (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
   if (gWin.__vkxMerged) { try { gWin.__vkxMerged.open(); } catch (e) {} return; }
-  var TOOL_VER = '8.4.1';
+  var TOOL_VER = '8.5.0';
   const VKX_TG = Object.freeze(['Minhndt3', 'Shgphuoc']);
 var MOD_CSS_EXTRA = `
 #vkx-toast:not(.on){pointer-events:none!important}
@@ -1024,7 +1026,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
 
     /* ═══════════════ MODULE 1: TRỢ LÝ (tính toán, chỉ đọc dữ liệu game) ═══════════════ */
     var Assist = (function (UI) {
-  const S = { core: null, best: null, abort: false };
+  const S = { core: null, best: null, abort: false, gen: 0 };
   const body = UI.body, tabsEl = UI.tabs, groupsEl = UI.groups;
 
   // ───────────────────────── 1. Nạp lõi game (qua tuTien.core, không còn dò regex hay nạp bản sao game) ─────────────────────────
@@ -1094,6 +1096,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     ['kinhNghiemMe', 'progress/luyen_che', 'kinhNghiemMe', 'kinh nghiệm một mẻ luyện chế (Lộ trình nghề)'], ['tranKinhNghiem', 'progress/luyen_che', 'tranKinhNghiem', 'ngưỡng kinh nghiệm bậc nghề (Lộ trình nghề)'],
     ['towerBetweenFloorsSelf', 'tower/climb', 'towerBetweenFloorsSelf', 'bên ta giữa hai tầng vực (Vực)'], ['isBetweenFloorPill', 'tower/climb', 'isBetweenFloorPill', 'đan dùng được giữa hai tầng (Vực)'],
     ['theCucName', 'world/noi', 'theCucName', 'tên thế cục (đại hội đấu giá)'],
+    ['phamLinhCanKeys', 'character/linh_can', 'phamLinhCanKeys', 'danh sách phẩm linh căn sống (Auto Reroll)'], ['linhCanDef', 'character/linh_can', 'linhCanDef', 'tên phẩm linh căn (Auto Reroll)'],
+    ['familiarCostOf', 'familiar/slots', 'familiarCostOf', 'giá ngự lực của con (Auto Build đàn linh vật)'], ['familiarBudget', 'familiar/slots', 'familiarBudget', 'ngân sách ngự lực (Auto Build đàn linh vật)'], ['openKinds', 'familiar/slots', 'openKinds', 'loại linh vật đã mở trên lưới (Auto Build đàn linh vật)'], ['familiarDiscount', 'familiar/slots', 'familiarDiscount', 'mức giảm giá ngự lực theo loại (Auto Build đàn linh vật)'],
   ];
   // Chữ ký (số tham số, tức fn.length) của từng hàm lõi Tool gọi, ghi từ game 0.0.2 (apiVersion 1), đã đối chiếu lại với bản build mới ngày 07/11/2026 và game 0.3.0 ngày 21/11/2026 (hangTong thêm tham số slot cho khách khanh). Game đổi tham số một hàm thì
   // buildCore ghi vào K.arityDrift và Tự Kiểm Tra báo LỖI ngay, không cần mốc cũ. Cập nhật bảng này sau khi đã sửa Tool cho khớp bản game mới.
@@ -1155,6 +1159,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     // Hằng đọc sống từ game (hằng khai 'export let' đổi theo độ khó), không chép ra biến lúc nạp.
     const live = (name, mod, key) => Object.defineProperty(K, name, { enumerable: true, get() { try { const v = R[mod][key]; return v === undefined ? undefined : v; } catch (e) { return undefined; } } });
     live('AMBUSH_MIN_DISTANCE', 'balance/encounter', 'AMBUSH_MIN_DISTANCE');
+    live('FAMILIAR_FIELD_MAX', 'balance/familiar', 'FAMILIAR_FIELD_MAX'); live('PACK_WEAPON_BONUS', 'balance/familiar', 'PACK_WEAPON_BONUS'); // 8.4.2-thu.5: Auto Build đàn linh vật (trần số con, cộng bầy đàn)
     live('AUCTION_TOP_GRADE_CHANCE', 'balance/economy', 'AUCTION_TOP_GRADE_CHANCE'); live('AUCTION_HAND_LOT_SHARE', 'balance/economy', 'AUCTION_HAND_LOT_SHARE'); // 7.17.4-thu.46: ước xác suất danh mục đấu giá
     live('DEATH_INJURY_FROM', 'balance/combat', 'DEATH_INJURY_FROM'); // 7.13.0-thu.1: từ mức Thương Thế này, đánh thua là tử trận (game: 2)
     live('TU_VI_MOI_NAM', 'balance/cultivation', 'TU_VI_MOI_NAM'); live('HE_SO_TU_VI_SU_KIEN', 'balance/cultivation', 'HE_SO_TU_VI_SU_KIEN'); // 7.13.0-thu.29: tu vi thật của sự kiện = n × hai số này × tốc độ tu
@@ -1231,6 +1236,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   // ───────────────────────── 2. Tiện ích ─────────────────────────
   const G = () => TT.game;
   const C = () => G().env.content;
+  // 8.4.2-thu.2: nhớ kết quả lọc nặng trên dữ liệu nội dung game (Cc.items...) theo đúng object C(); đổi nội dung (nạp lại game) thì tự bỏ. Chỉ dùng cho thứ phụ thuộc C() + khóa truyền vào, KHÔNG phụ thuộc state kiếp.
+  const NHOC = { c: null, m: new Map() };
+  function nhoC(khoa, fn) { const c = C(); if (NHOC.c !== c) { NHOC.c = c; NHOC.m.clear(); } if (!NHOC.m.has(khoa)) NHOC.m.set(khoa, fn(c)); return NHOC.m.get(khoa); }
   const clone = (x) => structuredClone(x);
   const sleep0 = () => new Promise((r) => setTimeout(r, 0));
   // 7.16.0-thu.4: tab game đang ẩn thì chỉ hoãn phần VẼ giao diện tới lúc hiện lại (logic Auto không đi qua đây, vẫn chạy nền).
@@ -1272,6 +1280,45 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     };
   }
   const nvNow = () => clone(G().state.run.nhanVat);
+  // 8.4.2-thu.3: chữ ký rẻ của state sống (KHÔNG clone) để biết "game đã đổi chưa" mà dùng lại kết quả tính cũ.
+  // Gồm: C() (nội dung game), S.rev (tăng mỗi lần Tool gửi lệnh qua auCall), mọi giá trị nguyên thủy của run (tầng 1) và của nhanVat (tới tầng 4: túi đồ, trang bị, công pháp...), kích thước các nhánh, và định danh đối tượng (nếu game thay object khi đổi thì đổi chữ ký).
+  const KY_ID = new WeakMap(); let kyN = 0;
+  const kyId = (o) => { let v = KY_ID.get(o); if (!v) { v = ++kyN; KY_ID.set(o, v); } return v; };
+  function kyDuyet(o, d, out, cap) {
+    if (cap.n-- <= 0) return;
+    if (o === null || o === undefined) { out.push('~'); return; }
+    const t = typeof o;
+    if (t !== 'object') { out.push(t === 'function' ? 'f' : String(o)); return; }
+    out.push('{' + kyId(o) + ':');
+    if (d <= 0) { out.push(Array.isArray(o) ? 'a' + o.length : 'o' + Object.keys(o).length); out.push('}'); return; }
+    if (Array.isArray(o)) { out.push('a' + o.length); for (let i = 0; i < o.length && cap.n > 0; i++) kyDuyet(o[i], d - 1, out, cap); }
+    else if (o instanceof Map || o instanceof Set) out.push('m' + o.size);
+    else for (const k in o) { out.push(k + '='); kyDuyet(o[k], d - 1, out, cap); out.push(','); }
+    out.push('}');
+  }
+  // kyNay(): kyState() chỉ tính một lần trong cùng một nhịp đồng bộ (hết nhịp thì tính lại); thoMemo(): nhớ kết quả tính theo chữ ký (xóa bằng nút Làm mới)
+  const KYN = { v: null };
+  function kyNay() { if (KYN.v !== null) return KYN.v; const v = kyState(); KYN.v = v; try { queueMicrotask(() => { KYN.v = null; }); } catch (e) { KYN.v = null; } return v; }
+  function thoMemo(khoa, fn) {
+    const ky = kyNay();
+    if (!S.thMemo || S.thMemo.ky !== ky || S.thMemo.m.size > 3000) S.thMemo = { ky, m: new Map() };
+    const m = S.thMemo.m; if (m.has(khoa)) return m.get(khoa);
+    const r = fn(); m.set(khoa, r); return r;
+  }
+  function kyState() {
+    try {
+      const st = G().state, run = st && st.run; if (!run) return 'x|' + (S.rev | 0);
+      const out = [kyId(C()), '|', S.rev | 0, '|'];
+      for (const k in run) {
+        if (k === 'nhanVat') continue;
+        const v = run[k]; out.push(k, '=');
+        if (v !== null && typeof v === 'object') kyDuyet(v, 0, out, { n: 50 }); else out.push(String(v));
+        out.push(';');
+      }
+      out.push('|'); kyDuyet(run.nhanVat, 4, out, { n: 20000 });
+      return out.join('');
+    } catch (e) { return 'e' + Math.random(); } // lỗi thì không bao giờ trùng: coi như đã đổi
+  }
   const REALM_TEN = ['Phàm Nhân', 'Luyện Khí', 'Trúc Cơ', 'Kết Đan', 'Nguyên Anh', 'Hóa Thần'];
   const realmName = (i) => { try { return S.core.canhGioi(i).ten; } catch { return REALM_TEN[i] || 'Cảnh Giới ' + i; } };
   const realmLabel = (cg, tc) => { try { return S.core.tenCanhGioi(cg, tc); } catch { return realmName(cg); } };
@@ -1653,7 +1700,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   }
 
   // 7.15.1-thu.5: bộ nhớ đệm Auto Build (chỉ giữ trong lúc game mở, không lưu đĩa). Khóa sig gồm toàn bộ thứ làm điểm đổi: nhân vật (nv0 đầy đủ), chế độ chấm, S.dir/prio/kmBuild/kmCore/kmCoreW/biasK/full/hbRatio, danh sách quái chấm.
-  const kmSigOf = (nv0, mode, enemies) => { try { return JSON.stringify([nv0, mode, S.dir, S.prio, S.kmBuild, S.kmCore ? [...S.kmCore] : null, S.kmCoreW, S.biasK, S.full, S.hbRatio, !!S.phamCao, S.phMin || null, S.kmCam ? [...S.kmCam].sort() : null, S.kmHeChi || null, S.tocBoi >= 2 ? 2 : S.tocBoi >= 1 ? 1 : 0, enemies ? enemies.map((e) => [e.id, e.E]) : null]); } catch (e) { return ''; } };
+  const kmSigOf = (nv0, mode, enemies) => { try { return JSON.stringify([nv0, mode, S.dir, S.prio, S.kmBuild, S.kmCore ? [...S.kmCore] : null, S.kmCoreW, S.biasK, S.full, S.hbRatio, !!S.phamCao, S.phMin || null, S.kmCam ? [...S.kmCam].sort() : null, S.kmHeChi || null, S.tocBoi >= 2 ? 2 : S.tocBoi >= 1 ? 1 : 0, S.kmPet || null, enemies ? enemies.map((e) => [e.id, e.E]) : null]); } catch (e) { return ''; } };
   const _kmEvCache = new Map(), KM_EV_MAX = 8000, KM_HI_W = 30, KM_HI_WIN = 20;   // sig -> Map(keyBoXep -> kết quả chấm, thứ tự chèn = LRU); tối đa 4 sig, mỗi sig 8000 mục; KM_HI_W = trọng số sát thương trận bậc cao, KM_HI_WIN = thưởng thắng trận bậc cao (thu.28; trần một trận = tổng hai số)
   const kmEvCacheFor = (sig) => {
     if (!sig) return new Map();
@@ -1662,10 +1709,58 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     m = new Map(); _kmEvCache.set(sig, m); return m;
   };
   const _kmBest = new Map();   // sig -> { manh, score }: bộ xếp tốt nhất lần trước, làm điểm khởi đầu (tối đa 12)
+  // 8.4.2-thu.5: Đàn Linh Vật cho Auto Build. Đàn mục tiêu = con đang mang (petSlot + familiarSlots) + con tốt nhất trong túi con tới số N chọn. Chỉ tính trên bản sao lưới đang chấm (familiarCostOf / familiarBudget / openKinds), không đổi đàn thật.
+  const petKinds = (it) => { const l = it && it.ngu_linh && it.ngu_linh.loai; return l ? [].concat(l) : []; };
+  function petCtx(nv0) {
+    const pm = S.kmPet; if (!pm || !pm.mode) return null;
+    const K = S.core; if (!K || typeof K.familiarCostOf !== 'function' || typeof K.familiarBudget !== 'function') return null;
+    const fams = (nv0.familiars || []).filter(Boolean); if (!fams.length) return null;
+    const byId = new Map(fams.map((f) => [f.id, f])), team = [];
+    for (const id of [nv0.petSlot].concat(nv0.familiarSlots || [])) { const f = id && byId.get(id); if (f && !team.includes(f)) team.push(f); }
+    const maxN = Math.max(1, Math.floor(+K.FAMILIAR_FIELD_MAX || 5)), want = Math.min(maxN, pm.n > 0 ? pm.n : team.length);
+    if (team.length > want) team.length = want;
+    if (team.length < want) {
+      const inj = (f) => (f.injury && f.injury.level) || 0;
+      const rest = fams.filter((f) => !team.includes(f) && inj(f) < 3).sort((a, b) => (b.aptitude || 0) - (a.aptitude || 0) || (b.realm || 0) - (a.realm || 0) || inj(a) - inj(b));
+      while (team.length < want && rest.length) team.push(rest.shift());
+    }
+    if (!team.length) return null;
+    const cnt = {}; for (const f of team) if (f.kind !== 'linh_thu') cnt[f.kind] = (cnt[f.kind] || 0) + 1;
+    const kinds = new Set(team.map((f) => f.kind)), nSame = Math.max(0, ...Object.values(cnt));
+    return { mode: pm.mode, team, kinds, nSame };
+  }
+  // Số liệu ngự lực của một cách xếp (nv đã có kinhMach.manh = cách xếp): { used, budget, thieu (đơn vị phạt: điểm ngự lực thiếu + 5 mỗi con chưa mở loại) }.
+  function petUse(PC, nv, c) {
+    const K = S.core; let used = 0, closed = 0;
+    for (const f of PC.team) used += Number(K.familiarCostOf(nv, c, f)) || 0;
+    const budget = Number(K.familiarBudget(nv, c)) || 0;
+    if (typeof K.openKinds === 'function') { const op = K.openKinds(nv, c) || []; for (const f of PC.team) if (f.kind !== 'linh_thu' && !op.includes(f.kind)) closed++; }
+    return { used, budget, closed, thieu: Math.max(0, used - budget) + 5 * closed };
+  }
+  // Điểm cộng / phạt của đàn trong makeEval. Phạt thiếu rất nặng (gần ràng buộc cứng); chinh / bay chỉ cộng nhỏ khi đã đủ.
+  function petTerm(PC, nv, c, R, manh) {
+    try {
+      const u = petUse(PC, nv, c); let s = -10000 * u.thieu;
+      if (u.thieu > 0) return s;
+      if (PC.mode === 'chinh') s += 4 * Math.min(6, u.budget - u.used);
+      if (PC.mode === 'chinh' || PC.mode === 'bay') {
+        const wb = PC.mode === 'bay' ? (Number(S.core.PACK_WEAPON_BONUS) || 0.15) * PC.nSame : 0;
+        for (let i = 0; i < manh.length; i++) {
+          const r = R.manh[i]; if (!r || !r.thong) continue;
+          const it = c.items.get(manh[i].m.item), ks = petKinds(it).filter((k) => PC.kinds.has(k)); if (!ks.length) continue;
+          const nl = it.ngu_linh || {};
+          if (PC.mode === 'chinh') s += 12 * (((nl.hoi_con || 0) > 0 ? 1 : 0) + ((nl.duong_thuong || 0) > 0 ? 1 : 0)) + 6;
+          else s += (it.loai === 'phap_khi' ? 40 * (1 + wb) : 14) * Math.max(1, PC.nSame) / 2;
+        }
+      }
+      return s;
+    } catch (e) { return 0; }
+  }
   function makeEval(nv0, enemies, mode) {
     nv0 = lnPrep(nv0);
     const K = S.core, c = C(), cache = kmEvCacheFor(kmSigOf(nv0, mode, enemies));
     const B = biasCtx(nv0, K.luoiKinhMach(c, nv0)), capX = capCtxOf(nv0), sX = statCapCtx(nv0), ngW = S.dir === 'ma' ? 0.4 : 1;
+    const PC = petCtx(nv0);   // 8.4.2-thu.5: đàn linh vật mục tiêu (null = không xét)
     const hp0 = mode === 'thu' ? (() => { try { const b0 = clone(nv0); b0.kinhMach.manh = []; return Math.max(1, K.taoBenTa(b0, c).khiHuyetToiDa || 1); } catch (e) { return 1; } })() : 1;   // khí huyết lúc chưa xếp gì
     let probed = false, noNv = false, noFt = false, cutBad = false, nEv = 0, phK = 0, lastCp = 0;   // thu.12: thử bỏ clone ở lần chấm đầu; cắt sớm theo chặn trên
     const ord = enemies.map((_, i) => i).sort((a, b) => (enemies[b].E.khiHuyetToiDa || 0) - (enemies[a].E.khiHuyetToiDa || 0)), hsum = new Array(enemies.length).fill(0);
@@ -1692,6 +1787,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       const minCost = atk.length ? Math.min(...atk) : 0;
       const dead = R.manh.filter((m) => m && !m.thong).length;
       const llScore = (mode === 'tu' ? 1 : (mode === 'danh' || mode === 'cong') ? 5 : mode === 'thu' ? 6 : 4) * ll - (minCost && ll < minCost ? 30 : 0) - 8 * dead;
+      const petT = PC ? petTerm(PC, nv, c, R, manh) : 0;   // 8.4.2-thu.5
       let gb = 0;   // 7.17.4-thu.4: dốc nhỏ theo ô thông + phẩm để bộ giải thấy bậc thang giữa các món cùng điểm (vô sắc phẩm cao); nằm trong bias nên "điểm thật" không đổi
       for (let i = 0; i < manh.length; i++) { const r = R.manh[i]; if (!r || !r.thong) continue; const ph = (c.items.get(manh[i].m.item) || {}).pham_cap || 0; gb += 0.3 * manh[i].cells.length + 0.15 * ph + phK * ph * ph; }
       const bias = biasScore(B, manh, R) + gb;   // thu.1: tách riêng phần thiên vị hướng build để biết "điểm thật" = s - bias
@@ -1716,6 +1812,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       if (S.dir !== 'ma' && mode !== 'dot') s -= KM_NG_K * bSum * (R.diemNghich || 0);   // 8.3.1-thu.2: phạt điểm nghịch nặng hơn (dot đã phạt riêng)
       lastCp = capScore(capX, R) + capStatScore(sX, R, mode); s += bias + lastCp;   // 8.3.2-thu.2: lastCp để báo thành phần điểm
       if (S.hbRatio) s -= hbRatioPenalty(manh, R);
+      if (petT) s += petT;
       // Xếp Full Ô: thưởng lớn theo số ô được phủ để bộ tìm kiếm ưu tiên lấp đầy lưới.
       if (S.full) s += 20 * manh.reduce((a, p) => a + p.cells.length, 0);
       return s;
@@ -1837,7 +1934,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     }
     return { cand, g };
   }
-  const candKey = (nv0) => { try { const km = nv0.kinhMach || {}; return JSON.stringify([nv0.canhGioi, nv0.tieuCanhGioi, nv0.theChat, nv0.tuiDo, km, S.dir, S.kmBuild, S.kmCore ? [...S.kmCore] : null, S.phMin || null, S.kmCam ? [...S.kmCam].sort() : null, !!S.prio, !!S.kmPhBo, S.kmHeChi || null]); } catch (e) { return ''; } };
+  const candKey = (nv0) => { try { const km = nv0.kinhMach || {}; return JSON.stringify([nv0.canhGioi, nv0.tieuCanhGioi, nv0.theChat, nv0.tuiDo, km, S.dir, S.kmBuild, S.kmCore ? [...S.kmCore] : null, S.phMin || null, S.kmCam ? [...S.kmCam].sort() : null, !!S.prio, !!S.kmPhBo, S.kmHeChi || null, S.kmPet || null]); } catch (e) { return ''; } };
   const candCopy = (v) => { const cand = {}; for (const id of Object.keys(v.cand)) cand[id] = v.cand[id].slice(); return { cand, g: v.g }; };
   function buildCandidatesSync(nv0) {
     const key = candKey(nv0); if (key && _candCache.key === key) return candCopy(_candCache.val);
@@ -2371,7 +2468,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   }
 
     // ───────────────────────── 6. Gắn vào giao diện chung ─────────────────────────
-  UI.refreshBtn.onclick = () => { S.best = null; S.cho = null; render(); };
+  UI.refreshBtn.onclick = () => { S.best = null; S.cho = null; S.thMemo = null; S.tCache = null; render(); };
 
   const TABS = [['tq', 'Tổng Quan'], ['tkc', 'Tàng Kinh Các'], ['dp', 'Đột Phá & Thọ'], ['tr', 'Trận'], ['tien', 'Kiếm Linh Thạch'], ['cho', 'Chợ Quanh Đây'], ['ld', 'Luyện Đan'], ['cph', 'Chế Phù'], ['lbo', 'Luyện Bảo'], ['tph', 'Trận Pháp'], ['tt', 'Treo Thưởng'], ['tcv', 'Vật Phẩm'], ['tcq', 'Quái Vật'], ['tcd', 'Địa Danh'], ['san', 'Đồ Nên Săn'], ['bd', 'Bản Đồ'], ['db', 'Dị Bảo'], ['tce', 'Sự Kiện']];
   TABS.push(['bm', 'Bản Mệnh Pháp Bảo']);
@@ -2414,6 +2511,16 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   const GICON = { nv: '🧘', cd: '⚡', kl: '💰', tc: '🔎', nl: '🐉', lh: '♾️', nm: '👥', au: '🤖', ht: '⚙️' };
   const qFold = (x) => String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
   const treeEl = UI.win.querySelector('#vkx-tree'), treeQ = UI.win.querySelector('#vkx-q'), chT = UI.win.querySelector('#vkx-cht'), chS = UI.win.querySelector('#vkx-chs');
+  // 8.4.2-thu.3: bấm tab liên tục: tô nút ngay (chỉ đổi class, không dựng lại thanh), dồn mọi cú bấm trong cùng một khung thành MỘT lần dựng ở khung kế; không làm mờ, không chờ
+  function renderHoan() {
+    try {
+      const gk = grpOf(S.tab)[0];
+      for (const bt of groupsEl.querySelectorAll('button[data-g]')) bt.classList.toggle('on', bt.dataset.g === gk);
+      if (S.tabGrp === gk) for (const bt of tabsEl.querySelectorAll('button[data-k]')) bt.classList.toggle('on', bt.dataset.k === S.tab);
+    } catch (e) { /* bỏ qua */ }
+    if (S.choRender) return;
+    S.choRender = requestAnimationFrame(() => { S.choRender = 0; render(); });
+  }
   const goTab = (k) => { if (!TNAME[k]) return; if (!ltBusy()) S.abort = true; S.tab = k; render(); };
   // Cây mục (CSS chỉ hiện khi cửa sổ rộng): mọi nhóm + mục thụt lề; ô tìm lọc theo tên mục, tên nhóm, mô tả.
   function drawTree() {
@@ -2433,7 +2540,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       if (r.height) { if (r.top < s.top) bar.scrollTop -= (s.top - r.top + 8) / k; else if (r.bottom > s.bottom) bar.scrollTop += (r.bottom - s.bottom + 8) / k; }
     }
   }
-  if (treeEl) treeEl.onclick = (e) => { const b = e.target.closest && e.target.closest('button[data-k]'); if (b) goTab(b.dataset.k); };
+  if (treeEl) treeEl.onclick = (e) => { const b = e.target.closest && e.target.closest('button[data-k]'); if (b && TNAME[b.dataset.k]) { if (!ltBusy()) S.abort = true; S.tab = b.dataset.k; renderHoan(); } };
   if (treeQ) {
     treeQ.addEventListener('input', drawTree);
     treeQ.addEventListener('keydown', (e) => {
@@ -2452,8 +2559,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     if (chT) chT.textContent = TNAME[S.tab] || ''; if (chS) chS.textContent = TAB_DESC[S.tab] || '';
     drawTree();
   }
-  groupsEl.onclick = (e) => { const gk = e.target.dataset && e.target.dataset.g; const g = gk && GROUPS.find((x) => x[0] === gk); if (g) { if (!ltBusy()) S.abort = true; S.tab = glastTab(g); render(); } };
-  tabsEl.onclick = (e) => { const k = e.target.dataset && e.target.dataset.k; if (k) { if (!ltBusy()) S.abort = true; S.tab = k; render(); } };
+  groupsEl.onclick = (e) => { const gk = e.target.dataset && e.target.dataset.g; const g = gk && GROUPS.find((x) => x[0] === gk); if (g) { if (!ltBusy()) S.abort = true; S.tab = glastTab(g); renderHoan(); } };
+  tabsEl.onclick = (e) => { const k = e.target.dataset && e.target.dataset.k; if (k) { if (!ltBusy()) S.abort = true; S.tab = k; renderHoan(); } };
 
   // 7.17.4-thu.42: phím mở/đóng tùy chọn (vkx_hotkey). Mặc định Alt+T (Alt+V trùng mod Trợ lý Vạn Kiếp). Esc đóng và phím 1..9 đổi nhóm là tùy chọn riêng.
   // Esc không đóng khi đang gõ trong ô nhập (Esc trong ô tìm mục chỉ xóa ô). Bắt ở pha capture vì cửa sổ Tool chặn nổi bọt phím.
@@ -2494,7 +2601,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       const t = e.target, tg = t && t.tagName;
       if (tg === 'INPUT' || tg === 'TEXTAREA' || tg === 'SELECT' || (t && t.isContentEditable)) return;
       const g = GROUPS[Number(e.key) - 1]; if (!g) return;
-      e.preventDefault(); if (!ltBusy()) S.abort = true; S.tab = glastTab(g); render();
+      e.preventDefault(); if (!ltBusy()) S.abort = true; S.tab = glastTab(g); renderHoan();
     } catch (err) { /* bỏ qua */ }
   };
   window.addEventListener('keydown', hkKd2); UI.tachThem('keydown', hkKd2, false);
@@ -2950,7 +3057,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       }
       if (!G().state.run) { body.innerHTML = `<div class="vk-card">Chưa có kiếp nào đang chơi. Vào game (tạo hoặc nạp kiếp) rồi bấm <b>Làm mới</b>.</div>`; return; }
       S.abort = false; if (S.core && S.core.sync) S.core.sync();
-      if (S.tab !== 'tce' && !(S.skx && S.skx.src === C()) && !S.skxP) setTimeout(() => { try { if (G().state.run) skIndexLo(); } catch (e) { /* bỏ qua */ } }, 1500); // thu.34: dựng ngầm chỉ mục sự kiện
+      clearTimeout(S.skxT); // 8.4.2-thu.3: dựng ngầm chỉ mục sự kiện chỉ khi người dùng đứng yên ~5 s (mỗi lần dựng tab lại tính từ đầu) và luồng rảnh, mỗi lô ≤ 40 ms
+      if (S.tab !== 'tce' && !(S.skx && S.skx.src === C()) && !S.skxP) S.skxT = setTimeout(() => { try { const chay = () => { try { if (G().state.run) skIndexLo(); } catch (e) { /* bỏ qua */ } }; if (typeof requestIdleCallback === 'function') requestIdleCallback(chay, { timeout: 5000 }); else chay(); } catch (e) { /* bỏ qua */ } }, 5000);
       ({ tq: () => { tabTongQuan(); tongQuanExtra(); }, dp: tabDotPha2, tr: tabTran, tkc: tabTKC, bm: tabBanMenh, cho: tabCho, ld: tabLuyenDan, cph: tabCheePhu, lbo: tabLuyenBao, tph: tabTranPhap, tien: tabTien, bd: tabBanDo, tt: tabTreoThuong, san: tabSan, tcv: tabVatPham, tcq: tabQuaiVat, tcd: tabDiaDanh, db: tabDiBao, tce: tabSuKien, nlw: tabNLW, nlm: tabNLM, nls: tabNLS, nlv: tabNLV, nlc: tabNLC, lhd: tabDuTinhDiem, tkb: tabThienKieu, nmn: tabNhanMach, abb: tabAutoBuon, asy: tabAutoSan, akm: tabAutoKm, arr: tabAutoReroll, atd: tabTimSanDo, adg: tabAutoDauGia, tbm: tabBoMon, tkh: tabKeHoachDi, lpk: tabLuuPhai, tcn: tabTheChat, syt: tabSanYeu, hth: tabHaiThuoc, hts: tabHeThong, aus: tabAutoSuKien, bl: tabBaoLoi })[S.tab]();
       timChup(S.tab);
     } catch (e) {
@@ -2965,13 +3073,14 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   const SCROLL = (() => { try { return JSON.parse(sessionStorage.getItem('vkx_scroll') || '{}') || {}; } catch (e) { return {}; } })();
   function scrollLuu() { try { sessionStorage.setItem('vkx_scroll', JSON.stringify(SCROLL)); } catch (e) { /* bỏ qua */ } }
   async function render() {
+    S.gen++; if (S.choRender) { try { cancelAnimationFrame(S.choRender); } catch (e) { /* bỏ qua */ } S.choRender = 0; }
     const t0 = performance.now(), cur = S.tab;
     if (S.scTab && body.scrollHeight > 0) { SCROLL[S.scTab] = body.scrollTop; scrollLuu(); }
     S.scTab = cur;
     try { return await renderCore(); } finally {
       auBarVe();
       const y = SCROLL[cur] || 0;
-      if (y > 0) requestAnimationFrame(() => requestAnimationFrame(() => { try { if (S.tab === cur) body.scrollTop = y; } catch (e) { /* bỏ qua */ } })); try { const ms = Math.round(performance.now() - t0); if (ms > 300) console.debug("[VKX] render", S.tab, ms); } catch (e) { /* bỏ qua */ } } }
+      if (y > 0) requestAnimationFrame(() => requestAnimationFrame(() => { try { if (S.tab === cur) body.scrollTop = y; } catch (e) { /* bỏ qua */ } })); try { const ms = Math.round(performance.now() - t0); if (ms > 50) console.info('[VKX] dựng', S.tab, ms + ' ms'); } catch (e) { /* bỏ qua */ } } }
 
   const progressHtml = (id) => `<div id="${id}" style="display:none"><div class="vk-bar"><i></i></div><div class="vk-mu" style="font-size:13px"></div><button class="vk-btn sec vk-stop">Dừng</button></div>`;
   function bindProgress(box) {
@@ -3044,7 +3153,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   function tabTongQuan() {
     const K = S.core, c = ctx(), run = c.run, nv = run.nhanVat;
     const tho = K.thoNguyenToiDa(nv);
-    const lc = nv.linhCan ? `${({ thien: 'Thiên', bien_di: 'Biến dị', song: 'Song', tap: 'Tạp', vo: 'Vô' })[nv.linhCan.pham] || nv.linhCan.pham} linh căn (${(nv.linhCan.he || []).map(heTen).join(', ')})` : '—';
+    const lc = nv.linhCan ? `${({ thien: 'Thiên', bien_di: 'Biến dị', song: 'Song', tap: 'Tạp', vo: 'Vô', ngu_hanh: 'Ngũ Hành' })[nv.linhCan.pham] || nv.linhCan.pham} linh căn (${(nv.linhCan.he || []).map(heTen).join(', ')})` : '—';
     let sect = '<div class="vk-mu">Chưa vào tông môn.</div>';
     const tm = K.tongMonCua(c);
     if (tm) {
@@ -4085,7 +4194,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   }
 
   // ── Tab Đột phá
-  function tabDotPha() {
+  function tabDotPha(toStr) { // 8.4.2-thu.3: toStr = true thì trả HTML thay vì ghi vào body
     const K = S.core, c = ctx(), nv = c.run.nhanVat;
     const h0 = K.chuanBiDotPha(c, { dan: [], thieuDot: 0 });
     const pills = [...new Set(h0.danDung || [])];
@@ -4118,7 +4227,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     const nguon = (best.h.nguon || []).map((n) => `<div class="vk-row"><span>${esc(n.ten)}</span><b class="${n.gt < 0 ? 'vk-bad' : ''}">${n.gt >= 0 ? '+' : ''}${pct(n.gt, 1)}</b></div>`).join('');
     const cho = h0.cho ? `${esc(h0.cho.ten)} · linh khí ${esc(h0.cho.linhKhi && h0.cho.linhKhi.ten)}` : '—';
     const chan = h0.chan ? `<div class="vk-err" style="margin-bottom:8px">Chưa đột phá được: ${esc(typeof h0.chan === 'string' ? h0.chan : Array.isArray(h0.chan) ? h0.chan.join('; ') : (h0.chan.ten || h0.chan.lyDo || JSON.stringify(h0.chan)))}</div>` : '';
-    body.innerHTML = `${chan}
+    const htmlDp = `${chan}
     <div class="vk-card"><h3>Lên ${esc(realmName(h0.len))}</h3>
       <div class="vk-row"><span>Đang ở</span><b>${esc(realmLabel(nv.canhGioi, nv.tieuCanhGioi))}</b></div>
       <div class="vk-row"><span>Nơi đang đứng</span><b>${cho}</b></div>
@@ -4131,6 +4240,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       <div class="vk-mu" style="font-size:12px;margin-top:6px">Chưa tính hộ pháp (+5% nếu có). Đột phá ở động phủ hoặc sư môn của mình sẽ cao hơn ở thành thị.</div></div>
     ${phamCard}
     <div class="vk-card"><h3>Chi tiết phương án tốt nhất</h3>${nguon}</div>`;
+    if (toStr) return htmlDp;
+    body.innerHTML = htmlDp;
   }
 
   // ═════ BẢN 7.14.0-thu.5: TỰ DÙNG ĐAN PHÁ BÌNH CẢNH TIỂU CẢNH ═════
@@ -4690,7 +4801,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     }
     return out;
   }
-  function rewardHint(def) {
+  function rewardHint(def) { return def && def.id ? nhoC('rwh|' + def.id, () => rewardHint0(def)) : rewardHint0(def); } // 8.4.2-thu.3: nhớ theo nội dung game (đổi khi C() đổi)
+  function rewardHint0(def) {
     const s = JSON.stringify(def.choices || def.scenes || {}), out = [];
     const lt = [...s.matchAll(/"linh_thach":\s*(\d+)/g)].map((m) => +m[1]);
     if (lt.length) out.push(`linh thạch tới ${Math.max(...lt)}`);
@@ -4737,7 +4849,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     return out.sort((a, b) => b.info.tuViNam - a.info.tuViNam || dr(a.d) - dr(b.d) || a.y - b.y);
   }
   function pillCandidates(nextRealm) {
-    return [...C().items.values()].filter((it) => it.dot_pha && pillFits(it.dot_pha, nextRealm));
+    return nhoC('pillCand|' + nextRealm, (Cc) => [...Cc.items.values()].filter((it) => it.dot_pha && pillFits(it.dot_pha, nextRealm)));
   }
   function bestRateWith(nv, extraPills, td, asDvm) {
     const c = ctx();
@@ -4745,13 +4857,20 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     for (const id of extraPills) c.run.nhanVat.tuiDo[id] = Math.max(1, c.run.nhanVat.tuiDo[id] || 0);
     try { return S.core.chuanBiDotPha(c, { dan: extraPills, thieuDot: td }).tiLe; } catch { return null; }
   }
+  let WG = null; // 8.4.2-thu.3: trong một lần dựng tab Đột phá & Thọ, nhớ nv, hàng Tàng Kinh Các và chuỗi theo id (đỡ clone ctx cho mỗi món)
   function whereToGet(id) {
+    const W = WG; if (W && W.m.has(id)) return W.m.get(id);
     const out = [];
-    const nv = nvNow();
+    const nv = W ? (W.nv || (W.nv = nvNow())) : nvNow();
     if ((nv.tuiDo[id] || 0) > 0) out.push('<span class="vk-ok">trong túi</span>');
-    try { const c = ctx(); const e = [...S.core.hangTong(c, 'cong_phap'), ...S.core.hangTong(c, 'phap_khi')].find((x) => x.id === id); if (e) out.push(`Tàng Kinh Các (${e.gia} cống hiến)`); } catch {}
+    try {
+      let tong;
+      if (W && W.tong) tong = W.tong; else { const c = ctx(); tong = [...S.core.hangTong(c, 'cong_phap'), ...S.core.hangTong(c, 'phap_khi')]; if (W) W.tong = tong; }
+      const e = tong.find((x) => x.id === id); if (e) out.push(`Tàng Kinh Các (${e.gia} cống hiến)`);
+    } catch { if (W) W.tong = W.tong || []; }
     if (S.cho) { const r = S.cho.cheapest.get(id); if (r) out.push(`${esc(r.noi)} · ${yrs(r.years)} · ${Math.round(r.price)} lt`); }
-    return out.join('; ');
+    const res = out.join('; '); if (W) W.m.set(id, res);
+    return res;
   }
 
   // ═════ 7.17.4-thu.26: CÁCH NÂNG TỈ LỆ ĐỘT PHÁ + TRÙNG KẾT / ÔN DƯỠNG (kế hoạch ghi-chu/ke-hoach/port-mod-kia.md, Đợt 5) ═════
@@ -4817,7 +4936,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       const R = K.tinhKinhMach(nv, Cc), cur = R && R.biDong ? (R.biDong.dot_pha || 0) : 0, cap = Number.isFinite(K.CONG_PHAP_CAP) ? K.CONG_PHAP_CAP : null;
       const eq = new Set(); (R && R.manh || []).forEach((m) => { if (m && m.item && m.thong) eq.add(m.item.id); });
       const shop = new Map(); try { [...K.hangTong(c0, 'cong_phap'), ...K.hangTong(c0, 'phap_khi')].forEach((e) => shop.set(e.id, e.gia)); } catch { /* không có tông thì bỏ */ }
-      const all = [...Cc.items.values()].filter((it) => it.bi_dong && it.bi_dong.dot_pha > 0);
+      const all = nhoC('biDongDotPha', () => [...Cc.items.values()].filter((it) => it.bi_dong && it.bi_dong.dot_pha > 0));
       const avail = all.map((it) => ({ it, v: it.bi_dong.dot_pha, st: eq.has(it.id) ? 'đang thông kinh mạch' : (nv.tuiDo[it.id] || 0) > 0 ? 'trong túi' : shop.has(it.id) ? `Tàng Kinh Các (${shop.get(it.id)} cống hiến)` : (S.cho && S.cho.cheapest.get(it.id)) ? whereToGet(it.id) : '' })).filter((x) => x.st).sort((a, b) => b.v - a.v).slice(0, 8);
       html += `<div class="vk-mu" style="font-size:12px;margin:8px 0 2px">Bị động đột phá từ công pháp / pháp khí: đang cộng <b>${sg(cur)}</b>${cap !== null ? `, trần của game ${sg(cap)}${cur >= cap - 1e-9 ? ' (đã chạm trần, thêm cũng vô ích)' : ''}` : ''}.</div>`
         + (avail.length ? '<table class="vk-t"><tr><th>Món</th><th>Đột phá</th><th>Đang ở</th></tr>' + avail.map((x) => `<tr><td>${esc(x.it.ten)}</td><td>${sg(x.v)}</td><td style="font-size:12px">${x.st}</td></tr>`).join('') + '</table>' : '<div class="vk-mu" style="font-size:13px">Chưa thấy món có bị động đột phá nào trong túi, Tàng Kinh Các hay chợ đã quét (quét tab Chợ để có thêm nguồn).</div>')
@@ -4853,7 +4972,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     try {
       const cg = nv.canhGioi;
       const why = typeof K.nurtureBlockReason === 'function' ? K.nurtureBlockReason(nv, cg) : undefined;
-      const items = [...Cc.items.values()].map((it) => { const m = /"duong_pham":\{([^}]*)\}/.exec(JSON.stringify(it.dung || '')); if (!m) return null; const g = /"canh_gioi":(\d+)/.exec(m[1]), y = /"nam":([\d.]+)/.exec(m[1]); return { it, cg: g ? +g[1] : null, nam: y ? +y[1] : null }; }).filter(Boolean);
+      const items = nhoC('duongPham', () => [...Cc.items.values()].map((it) => { const m = /"duong_pham":\{([^}]*)\}/.exec(JSON.stringify(it.dung || '')); if (!m) return null; const g = /"canh_gioi":(\d+)/.exec(m[1]), y = /"nam":([\d.]+)/.exec(m[1]); return { it, cg: g ? +g[1] : null, nam: y ? +y[1] : null }; }).filter(Boolean));
       const mine = items.filter((x) => x.cg === null || x.cg === cg);
       html += `<div class="vk-row" style="margin-top:8px"><span>Ôn dưỡng ở ${esc(realmName(cg))}</span><b class="${why ? 'vk-mu' : 'vk-ok'}">${why ? esc(why) : 'làm được'}</b></div>`
         + (mine.length ? '<table class="vk-t"><tr><th>Vật ôn dưỡng</th><th>Tốn</th><th>Có ở đâu</th></tr>' + mine.map((x) => `<tr><td>${esc(x.it.ten)}</td><td>${x.nam !== null ? x.nam + ' năm' : '—'}</td><td style="font-size:12px">${whereToGet(x.it.id) || '<span class="vk-mu">chưa thấy chỗ bán</span>'}</td></tr>`).join('') + '</table>' : `<div class="vk-mu" style="font-size:13px">${items.length ? 'Không có vật ôn dưỡng nào hợp cảnh giới này.' : 'Không tìm thấy vật ôn dưỡng trong dữ liệu game.'}</div>`)
@@ -4862,7 +4981,46 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     return html;
   }
 
+  // 8.4.2-thu.3: HTML các thẻ tính nhớ theo chữ ký state + kết quả quét Chợ (S.cho); game chưa đổi thì bấm lại tab dùng HTML cũ; nút Làm mới xóa
   function tabDotPha2() {
+    if (!has('chuanBiBeQuan', 'retreatTargetGain', 'retreatGain')) return tabDotPha2Dung('');
+    const kyDp = kyNay() + '|' + (S.cho ? kyId(S.cho) : 0);
+    const hit = S.tCache && S.tCache.dp && S.tCache.dp.ky === kyDp ? S.tCache.dp.html : null;
+    if (hit !== null) { body.innerHTML = hit; dpGan(); return; }
+    WG = { m: new Map(), nv: null, tong: null };
+    try { return tabDotPha2Dung(kyDp); } finally { WG = null; }
+  }
+  // Gắn tay vào các thẻ của tab Đột phá & Thọ (dùng cả khi dựng mới lẫn khi lấy HTML nhớ)
+  function dpGan() {
+    bcMount(); // 7.14.0-thu.7: thẻ Tự Phá Bình Cảnh nằm ngoài, ngang các thẻ khác (TAB_PRIO.dp đưa lên đầu)
+    const dd = body.querySelector('#vk-dpold-d');
+    if (dd) dd.addEventListener('toggle', () => { // bảng phương án cũ tính khi mở (tốn ~90 lần mô phỏng), HTML nhớ theo chữ ký state
+      if (!dd.open) return; const z = body.querySelector('#vk-dpold'); if (!z || z.dataset.ok) return;
+      try {
+        const ky = kyNay(); S.tCache = S.tCache || {};
+        if (!(S.tCache.dpOld && S.tCache.dpOld.ky === ky)) S.tCache.dpOld = { ky, html: tabDotPha(true) };
+        z.innerHTML = S.tCache.dpOld.html; z.dataset.ok = '1';
+      } catch (e) { z.innerHTML = errBox(e); }
+    });
+    const bq = body.querySelector('#vk-bq'); if (!bq) return;
+    bq.onclick = async (ev) => {
+      ev.target.disabled = true; S.abort = false;
+      const prog = bindProgress(body.querySelector('#vk-pr5'));
+      try {
+        const { c, p } = planData();
+        const list = await scanRetreat(c, +body.querySelector('#vk-bqy').value, prog);
+        body.querySelector('#vk-pr5').style.display = 'none';
+        const top = list.slice(0, 8);
+        body.querySelector('#vk-bqo').innerHTML = top.length ? `<table class="vk-t"><tr><th>Nơi</th><th>Tu vi/năm</th><th>Tới ĐVM</th></tr>` + top.map((r) => {
+          const yy = p.need > 0 ? p.need / r.info.tuViNam : 0;
+          const ok = r.y + yy < p.left - 5;
+          return `<tr><td><b>${esc(placeName(c, r.slot))}</b><br><span class="vk-mu" style="font-size:12px">${esc(r.info.ten)} · linh khí ${esc(r.info.linhKhi && r.info.linhKhi.ten)}${r.info.doYen ? ' · ' + esc(r.info.doYen) : ''} · ${yrs(r.y)} · ${dangerTag(r.d)}${r.info.rentPerYear ? ` · ${Math.round(r.info.rentPerYear)} lt/năm` : ''}${r.info.meritPerYear ? ` · ${Math.round(r.info.meritPerYear)} cống hiến/năm` : ''}</span></td><td>${num(r.info.tuViNam, 2)}</td><td class="${ok ? 'vk-ok' : 'vk-bad'}">${p.need > 0 ? Math.ceil(yy) + ' năm' : '—'}</td></tr>`;
+        }).join('') + '</table><div class="vk-mu" style="font-size:12px">Mỗi lần ngồi bị giới hạn số năm theo loại chỗ; ngồi xong cứ ngồi tiếp. Động phủ của mình không giới hạn.</div>' : '<div class="vk-mu">Không tìm thấy chỗ bế quan nào trong bán kính này.</div>';
+      } catch (e) { body.querySelector('#vk-bqo').innerHTML = errBox(e); }
+      ev.target.disabled = false;
+    };
+  }
+  function tabDotPha2Dung(kyDp) {
     if (!has('chuanBiBeQuan', 'retreatTargetGain', 'retreatGain')) { tabDotPha(); body.insertAdjacentHTML('afterbegin', `<div class="vk-card"><h3>Kế hoạch thọ nguyên</h3>${needMsg('kế hoạch thọ nguyên')}</div>`); bcMount(); return; }
     const { c, nv, p } = planData();
     const nextRealm = nv.canhGioi + 1;
@@ -4893,18 +5051,18 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     <div class="vk-card"><h3>Muốn đạt tỉ lệ đột phá cao nhất</h3><div id="vk-tgt"></div></div>
     <div class="vk-card"><h3>Cách nâng tỉ lệ đột phá</h3><div id="vk-nang"></div></div>
     <div class="vk-card"><h3>Trùng kết đạo cơ · Ôn dưỡng</h3><div id="vk-tk"></div></div>
-    <div id="vk-dpold"></div>`;
+    <details class="vk-card" id="vk-dpold-d"><summary style="cursor:pointer"><b>Bảng phương án đan + đốt thọ, phẩm đạo cơ</b> <span class="vk-mu" style="font-size:12px">(bấm để tính, hơi lâu)</span></summary><div id="vk-dpold"></div></details>`;
     // Đan tu luyện / thọ / phá bình cảnh
     const Cc = C();
-    const tuPills = [...Cc.items.values()].filter((it) => it.tu_luyen && (it.tu_luyen.canh_gioi === undefined || it.tu_luyen.canh_gioi === nv.canhGioi));
-    const thoPills = [...Cc.items.values()].filter((it) => JSON.stringify(it.dung || '').includes('"tho_nguyen"') && (it.canh_gioi ?? 0) <= nv.canhGioi);
-    const bcPills = [...Cc.items.values()].filter((it) => JSON.stringify(it.dung || '').includes('pha_binh_canh') && it.canh_gioi === nv.canhGioi);
+    const tuPills = nhoC('tuPills|' + nv.canhGioi, () => [...Cc.items.values()].filter((it) => it.tu_luyen && (it.tu_luyen.canh_gioi === undefined || it.tu_luyen.canh_gioi === nv.canhGioi)));
+    const thoPills = nhoC('thoPills|' + nv.canhGioi, () => [...Cc.items.values()].filter((it) => JSON.stringify(it.dung || '').includes('"tho_nguyen"') && (it.canh_gioi ?? 0) <= nv.canhGioi));
+    const bcPills = nhoC('bcPills|' + nv.canhGioi, () => [...Cc.items.values()].filter((it) => JSON.stringify(it.dung || '').includes('pha_binh_canh') && it.canh_gioi === nv.canhGioi));
     const tuv = p.here && p.here.tuViNam || 0;
     const rowP = (it, eff) => `<tr><td><b>${esc(it.ten)}</b><br><span class="vk-mu" style="font-size:12px">${eff}</span></td><td style="font-size:13px">${whereToGet(it.id) || '<span class="vk-mu">chưa thấy — quét tab Chợ</span>'}</td></tr>`;
     let ph = '<table class="vk-t"><tr><th>Đan</th><th>Có ở đâu</th></tr>';
     for (const it of tuPills) ph += rowP(it, `+${pct(it.tu_luyen.toc_do)} tu luyện trong ${it.tu_luyen.nam} năm${tuv ? ` ≈ +${Math.round(it.tu_luyen.toc_do * tuv * it.tu_luyen.nam)} tu vi` : ''}`);
-    thoPills.sort((a, b) => (drugBound(a) && drugLeft(nv, a) <= 0 ? 1 : 0) - (drugBound(b) && drugLeft(nv, b) <= 0 ? 1 : 0));
-    for (const it of thoPills) ph += rowP(it, thoText(nv, it));
+    const thoSx = thoPills.slice().sort((a, b) => (drugBound(a) && drugLeft(nv, a) <= 0 ? 1 : 0) - (drugBound(b) && drugLeft(nv, b) <= 0 ? 1 : 0));
+    for (const it of thoSx) ph += rowP(it, thoText(nv, it));
     for (const it of bcPills) ph += rowP(it, 'phá bình cảnh của tầng hiện tại (đỡ phần tu vi tích thêm)');
     ph += '</table><div class="vk-mu" style="font-size:12px">Dùng nhiều lần cùng một loại đan sẽ bị dược kháng, hiệu quả giảm dần.' + (drugCap() > 0 ? ' Độ khó này mỗi loại đan được thấm ' + drugCap() + ' viên mỗi cảnh giới, lượt chưa dùng được dồn lại.' : '') + '</div>';
     body.querySelector('#vk-pill').innerHTML = (tuPills.length + thoPills.length + bcPills.length) ? ph : '<div class="vk-mu">Không có đan phù hợp cảnh giới này.</div>';
@@ -4927,25 +5085,10 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     } catch (e) { body.querySelector('#vk-tgt').innerHTML = errBox(e); }
     try { body.querySelector('#vk-nang').innerHTML = dpNangHtml(); } catch (e) { body.querySelector('#vk-nang').innerHTML = errBox(e); }
     try { body.querySelector('#vk-tk').innerHTML = dpTrungKetHtml(); } catch (e) { body.querySelector('#vk-tk').innerHTML = errBox(e); }
-    // bảng phương án cũ
-    const keep = body.innerHTML;
-    tabDotPha(); const old = body.innerHTML; body.innerHTML = keep; body.querySelector('#vk-dpold').innerHTML = old;
-    bcMount(); // 7.14.0-thu.7: thẻ Tự Phá Bình Cảnh nằm ngoài, ngang các thẻ khác (TAB_PRIO.dp đưa lên đầu)
-    body.querySelector('#vk-bq').onclick = async (ev) => {
-      ev.target.disabled = true; S.abort = false;
-      const prog = bindProgress(body.querySelector('#vk-pr5'));
-      try {
-        const list = await scanRetreat(c, +body.querySelector('#vk-bqy').value, prog);
-        body.querySelector('#vk-pr5').style.display = 'none';
-        const top = list.slice(0, 8);
-        body.querySelector('#vk-bqo').innerHTML = top.length ? `<table class="vk-t"><tr><th>Nơi</th><th>Tu vi/năm</th><th>Tới ĐVM</th></tr>` + top.map((r) => {
-          const yy = p.need > 0 ? p.need / r.info.tuViNam : 0;
-          const ok = r.y + yy < p.left - 5;
-          return `<tr><td><b>${esc(placeName(c, r.slot))}</b><br><span class="vk-mu" style="font-size:12px">${esc(r.info.ten)} · linh khí ${esc(r.info.linhKhi && r.info.linhKhi.ten)}${r.info.doYen ? ' · ' + esc(r.info.doYen) : ''} · ${yrs(r.y)} · ${dangerTag(r.d)}${r.info.rentPerYear ? ` · ${Math.round(r.info.rentPerYear)} lt/năm` : ''}${r.info.meritPerYear ? ` · ${Math.round(r.info.meritPerYear)} cống hiến/năm` : ''}</span></td><td>${num(r.info.tuViNam, 2)}</td><td class="${ok ? 'vk-ok' : 'vk-bad'}">${p.need > 0 ? Math.ceil(yy) + ' năm' : '—'}</td></tr>`;
-        }).join('') + '</table><div class="vk-mu" style="font-size:12px">Mỗi lần ngồi bị giới hạn số năm theo loại chỗ; ngồi xong cứ ngồi tiếp. Động phủ của mình không giới hạn.</div>' : '<div class="vk-mu">Không tìm thấy chỗ bế quan nào trong bán kính này.</div>';
-      } catch (e) { body.querySelector('#vk-bqo').innerHTML = errBox(e); }
-      ev.target.disabled = false;
-    };
+    // bảng phương án cũ: dựng lười khi người dùng mở thẻ (dpGan); HTML các thẻ trên nhớ để lần sau bấm tab không phải tính lại
+    if (kyDp) { S.tCache = S.tCache || {}; S.tCache.dp = { ky: kyDp, html: body.innerHTML }; }
+    dpGan();
+
   }
 
   // ── Luyện đan & thi nghề
@@ -5434,7 +5577,13 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
 
     // ── 4. Nuốt món để ngộ văn
     if (n) {
-      const nut = inBag.map((it) => ({ it, r: bmCand(c, it.id) })).filter((x) => x.r && x.r.list).sort((a, b) => bmGrade(b.it) - bmGrade(a.it));
+      // 8.4.2-thu.6: chỉ tính ứng viên (devourCandidates) cho món phẩm cao nhất tới khi đủ 10 món nuốt được; phần còn lại chỉ đếm bằng devourItemError
+      const nutSx = inBag.slice().sort((a, b) => bmGrade(b) - bmGrade(a)), nut = [];
+      let nutKhac = 0;
+      for (const it of nutSx) {
+        if (nut.length < 10) { const r = bmCand(c, it.id); if (r && r.list) nut.push({ it, r }); }
+        else { try { if (!has('devourItemError') || !S.core.devourItemError(c, it.id)) nutKhac++; } catch (e) { nutKhac++; } }
+      }
       const dLeft = D.devourMax - dev0(nv, D);
       const mk = ({ it, r }) => {
         const g = bmGrade(it), weak = g <= n.grade - D.weakGap, pts = BM_HESO[g - 1] * (weak ? D.weakMul : 1);
@@ -5453,10 +5602,13 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       html += `<div class="vk-card"><h3>Nuốt Món Ngộ Văn</h3>
         <div class="vk-mu" style="font-size:12.5px;line-height:1.5">Mỗi năm nuốt tối đa ${D.devourMax} món (còn ${Math.max(0, dLeft)}). Mỗi món hiện ${D.cand} văn ứng viên, bạn chọn một: văn chưa có thì ngộ mới (cần món không yếu hơn bản mệnh quá ${D.newGap} phẩm), văn đã có thì cộng điểm bằng hệ số phẩm của món (cấp 2 ở ${D.runeLv[0]} điểm, cấp 3 ở ${D.runeLv[1]}; mỗi lần nuốt có ${bmP(D.runeFail)} hụt không cộng, ${bmP(D.runeLucky)} được nhân ${D.runeLuckyMult}). Từ cấp 3 lên cấp ${D.runeMax + 1} là <b>bình cảnh</b>: không cộng điểm mà bồi bằng xác suất (${D.runeHigh.map((x, i) => `cấp ${D.runeLv.length + i + 1}→${D.runeLv.length + i + 2}: ${bmP(x)}`).join(', ')}), hụt thì lần sau dễ hơn; món phải không thấp hơn bản mệnh quá ${D.runeHighGap} phẩm. Mỗi lần văn lên cấp có ${bmP(D.runeMut)} hóa <b>Dị văn</b> (${bmP(D.runeMutTop)} khi chạm cấp tối đa), uy lực ×${D.runeMutMult} (nhóm dạng cộng ${bmP(D.runeMutForm)}). Văn đã tối đa không còn xuất hiện trong ứng viên.
         Ứng viên được game gieo theo kiếp, món, năm tuổi và số món đã nuốt, nên đổi khi sang năm hoặc sau mỗi lần nuốt.</div>
-        ${has('devourCandidates', 'devourItemError') ? (nut.slice(0, 10).map(mk).join('') || '<div class="vk-mu" style="margin-top:8px">Không có món nào nuốt được lúc này (cần pháp khí đang nằm trong túi và chưa khóa; món đang gắn trên kinh mạch thì không nuốt được, nhưng bản dư trong túi thì nuốt được).</div>') + (nut.length > 10 ? `<div class="vk-mu" style="font-size:12px">Còn ${nut.length - 10} món khác.</div>` : '') : needMsg('ứng viên văn khi nuốt')}</div>`;
+        ${has('devourCandidates', 'devourItemError') ? (nut.slice(0, 10).map(mk).join('') || '<div class="vk-mu" style="margin-top:8px">Không có món nào nuốt được lúc này (cần pháp khí đang nằm trong túi và chưa khóa; món đang gắn trên kinh mạch thì không nuốt được, nhưng bản dư trong túi thì nuốt được).</div>') + (nutKhac > 0 ? `<div class="vk-mu" style="font-size:12px">Còn ${nutKhac} món khác.</div>` : '') : needMsg('ứng viên văn khi nuốt')}</div>`;
     }
 
-    html += bmGoiYPhapKhi(nv, Cc, D) + bmGoiYVan(nv, Cc, D);
+    // 8.4.2-thu.6: hai thẻ gợi ý nhớ HTML theo trạng thái (kyNay) + bộ lọc + dữ liệu C(); nút ↻ xóa S.tCache
+    { const kyG = kyNay() + '|' + BMG.loi + '|' + (BMG.own ? 1 : 0) + '|' + (BMG.ta ? 1 : 0), g0 = S.tCache && S.tCache.bmg;
+      if (g0 && g0.ky === kyG && g0.c === Cc) html += g0.html;
+      else { const h = bmGoiYPhapKhi(nv, Cc, D) + bmGoiYVan(nv, Cc, D); S.tCache = S.tCache || {}; S.tCache.bmg = { ky: kyG, c: Cc, html: h }; html += h; } }
 
     // ── 5. Bảng tham khảo
     const groups = {};
@@ -5656,7 +5808,10 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   }
   function tabBanDo() {
     const K = S.core, c = ctx(), run = c.run, Cc = C(), P = K.taoBenTa(run.nhanVat, Cc);
-    const items = [];
+    // 8.4.2-thu.3: danh sách sự kiện đã tính (đường đi, mối đe dọa, mô phỏng quái) nhớ theo chữ ký state; game chưa đổi thì dùng lại, nút Làm mới xóa
+    const kyBd = kyNay(); let items = S.tCache && S.tCache.bd && S.tCache.bd.ky === kyBd ? S.tCache.bd.items : null;
+    if (!items) {
+    items = [];
     for (const [slot, n] of Object.entries(run.nodes || {})) {
       if (!n || !n.encounter) continue;
       if (n.hetHanNam !== undefined && n.hetHanNam <= run.nam) continue;
@@ -5668,6 +5823,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       items.push({ slot, def, n, y, foes, th, res: worst, d: danger(c, slot), left: n.hetHanNam !== undefined ? n.hetHanNam - run.nam : undefined });
     }
     items.sort((a, b) => a.y - b.y);
+    S.tCache = S.tCache || {}; S.tCache.bd = { ky: kyBd, items };
+    }
     const opts = items.map((x, i) => `<option value="${esc(x.slot)}">${esc(cleanTxt(x.def.ten || x.n.encounter))} · ${esc(placeName(c, x.slot))}</option>`).join('');
     const tm = K.tongMonCua(c);
     const extra = tm ? `<option value="${esc(tm.slot)}">Sư môn · ${esc(placeName(c, tm.slot))}</option>` : '';
@@ -7099,11 +7256,21 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   function encThreat(encId, slot, vars, nam) {
     const def = C().encounters.get(encId); if (!def) return null;
     if (!has('revealedCombatRisk')) return null;
+    // 8.4.2-thu.3: nhớ theo chữ ký state + sự kiện + nơi + năm + biến (kết quả chỉ phụ thuộc các thứ đó); trả bản sao nông để nơi gọi không làm hỏng bản nhớ
+    let kk = null; try { kk = 'th|' + encId + '|' + slot + '|' + nam + '|' + JSON.stringify(vars || {}); } catch (e) { kk = null; }
+    if (kk === null) return encThreat0(def, encId, slot, vars, nam);
+    const r0 = thoMemo(kk, () => encThreat0(def, encId, slot, vars, nam));
+    return r0 === null ? null : r0.map((x) => ({ ...x }));
+  }
+  function encThreat0(def, encId, slot, vars, nam) {
     const effs = [];
     const walk = (choices) => (choices || []).forEach((ch) => (ch.effects || []).forEach((ef) => { if (ef && ef.combat !== undefined) effs.push({ ch, ef }); }));
     walk(def.choices); for (const sc of Object.values(def.scenes || {})) walk(sc && sc.choices);
-    const out = [], seen = new Set();
+    const out = [], seen = new Set(), seenEf = new Set();
     for (const { ch, ef } of effs) {
+      // hiệu ứng giống hệt nhau (cùng nội dung) cho cùng kết quả và cùng khóa k nên bỏ qua, khỏi clone ctx lại
+      let ek = null; try { ek = JSON.stringify(ef); } catch (e) { ek = null; }
+      if (ek !== null) { if (seenEf.has(ek)) continue; seenEf.add(ek); }
       const c = ctx(); if (nam !== undefined) c.run.nam = nam;
       c.enc = { id: encId, slot, vars: { ...(vars || {}) }, nodeFlags: {} }; c.noi = slot;
       let r; try { r = S.core.revealedCombatRisk(c, ef.combat, ef); } catch { continue; }
@@ -7185,16 +7352,30 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   // Gợi ý tên cho ô <input list>: chỉ nhét ≤ 30 mục khớp chữ đang gõ (không dấu), debounce 150 ms. Datalist lớn làm iOS đơ.
   function dlGoiY(root, sel, dl, layTen) {
     if (!root || !dl) return;
-    let ds = null, tm = 0;
-    const nap = () => { if (!ds) { const a = layTen() || []; ds = a.map((t) => [t, fold(t)]); } return ds; };
+    // 8.4.2-thu.3: root sống mãi (body) thì mỗi lần dựng tab chỉ cập nhật bản ghi (dl, layTen mới, xóa cache), listener gắn MỘT lần cho mỗi root
+    const reg = root.__vkxGoiY || (root.__vkxGoiY = new Map());
+    let rec = reg.get(sel);
+    if (rec) { rec.dl = dl; rec.layTen = layTen; rec.ds = null; return; }
+    rec = { dl, layTen, ds: null, tm: 0 }; reg.set(sel, rec);
+    const nap = () => { if (!rec.ds) { const a = rec.layTen() || []; rec.ds = a.map((t) => [t, fold(t)]); } return rec.ds; };
     const loc = (el) => {
-      const q = fold(el.value).trim(); if (!q) { dl.innerHTML = ''; return; }
+      const q = fold(el.value).trim(); if (!q) { rec.dl.innerHTML = ''; return; }
       const out = [], ds2 = nap();
       for (const [t, f] of ds2) { if (f.startsWith(q)) { out.push(t); if (out.length >= 30) break; } }
       if (out.length < 30) for (const [t, f] of ds2) { if (!f.startsWith(q) && f.includes(q)) { out.push(t); if (out.length >= 30) break; } }
-      dl.innerHTML = out.map((t) => '<option value="' + esc(t) + '">').join('');
+      rec.dl.innerHTML = out.map((t) => '<option value="' + esc(t) + '">').join('');
     };
-    root.addEventListener('input', (ev) => { const el = ev.target; if (!el.matches || !el.matches(sel)) return; clearTimeout(tm); tm = setTimeout(() => { try { loc(el); } catch (e) { console.warn('[vkx goiy]', e); } }, 150); });
+    if (!root.__vkxGoiYL) {
+      root.__vkxGoiYL = 1;
+      root.addEventListener('input', (ev) => {
+        const el = ev.target; if (!el.matches) return;
+        for (const [sl, r] of root.__vkxGoiY) {
+          if (!el.matches(sl)) continue;
+          clearTimeout(r.tm); r.tm = setTimeout(() => { try { r.loc(el); } catch (e) { console.warn('[vkx goiy]', e); } }, 150);
+        }
+      });
+    }
+    rec.loc = loc;
   }
 
 
@@ -7400,17 +7581,17 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   // ── Tab Tổng quan Ngự Linh
   function tabNLW() {
     const nv = nvNow(), Cc = C(), ens = nlEnemies();
-    const items = [...Cc.items.values()];
+    const items = nhoC('nlwItems', () => [...Cc.items.values()]);
     const ownN = items.filter((it) => nlIsItem(it) && nv.tuiDo && nv.tuiDo[it.id] > 0).length;
     const cards = NLW_SCH.map(([k, ten, ic]) => {
       const rit = NL_RITUAL.filter((r) => r.loai === k);
       const bs = ens.filter((e) => ((e.ngu_linh && e.ngu_linh.loai) || []).includes(k));
       const dk = bs.map((e) => e.ngu_linh.do_kho).filter((x) => typeof x === 'number');
-      const mon = items.filter((it) => (it.loai === 'cong_phap' || it.loai === 'phap_khi') && it.ngu_linh && it.ngu_linh.loai === k);
+      const mon = nhoC('nlwMon|' + k, () => items.filter((it) => (it.loai === 'cong_phap' || it.loai === 'phap_khi') && it.ngu_linh && it.ngu_linh.loai === k));
       const mo = mon.filter((it) => it.ngu_linh.o).sort((a, b) => (a.pham_cap || 0) - (b.pham_cap || 0));
-      const eggs = k === 'linh_thu' ? items.filter((it) => it.loai === 'trung_thu').length : 0;
-      const dp = k === 'khoi_loi' ? items.filter((it) => it.khuon && it.loai !== 'trung_thu').length : 0;
-      const nuoi = items.filter((it) => it.cho_an && (it.cho_an.loai || []).includes(k)).length;
+      const eggs = k === 'linh_thu' ? nhoC('nlwEggs', () => items.filter((it) => it.loai === 'trung_thu').length) : 0;
+      const dp = k === 'khoi_loi' ? nhoC('nlwDp', () => items.filter((it) => it.khuon && it.loai !== 'trung_thu').length) : 0;
+      const nuoi = nhoC('nlwNuoi|' + k, () => items.filter((it) => it.cho_an && (it.cho_an.loai || []).includes(k)).length);
       const ritHtml = rit.map((r) => `<div style="margin-top:4px"><b>${esc(tcWord(r.ten))}</b> <span class="vk-mu">· thời gian ${num(r.tg, 1)}</span><br><span class="vk-mu" style="font-size:12px">${esc(r.mo_ta)}</span><br><span style="font-size:12.5px">Liệu phụ: ${r.lieu.map((id) => `${esc(nlItemName(id))}${nv.tuiDo && nv.tuiDo[id] > 0 ? ' <span class="vk-ok">✓</span>' : ''}`).join(' · ')}</span></div>`).join('');
       return `<details class="vk-card"><summary><b>${ic} ${esc(ten)}</b> <span class="vk-mu">· ${bs.length} sinh vật${dk.length ? ' · độ khó ' + pct(Math.min(...dk)) + ' – ' + pct(Math.max(...dk)) : ''}</span></summary>
         <div style="font-size:13px;margin-top:6px">${ritHtml || '<span class="vk-mu">Không có nghi thức riêng trong dữ liệu.</span>'}
@@ -8829,6 +9010,14 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     try { localStorage.setItem('vkx_hb_scan', JSON.stringify({ sig, n: Cc.items.size })); } catch (e) { /* bỏ qua */ }
     const F = S.bld = Object.assign({ R: cur, st: nv.tieuCanhGioi || 0, phMin: 1, phMax: 8, he: '', vo: true, dt: '', src: 'game', assume: true }, S.bld || {});
     bldSync(nv);
+    // 8.4.2-thu.5: Đàn Linh Vật (cfg.pet / cfg.petN): ràng buộc ngự lực cho đàn linh vật khi xếp lưới
+    const nFam = ((nv.familiars || []).filter(Boolean)).length, nMang = new Set([nv.petSlot].concat(nv.familiarSlots || []).filter(Boolean)).size;
+    const petHtml = nFam ? auSel('au-km-pet', 'Đàn Linh Vật', [['', 'Không Xét'], ['du', 'Đủ Ngự Lực Cho Đàn'], ['chinh', 'Pet Đánh Chính / Đỡ Đòn'], ['bay', 'Bầy Đàn (Đúng Loại)']], cfg.pet || '')
+      + auSel('au-km-petn', 'Số Con Muốn Mang', [['0', 'Đàn Đang Mang (' + nMang + ')'], ...[1, 2, 3, 4, 5].map((n) => [String(n), n + ' con'])], String(cfg.petN || 0))
+      + '<div class="vk-mu" style="font-size:12px;margin:2px 0 6px">' + ((cfg.pet || '') ? 'Tool chọn bộ xếp sao cho đủ ngự lực (thần thức + giảm giá của tâm pháp đúng loại) cho đàn mục tiêu; không gỡ hay đổi đàn thật. Thiếu ngự lực bị phạt rất nặng. ' + (cfg.pet === 'chinh' ? 'Thêm điểm cho dư ngự lực nhỏ và món hồi con / dưỡng thương đúng loại (chưa đánh thử có đàn).' : cfg.pet === 'bay' ? 'Thêm điểm cho pháp khí / tâm pháp phái đúng loại với đàn (không tính linh thú).' : '') : 'Chọn để ép bộ đủ ngự lực cho đàn linh vật; "Không Xét" giữ cách xếp như cũ.') + '</div>'
+      + petNowHtml(nv)
+      : (auSel('au-km-pet', 'Đàn Linh Vật', [['', 'Không Xét']], '').replace('<select ', '<select disabled ') + auSel('au-km-petn', 'Số Con Muốn Mang', [['0', 'Đàn Đang Mang (0)']], '0').replace('<select ', '<select disabled ')
+        + '<div class="vk-mu" style="font-size:12px;margin:2px 0 6px">Chưa có linh vật nào; bắt hoặc nhận linh vật rồi quay lại.</div>');
     F.R = Math.max(0, Math.min(5, +F.R || 0)); F.st = Math.max(0, Math.min(3, +F.st || 0)); F.phMin = Math.max(1, Math.min(8, +F.phMin || 1)); F.phMax = Math.max(1, Math.min(8, +F.phMax || 8));
     if (F.phMin > F.phMax) { const t = F.phMin; F.phMin = F.phMax; F.phMax = t; }
     const ranked = BUILDS.map((x) => ({ b: x, f: buildFit(x, nv, cur) })).sort((a, c) => c.f.s - a.f.s), top3 = ranked.slice(0, 3);
@@ -8863,6 +9052,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       <div style="margin-top:6px">${kbSel}${mixRow}
       ${auSel('au-km-ratio', 'Tỉ Lệ Tâm Pháp : Chiến Pháp', Object.entries(HB_RATIO).map(([k, v]) => [k, v[0]]), cfg.ratio)}
       ${auSel('au-km-mode', 'Chế Độ', AU_KM_MODE, cfg.mode)}
+      ${petHtml}
       ${auSel('au-km-dir', 'Hướng Xếp', [['', 'Theo Hệ Số Game'], ['tien', 'Tiên Tu · Tương Sinh'], ['ma', 'Ma Tu · Tương Khắc']], cfg.dir)}
       ${auSel('au-km-it', 'Độ Kỹ', AU_KM_IT, cfg.iters)}
       ${auChk('au-km-prio', 'Ưu Tiên Theo Hệ Linh Căn Và Huyệt Đạo', cfg.prio, '— bỏ hẳn món có hệ khắc hoặc bị linh căn khắc (vd Hỏa+Mộc thì bỏ Thủy, Kim, Thổ); món Chủ Đạo vẫn dùng')}
@@ -8953,11 +9143,11 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     { const bl = body.querySelector('#au-km-hc-lc'), bb = body.querySelector('#au-km-hc-bo');   // 8.3.2-thu.2
       if (bl) bl.onclick = () => { let he = []; try { he = ((nvNow().linhCan || {}).he || []).filter((h) => h && h !== 'vo_sac' && HE[h]); } catch (e) { console.error(e); } cfg.heChi = [...new Set([...he, 'vo_sac'])]; auSave(); S.hbRes = null; tabAutoKm(); };
       if (bb) bb.onclick = () => { cfg.heChi = []; auSave(); S.hbRes = null; tabAutoKm(); }; }
-    body.querySelectorAll('[id^="au-km-"]').forEach((el) => { if (el.tagName === 'BUTTON') return; el.onchange = () => { if (el.id.startsWith('au-km-mh-') && el.checked && body.querySelectorAll('[id^="au-km-mh-"]:checked').length > 3) { el.checked = false; UI.notify('Tối đa 3 hệ'); return; } const oldKb = cfg.kb; auReadCfg('km'); if (cfg.kb !== oldKb) { F.dt = ''; const nb = kbBuild(cfg.kb); if (F.he && nb && (nb.elem || nb.mix)) F.he = ''; } S.hbRes = null; tabAutoKm(); }; });
+    body.querySelectorAll('[id^="au-km-"]').forEach((el) => { if (el.tagName === 'BUTTON') return; el.onchange = () => { if (el.id.startsWith('au-km-mh-') && el.checked && body.querySelectorAll('[id^="au-km-mh-"]:checked').length > 3) { el.checked = false; UI.notify('Tối đa 3 hệ'); return; } const oldKb = cfg.kb; auReadCfg('km'); if (cfg.kb !== oldKb) { kmNguThuDu(cfg, oldKb); auSave(); F.dt = ''; const nb = kbBuild(cfg.kb); if (F.he && nb && (nb.elem || nb.mix)) F.he = ''; } S.hbRes = null; tabAutoKm(); }; });
     body.querySelectorAll('[id^="hb-"]').forEach((el) => { if (el.tagName === 'SELECT' || el.type === 'checkbox') el.onchange = () => { rd(); S.hbRes = null; tabAutoKm(); }; });
-    body.querySelectorAll('button[data-adv]').forEach((bt) => { bt.onclick = () => { cfg.kb = bt.dataset.adv; if (cfg.kb === 'mix') cfg.mixHe = (bt.dataset.advhe || '').split(',').filter((h) => HE9.includes(h)).slice(0, 3); F.dt = ''; if (F.he) F.he = ''; auSave(); S.hbRes = null; tabAutoKm(); }; });
+    body.querySelectorAll('button[data-adv]').forEach((bt) => { bt.onclick = () => { const kb0 = cfg.kb; cfg.kb = bt.dataset.adv; kmNguThuDu(cfg, kb0); if (cfg.kb === 'mix') cfg.mixHe = (bt.dataset.advhe || '').split(',').filter((h) => HE9.includes(h)).slice(0, 3); F.dt = ''; if (F.he) F.he = ''; auSave(); S.hbRes = null; tabAutoKm(); }; });
     body.querySelectorAll('button[data-advj]').forEach((bt) => { bt.onclick = () => { const f = S.dd; f.q = bt.dataset.advn || ''; f.loai = ''; f.qg = ''; f.cl = ''; f.phai = ''; f.he = ''; f.kham = false; f.may = false; f.focus = bt.dataset.advj; f.n = 30; S.abort = true; S.tab = 'tcd'; render(); }; });
-    body.querySelectorAll('tr[data-hk]').forEach((tr) => { tr.onclick = () => { cfg.kb = tr.dataset.hk; F.dt = ''; auSave(); S.hbRes = null; tabAutoKm(); }; });
+    body.querySelectorAll('tr[data-hk]').forEach((tr) => { tr.onclick = () => { const kb0 = cfg.kb; cfg.kb = tr.dataset.hk; kmNguThuDu(cfg, kb0); F.dt = ''; auSave(); S.hbRes = null; tabAutoKm(); }; });
     body.querySelector('#hb-rescan').onclick = () => { S.hbRes = null; try { localStorage.removeItem('vkx_hb_scan'); } catch (e) { /* bỏ qua */ } tabAutoKm(); UI.notify('Đã quét lại ' + C().items.size + ' món trong dữ liệu game.'); };
     body.querySelector('#au-run').onclick = () => auStartKm(false);
     body.querySelector('#au-prev').onclick = () => auStartKm(true);
@@ -9693,8 +9883,19 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   // ───── 7.13.0-thu.29: VIỆT HÓA mã không dấu (cờ, khóa điều kiện, hiệu ứng lạ) ─────
   // Học cách viết có dấu từ chính chữ của game (tên + lời kể mọi sự kiện, tên vật, nơi, chuỗi): đếm từ đơn và cặp từ theo dạng bỏ dấu,
   // gặp mã `gap_thuyen_rong` thì ghép lại "gặp thuyền rồng" theo dạng hay gặp nhất (ưu tiên cặp từ). Không đoán được thì giữ nguyên.
+  // 8.4.2-thu.3: quét chữ có dấu thành generator (nhường luồng ~30 ms một lần khi chạy nền qua skViBuoc); skViMap() gọi trực tiếp thì chạy một mạch như cũ
   function skViMap() {
     const ct = C(); if (S.skVi && S.skVi.ct === ct) return S.skVi;
+    if (!(S.skViG && S.skViG.ct === ct)) S.skViG = { ct, it: skViGen(ct) };
+    const g = S.skViG; while (!g.it.next().done) { /* chạy hết */ }
+    return S.skVi;
+  }
+  function skViBuoc() { // true = xong
+    const ct = C(); if (S.skVi && S.skVi.ct === ct) return true;
+    if (!(S.skViG && S.skViG.ct === ct)) S.skViG = { ct, it: skViGen(ct) };
+    return !!S.skViG.it.next().done;
+  }
+  function* skViGen(ct) {
     const uni = new Map(), bi = new Map();
     const add = (m, k, w) => { let x = m.get(k); if (!x) m.set(k, x = new Map()); x.set(w, (x.get(w) || 0) + 1); };
     const fm = new Map(), fw = (w) => { let r = fm.get(w); if (r === undefined) { r = fold(w); fm.set(w, r); } return r; }; // thu.34: nhớ fold từng từ (gặp lại rất nhiều)
@@ -9706,12 +9907,12 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       }
     };
     const quet = (o, d) => { if (d > 8 || o === null || o === undefined) return; if (typeof o === 'string') { hoc(o); return; } if (typeof o !== 'object') return; for (const v of Array.isArray(o) ? o : Object.values(o)) quet(v, d + 1); };
+    let tY = Date.now();
     try {
-      for (const k of ['encounters', 'items', 'noiChon', 'chains', 'quocGia', 'theCuc', 'enemies', 'npc', 'thuatNgu']) { const m = ct[k]; if (m && m.values) for (const v of m.values()) quet(k === 'encounters' ? v : { ten: v && v.ten, mo_ta: v && v.mo_ta }, 0); }
+      for (const k of ['encounters', 'items', 'noiChon', 'chains', 'quocGia', 'theCuc', 'enemies', 'npc', 'thuatNgu']) { const m = ct[k]; if (m && m.values) for (const v of m.values()) { quet(k === 'encounters' ? v : { ten: v && v.ten, mo_ta: v && v.mo_ta }, 0); if (Date.now() - tY > 30) { yield; tY = Date.now(); } } }
     } catch (e) { /* bỏ qua */ }
     const best = (m) => { let w = null, n = 0; for (const [k, v] of m) if (v > n) { n = v; w = k; } return w; };
-    S.skVi = { ct, uni, bi, best };
-    return S.skVi;
+    S.skVi = { ct, uni, bi, best }; S.skViG = null;
   }
   function skViHoa(s) {
     s = String(s ?? ''); if (!s || /[^\x00-\x7f]/.test(s)) return s.replace(/_/g, ' ');
@@ -9902,6 +10103,13 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     return X;
   }
   // Dựng chỉ mục theo lô (nhường luồng giữa các lô), báo tiến độ qua onP(đã, tổng). Gọi lại khi đang dựng thì nối vào cùng lượt.
+  // 8.4.2-thu.6: chỉ mục đã có thì trả về, chưa có thì KHÔNG dựng đồng bộ: kích dựng theo lô ở nền, xong gọi redo (nếu có), trả null.
+  function skIndexNhe(redo) {
+    const Cc = C();
+    if (S.skx && S.skx.src === Cc) return S.skx;
+    try { skIndexLo().then(() => { try { if (redo) redo(); } catch (e) { /* bỏ qua */ } }).catch(() => {}); } catch (e) { /* bỏ qua */ }
+    return null;
+  }
   function skIndexLo(onP) {
     const Cc = C();
     if (S.skx && S.skx.src === Cc) return Promise.resolve(S.skx);
@@ -9911,10 +10119,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       const defs = [...Cc.encounters.values()], X = skXMoi(Cc); let i = 0;
       const buoc = () => {
         if (C() !== Cc) { S.skxP = null; ok(skIndex()); return; } // dữ liệu đổi giữa chừng: dựng lại một mạch cho chắc
-        if (i === 0) { try { skViMap(); } catch (e) { /* bỏ qua */ } } // học chữ có dấu: một lô riêng
+        if (i === 0) { let xong = true; try { xong = skViBuoc(); } catch (e) { /* bỏ qua */ } if (xong) i = 1; } // học chữ có dấu: nhiều lô nhỏ
         else { const t0 = Date.now(); while (i <= defs.length && Date.now() - t0 < 40) { skIndexMot(X, defs[i - 1]); i++; } }
-        if (i === 0) i = 1;
-        job.cbs.forEach((f) => { try { f(Math.min(i - 1, defs.length), defs.length); } catch (e) { /* bỏ qua */ } });
+        job.cbs.forEach((f) => { try { f(Math.max(0, Math.min(i - 1, defs.length)), defs.length); } catch (e) { /* bỏ qua */ } });
         if (i > defs.length) { S.skx = X; S.skxP = null; ok(X); return; }
         setTimeout(buoc, 0);
       };
@@ -10096,7 +10303,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         if (sc && sc.lc.length && dep < 2) themXt('Cảnh tiếp (' + sc.lc.length + ' lựa chọn)', xemTruoc(sc.lc, a));
         return `<div style="font-size:12px;margin:2px 0">➜ ${lb}${dk}<b>sang cảnh tiếp</b>: <i>${tom}</i></div>`;
       }
-      if (dep < 1) for (const id of n.enc.slice(0, 8)) { let aa = null; try { aa = skIndex().byId.get(id); } catch (e) { aa = null; } if (aa && aa.lc.length) themXt(encTen(id) + ' (' + aa.lc.length + ')', xemTruoc(aa.lc, aa)); }
+      if (dep < 1) for (const id of n.enc.slice(0, 8)) { let aa = null; try { const XX = skIndexNhe(); aa = XX ? XX.byId.get(id) : null; } catch (e) { aa = null; } if (aa && aa.lc.length) themXt(encTen(id) + ' (' + aa.lc.length + ')', xemTruoc(aa.lc, aa)); }
       return `<div style="font-size:12px;margin:2px 0">➜ ${lb}${dk}<b>${n.enc.length > 1 ? 'một trong ' + n.enc.length + ' sự kiện (ngẫu nhiên)' : 'sang sự kiện'}</b>: ${n.enc.map((id) => tcLk('e', id, encTen(id))).join(' · ')}</div>`;
     }).join('');
     const go = !nexts.length ? '' : seen !== undefined ? `<div class="vk-mu" style="font-size:12px;margin-top:4px">➜ Tiếp theo giống lối ${seen}.</div>`
@@ -10639,7 +10846,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     if (!has('placeActivities')) return { rong: 'Game API thiếu placeActivities, không liệt kê được.' };
     const c = ctx(), slot = run.viTri, ds = [];
     let acts = []; try { acts = S.core.placeActivities(c, slot) || []; } catch (e) { return { rong: 'Không đọc được việc ở nơi này: ' + esc(String((e && e.message) || e)) }; }
-    const X = skIndex(), seen = new Set();
+    const X = skIndexNhe(redo); if (!X) return { rong: 'Đang đọc dữ liệu sự kiện…' };
+    const seen = new Set();
     for (const ac of acts) {
       if (!ac || ac.loai === 'tien_ich' || seen.has(ac.id)) continue;
       const def = C().encounters.get(ac.id); if (!def || def.kind === 'cua_hang') continue;
@@ -10790,10 +10998,10 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   const AU_DEF = {
     buon: { maxY: 3, banY: 5, von: 60, giu: 100, lai: 20, chuyen: 5, hiem: 'ngang_suc', tho: 15, toc: 'nhanh', sk: true, sks: false, thoGia: 0, nhieu: true, banTui: false, tuiLoai: [], tuiPham: 3, tuiGiu: 5, tuiKhong: '', tuiRieng: '', tuiDs: '' },
     san: { maxY: 3, mau: ['an_toan', 'ngang_suc', 'hiem'], tran: 20, thuong: 2, tho: 15, rut: 30, mucLa: 'chay', cach: 'ngau', kt: true, neDebuff: true, giaiTu: 0, giaiDen: 5, muc: ['thuong'], toc: 'nhanh', sk: true, sks: false, dkt: true, dktThang: 90, dktNang: 10, dktSom: 30, duong: false, duongMax: 30, danThuong: true, nlMuc: [] },
-    km: { mode: 'bal', dir: 'tien', kb: '', prio: true, bk: 5, ratio: '55', iters: 3000, mo: false, moMax: 1, two: false, mixHe: [], bo: '1', fb: 'bal', ln: 'tho', tay: false, bos: [], thuTu: 'danh,tu,dot', keep: 'tu', moBo: false, watch: false, core: [], coreBo: '', coreW: 'manh', phamCao: true, phMinCp: 0, phMinPk: 0, phMinAuto: false, cam: [], heChi: [] },
+    km: { mode: 'bal', dir: 'tien', kb: '', prio: true, bk: 5, ratio: '55', iters: 3000, mo: false, moMax: 1, two: false, mixHe: [], bo: '1', fb: 'bal', ln: 'tho', tay: false, bos: [], thuTu: 'danh,tu,dot', keep: 'tu', moBo: false, watch: false, core: [], coreBo: '', coreW: 'manh', phamCao: true, phMinCp: 0, phMinPk: 0, phMinAuto: false, cam: [], heChi: [], pet: '', petN: 0 },
     sd: { on: false, ds: [], duTru: 0, bao: true },
     dg: { ds: [], noi: '', tho: 15, giuLt: 0, toc: 'nhanh', cach: 'yen' },   // 7.17.4-thu.30: Auto Đấu Giá
-    rr: { pham: ['thien', 'bien_di'], he: [], heMode: 'any', tc: [], join: 'and', max: 3000, toc: 'nhanh', swap: false, lp: false, dl: 'normal', lh: false, lhIds: [], lhKeep: 0, tm: { nuoc: '', xt: '', he: '', lc: '', tc: '' } },
+    rr: { pham: ['thien', 'bien_di'], he: [], heMode: 'any', tc: [], join: 'and', max: 3000, smp: 400, toc: 'nhanh', swap: false, lp: false, dl: 'normal', lh: false, lhIds: [], lhKeep: 0, tm: { nuoc: '', xt: '', he: '', lc: '', tc: '' } },
   };
   // Hằng số lấy từ code game; mô tả trên giao diện đọc lại từ đây nên đổi một chỗ là khớp hết.
   let AU_T4 = 3, AU_ZAN = 2; // Săn cạn: tối đa AU_T4 lần mỗi nơi, hồi 1 lần mỗi AU_ZAN năm
@@ -11493,6 +11701,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     // 7.17.4-thu.29: Ưu Tiên Phẩm Cao mặc định BẬT; cấu hình cũ (mặc định tắt) được bật một lần, sau đó tôn trọng lựa chọn của người dùng.
     if (AU.cfg.km.v_pc1 !== 1) { AU.cfg.km.v_pc1 = 1; AU.cfg.km.phamCao = true; }
     AU.cfg.km.heChi = (Array.isArray(AU.cfg.km.heChi) ? AU.cfg.km.heChi : []).filter((h) => HE[h]);   // 8.3.2-thu.2
+    if (!['du', 'chinh', 'bay'].includes(AU.cfg.km.pet)) AU.cfg.km.pet = ''; AU.cfg.km.petN = Math.max(0, Math.min(5, Math.floor(+AU.cfg.km.petN || 0)));   // 8.4.2-thu.5
     AU.cfg.km.cam = (Array.isArray(AU.cfg.km.cam) ? AU.cfg.km.cam : []).filter((id) => typeof id === 'string'); AU.cfg.km.phMinCp = Math.max(0, Math.min(8, Math.floor(+AU.cfg.km.phMinCp || 0))); AU.cfg.km.phMinPk = Math.max(0, Math.min(8, Math.floor(+AU.cfg.km.phMinPk || 0))); AU.cfg.km.phMinAuto = !!AU.cfg.km.phMinAuto;
     if (AU.cfg.km.v619 !== 1) { AU.cfg.km.v619 = 1; AU.cfg.km.bk = 5; if (!AU.cfg.km.dir) AU.cfg.km.dir = 'tien'; }
     { const k = AU.cfg.km; if (!(o.km && o.km.bo) && k.two) k.bo = '2'; if (k.bo === '2') { k.bo = 'n'; if (!(o.km && o.km.thuTu)) { k.bos = ['tu', 'danh']; k.thuTu = 'tu,danh,dot'; } } if (k.bo !== 'n') k.bo = '1'; k.two = k.bo === 'n'; if (!Array.isArray(k.bos)) k.bos = []; k.bos = k.bos.filter((m) => ['danh', 'tu', 'dot'].includes(m)); if (typeof k.thuTu !== 'string') k.thuTu = 'danh,tu,dot'; if (!['danh', 'tu', 'dot'].includes(k.keep)) k.keep = 'tu'; if (!['tu', 'danh', 'bal', 'dot'].includes(k.fb)) k.fb = 'bal'; if (!['tho', 'dai', 'nay'].includes(k.ln)) k.ln = 'tho'; if (!Array.isArray(k.mixHe)) k.mixHe = []; } // 7.12.4-thu.8: ô tích "Xếp 2 Bộ" thành ô chọn Số Bộ
@@ -11522,6 +11731,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
 
   // Gọi một hàm của game rồi kiểm tra có lỗi không (game nuốt lỗi vào state.error, không ném ra ngoài).
   function auCall(fn) {
+    S.rev = (S.rev | 0) + 1; // 8.4.2-thu.3: Tool gửi lệnh game: báo cho kyState()
     const g = G(), e0 = g.state.error, r0 = g.state.run;
     try { fn(g); } catch (e) { return { ok: false, err: String((e && e.message) || e) }; }
     const s = g.state, e1 = s.error;
@@ -12097,12 +12307,13 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
 
   // Đặt các thiết lập chung của bộ xếp theo cấu hình Auto, trả về hàm khôi phục.
   function auKmPin(c) {
-    const old = { dir: S.dir, prio: S.prio, full: S.full, biasK: S.biasK, kmBuild: S.kmBuild, hbRatio: S.hbRatio, hbLite: S.hbLite, huyetMs: S.huyetMs, kmCore: S.kmCore, kmCoreW: S.kmCoreW, phamCao: S.phamCao, tocBoi: S.tocBoi, phMin: S.phMin, kmCam: S.kmCam, kmHeChi: S.kmHeChi };
+    const old = { dir: S.dir, prio: S.prio, full: S.full, biasK: S.biasK, kmBuild: S.kmBuild, hbRatio: S.hbRatio, hbLite: S.hbLite, huyetMs: S.huyetMs, kmCore: S.kmCore, kmCoreW: S.kmCoreW, phamCao: S.phamCao, tocBoi: S.tocBoi, phMin: S.phMin, kmCam: S.kmCam, kmHeChi: S.kmHeChi, kmPet: S.kmPet };
     { const ids = (Array.isArray(c.core) ? c.core : []).filter((id) => { try { return !!C().items.get(id); } catch (e) { return false; } }); S.kmCore = ids.length ? new Set(ids) : null; S.kmCoreW = KM_CORE_W[c.coreW] ? KM_CORE_W[c.coreW][1] : KM_CORE_W.manh[1]; } // 7.14.0-thu.3
     S.huyetMs = c.iters <= 1500 ? 6000 : c.iters >= 6000 ? 25000 : 12000;   // Nhanh 6 giây, Vừa 12, Kỹ 25
     S.tocBoi = c.iters <= 1500 ? 0.5 : c.iters >= 6000 ? 2 : 1; S.phamCao = !!c.phamCao; S.phMin = { cp: Math.max(0, Math.min(8, Math.floor(+c.phMinCp || 0))), pk: Math.max(0, Math.min(8, Math.floor(+c.phMinPk || 0))), auto: !!c.phMinAuto }; if (!S.phMin.cp && !S.phMin.pk && !S.phMin.auto) S.phMin = null;
     { const ids = (Array.isArray(c.cam) ? c.cam : []).filter((id) => { try { return !!C().items.get(id); } catch (e) { return false; } }); S.kmCam = ids.length ? new Set(ids) : null; }   // thu.29
     { const hc = (Array.isArray(c.heChi) ? c.heChi : []).filter((h) => HE[h]); S.kmHeChi = hc.length ? hc : null; }   // 8.3.2-thu.2
+    S.kmPet = (c.pet === "du" || c.pet === "chinh" || c.pet === "bay") ? { mode: c.pet, n: Math.max(0, Math.min(5, Math.floor(+c.petN || 0))) } : null;   // 8.4.2-thu.5: Đàn Linh Vật
     // 7.17.4-thu.4: Độ Kỹ nhân thêm ngân sách giờ greedy / anneal / polish / lấp ô (×0,5 / ×1 / ×2); Ưu tiên phẩm cao
     try { hbScanBuilds(); } catch (e) { /* dùng danh sách tĩnh */ }
     const b = c.kb ? kbBuild(c.kb) : null;
@@ -12137,6 +12348,35 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     auLog('Đã tẩy ô ' + where + ' từ ' + heTen(top.from) + ' sang ' + heTen(top.to) + ' (lợi ≈ +' + Math.round(top.gain) + ' điểm). Lượt Theo Dõi sẽ xếp lại.', 'vk-ok');
   }
   // Liệt kê món đang chiếm từng ô huyệt trong cách xếp `manh`.
+  // 8.4.2-thu.5: dòng "Ngự lực: dùng X / Y (đàn N con)" cho cách xếp `manh`; { t, thieu }. '' khi không xét đàn. Gọi trong auKmPin (S.kmPet đang đặt).
+  // 8.4.2-thu.7: bảng ngự lực của đàn ĐANG MANG trên kinh mạch hiện tại (không cần chọn chế độ). Trả HTML ('' nếu thiếu hàm lõi).
+  function petNowHtml(nv) {
+    try {
+      const K = S.core, c = C();
+      if (typeof K.familiarCostOf !== 'function' || typeof K.familiarBudget !== 'function') return '';
+      const byId = new Map((nv.familiars || []).filter(Boolean).map((f) => [f.id, f])), team = [];
+      for (const id of [nv.petSlot].concat(nv.familiarSlots || [])) { const f = id && byId.get(id); if (f && !team.includes(f)) team.push(f); }
+      if (!team.length) return '<div class="vk-mu" style="font-size:12px;margin:2px 0 6px">Ngự lực hiện tại: chưa mang con nào.</div>';
+      const ten = (f) => tcWord(f.name || (c.enemies.get(f.template) || {}).ten || String(f.template).replace('enemy.', '').replace(/_/g, ' '));
+      let used = 0; const ls = team.map((f) => {
+        const g = Number(K.familiarCostOf(nv, c, f)) || 0; used += g;
+        let gg = 0; try { if (typeof K.familiarDiscount === 'function' && f.kind !== 'linh_thu') gg = Number(K.familiarDiscount(nv, c, f.kind)) || 0; } catch (e) { gg = 0; }
+        return esc(ten(f)) + ' ' + num(g, 1) + (gg > 0 ? ' (giảm ' + (gg <= 1 ? pct(gg, 0) : num(gg, 1)) + ' nhờ tâm pháp)' : '');
+      });
+      const budget = Number(K.familiarBudget(nv, c)) || 0;
+      return '<div style="font-size:12.5px;margin:2px 0 6px"><b class="' + (used > budget ? 'vk-bad' : 'vk-ok') + '">Ngự lực hiện tại: dùng ' + num(used, 1) + ' / ' + num(budget, 1) + '</b> <span class="vk-mu">(đàn ' + team.length + ' con: ' + ls.join('; ') + ')</span></div>';
+    } catch (e) { return ''; }
+  }
+  const kmNguThuDu = (c, kb0) => { try { if (c.kb === 'ngu_thu' && kb0 !== 'ngu_thu' && !c.pet && (nvNow().familiars || []).some(Boolean)) c.pet = 'du'; } catch (e) { /* bỏ qua */ } };   // đổi sang Ngự Thú Tu mà Đàn Linh Vật đang "Không Xét" thì đặt "Đủ Ngự Lực"
+  function kmNguLucText(nv, manh) {
+    try {
+      const PC = petCtx(nv); if (!PC) return null;
+      const nv2 = clone(nv); nv2.kinhMach.manh = manh.map((m) => ({ ...m }));
+      const c = C(), u = petUse(PC, nv2, c), ten = (f) => tcWord(f.name || (c.enemies.get(f.template) || {}).ten || String(f.template).replace('enemy.', '').replace(/_/g, ' '));
+      const t = 'Ngự lực: dùng ' + num(u.used, 1) + ' / ' + num(u.budget, 1) + ' (đàn ' + PC.team.length + ' con: ' + PC.team.map(ten).join(', ') + ')' + (u.closed ? '; ' + u.closed + ' con chưa mở loại (thiếu tâm pháp đúng loại)' : '') + (u.thieu > 0 ? '. THIẾU ngự lực: không có bộ nào trong túi đủ cho đàn này, giảm số con hoặc đổi đàn.' : '.');
+      return { t, thieu: u.thieu };
+    } catch (e) { return null; }
+  }
   function kmHuyetText(nv, manh) {
     try {
       const K = S.core, c = C(), g = K.luoiKinhMach(c, nv), hy = [...hySet(g, nv.kinhMach)].sort((a, b) => a - b);
@@ -12228,6 +12468,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       }
       st.last = sols.map((s) => ({ cur: s.cur.score, best: s.best.score }));
       sols.forEach((s, k) => { const t = kmHuyetText(nv, s.best.manh); if (t) auLog((useTwo ? auKmBoTen(modes[k]) + ' · ' : '') + t); });
+      sols.forEach((s, k) => { const r = kmNguLucText(nv, s.best.manh); if (r) auLog((useTwo ? auKmBoTen(modes[k]) + ' · ' : '') + r.t, r.thieu > 0 ? 'vk-bad' : 'vk-ok'); });   // 8.4.2-thu.5
       AU.kmPrev = { nv, modes, sols };
       if (st.dry) { st.phase = 'done'; return { ok: true, note: 'Đã tính xong, chưa áp dụng (xem trước).' }; }
       // 3) Áp dụng
@@ -13162,6 +13403,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       c.mode = pick('au-km-mode', AU_KM_MODE.map((x) => x[0]), c.mode); c.dir = pick('au-km-dir', ['', 'tien', 'ma'], c.dir);
       c.kb = sel('au-km-kb', c.kb); if (c.kb && !kbBuild(c.kb)) c.kb = '';
       c.iters = Number(pick('au-km-it', AU_KM_IT.map((x) => x[0]), c.iters)); c.ratio = pick('au-km-ratio', Object.keys(HB_RATIO), c.ratio);
+      if (q('au-km-pet')) { c.pet = pick('au-km-pet', ['', 'du', 'chinh', 'bay'], c.pet || ''); c.petN = Math.floor(num0('au-km-petn', 0, 5, c.petN || 0)); }   // 8.4.2-thu.5
       if (q('au-km-hc-kim')) c.heChi = Object.keys(HE).filter((h) => ck('au-km-hc-' + h, false));   // 8.3.2-thu.2
       c.bk = AU_KM_BK; c.prio = ck('au-km-prio', c.prio); c.phamCao = ck('au-km-phamcao', c.phamCao);
       if (q('au-km-phmcp')) { c.phMinCp = Math.floor(num0('au-km-phmcp', 0, 8, c.phMinCp)); c.phMinPk = Math.floor(num0('au-km-phmpk', 0, 8, c.phMinPk)); c.phMinAuto = ck('au-km-phauto', c.phMinAuto); }   // 7.17.4-thu.29
@@ -13737,10 +13979,45 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   // Game gieo Linh Căn và Thể Chất cùng lúc với cả kiếp mới, từ một "hạt giống" (seed): cùng hạt giống + cùng dữ liệu Vong Xuyên thì luôn ra đúng một nhân vật.
   // Auto gọi chính hàm tạo kiếp của game (K.createRun) trên BẢN SAO dữ liệu để dò nhiều hạt giống mà không đụng bản lưu; gặp tư chất ưng ý
   // mới gọi game.newRun({ seed }) đúng một lần. Vì vậy các lần dò hỏng không tốn gì, không để lại dấu vết trong game.
-  const RR_PHAM = [['thien', 'Thiên'], ['bien_di', 'Biến Dị'], ['song', 'Song'], ['tap', 'Tạp'], ['vo', 'Vô']];
+  const RR_PHAM = [['thien', 'Thiên'], ['bien_di', 'Biến Dị'], ['song', 'Song'], ['tap', 'Tạp'], ['vo', 'Vô'], ['ngu_hanh', 'Ngũ Hành']]; // dự phòng; danh sách thật dựng sống từ game ở rrPham()
+  const RR_PHAM_CU = ['thien', 'bien_di', 'song', 'tap', 'vo'];
+  // Phẩm linh căn đọc sống từ game (phẩm mới game thêm tự hiện): các phẩm cũ trước, khóa mới sau. Lỗi/thiếu hàm lõi thì dùng RR_PHAM.
+  function rrPham() {
+    try {
+      const K = S.core;
+      if (typeof K.phamLinhCanKeys === 'function') {
+        const keys = K.phamLinhCanKeys(C());
+        if (Array.isArray(keys) && keys.length) {
+          const ten = (k) => { let t = ''; try { if (typeof K.linhCanDef === 'function') t = (K.linhCanDef(C(), k) || {}).ten || ''; } catch (e) { /* bỏ qua */ } return t || (RR_PHAM.find((x) => x[0] === k) || [k, k])[1]; };
+          const ks = keys.map(String), thuTu = RR_PHAM_CU.filter((k) => ks.includes(k)).concat(ks.filter((k) => !RR_PHAM_CU.includes(k)));
+          return thuTu.map((k) => [k, ten(k)]);
+        }
+      }
+    } catch (e) { /* dùng dự phòng */ }
+    return RR_PHAM;
+  }
   const RR_HE = ['kim', 'moc', 'thuy', 'hoa', 'tho', 'loi', 'bang', 'phong', 'am'];
+  // Ngũ hành luôn đủ 5 hệ gốc (đọc sống từ K.NGU_HANH nếu có); chỉ hệ ngoài 5 hệ này mới là điều kiện thật.
+  function rrNgu() { try { const a = S.core && S.core.NGU_HANH; if (Array.isArray(a) && a.length) return a.map(String); } catch (e) { /* dự phòng */ } return ['kim', 'moc', 'thuy', 'hoa', 'tho']; }
+  const rrChiNgu = (ph) => ph.length === 1 && ph[0] === 'ngu_hanh';
+  const rrHeNgoai = (he) => { const n = rrNgu(); return he.filter((h) => !n.includes(h)); };
+  // 8.4.2-thu.6: hệ mà thể chất mang thêm (đọc sống dac_tinh: than_<he> = true hoặc ep_<he> > 0; vd Cửu U Thể: than_am, ep_am → Ám). Nhớ theo C() vì rrMatch chạy mỗi lần dò.
+  const RR_TCHE = { c: null, m: new Map() };
+  function rrHeTheChat(tcId) {
+    const cc = C(); if (RR_TCHE.c !== cc) { RR_TCHE.c = cc; RR_TCHE.m = new Map(); }
+    const id = String(tcId || ''); if (!id) return [];
+    if (RR_TCHE.m.has(id)) return RR_TCHE.m.get(id);
+    let out = [];
+    try {
+      const def = tcMap()[id], dt = (def && def.dac_tinh) || {};
+      out = RR_HE.filter((h) => dt['than_' + h] === true || +dt['ep_' + h] > 0);
+    } catch (e) { out = []; }
+    RR_TCHE.m.set(id, out); return out;
+  }
+  const rrHeTcTxt = (tcId) => rrHeNgoai(rrHeTheChat(tcId)).map(heTen).join('/');
   const RR_HEMODE = [['any', 'Có Ít Nhất Một Hệ Trong Danh Sách'], ['all', 'Có Đủ Mọi Hệ Trong Danh Sách'], ['main', 'Hệ Đầu (Chủ Hệ) Thuộc Danh Sách']];
-  const RR_SAMPLE = 400; // số lần dò thử khi bấm “Dò Tỉ Lệ”
+  const RR_SAMPLE = 400; // số lần dò thử mặc định khi bấm “Dò Tỉ Lệ” (8.4.2-thu.7: chỉnh được qua cfg.rr.smp, 10–20.000)
+  const rrSmp = (c) => Math.max(10, Math.min(20000, Math.floor(+(c || AU.cfg.rr).smp) || RR_SAMPLE));
   // Đạo Lộ = độ khó game chọn lúc vào kiếp (difficulty). Nhãn và hệ số điểm đúng như game: Ki = {easy, normal, hardcore}, UH = {0.75, 1, 1.25}.
   const RR_DAOLO = [['easy', 'Thuận Thiên'], ['normal', 'Trung Đạo'], ['hardcore', 'Nghịch Thiên'], ['oneLife', 'Tuyệt Mệnh']]; // thứ tự như game; mặc định vẫn 'normal'
   const RR_DAOLO_HINT = { easy: 'điểm luân hồi ×0,75', normal: 'điểm luân hồi ×1', hardcore: 'điểm luân hồi ×1,25; bỏ Thiên Mệnh', oneLife: 'một mạng, không điểm luân hồi' };
@@ -13806,7 +14083,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     res.spent = p0 - (Number(g.state.meta.diemLuanHoi) || 0);
     return res;
   }
-  const rrPhamTen = (p) => (RR_PHAM.find((x) => x[0] === p) || [p, String(p)])[1];
+  const rrPhamTen = (p) => (rrPham().find((x) => x[0] === p) || [p, String(p)])[1];
   const rrHeStr = (he) => (he && he.length ? he.map(heTen).join(' · ') : 'không hệ');
   const rrTcTen = (id) => { try { const t = C().theChat.get(id); return t ? t.ten : String(id).replace(/^the_chat\./, ''); } catch (e) { return String(id); } };
   const rrXtTen = (id) => { try { const o = C().origins.get('origin.' + id) || C().origins.get(id); return o ? o.ten : String(id); } catch (e) { return String(id); } };
@@ -13823,11 +14100,12 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     if (!rrTmChon(cfg) && !rrTmMetaCo(m.thienMenh)) return;
     try { S.core.datThienMenh(m, rrTmPatch(cfg.tm), C()); } catch (e) { throw new Error(rrTmThieuTxt(cfg.tm) + ((e && e.message) || e)); }
   }
-  const rrDesc = (r) => 'Linh Căn ' + rrPhamTen(r.pham) + ' (' + rrHeStr(r.he) + ') · Thể Chất ' + rrTcTen(r.tc);
+  const rrDesc = (r) => 'Linh Căn ' + rrPhamTen(r.pham) + ' (' + rrHeStr(r.he) + ')' + (r.pham === 'ngu_hanh' && rrHeTcTxt(r.tc) ? ' + ' + rrHeTcTxt(r.tc) + ' (' + rrTcTen(r.tc) + ')' : '') + ' · Thể Chất ' + rrTcTen(r.tc);
   function rrTheChat() {
     try { return [...C().theChat.values()].map((t) => ({ id: t.id, ten: t.ten, tl: Number(t.ti_le) || 0, mo: t.mo_ta || '' })); } catch (e) { return []; }
   }
-  const rrPhamAll = (c) => c.pham.length === 0 || c.pham.length >= RR_PHAM.length;
+  // Cấu hình cũ tick đủ 5 phẩm cũ (chưa có Ngũ Hành) vẫn hiểu là "mọi phẩm".
+  const rrPhamAll = (c) => c.pham.length === 0 || rrPham().every((p) => c.pham.includes(p[0])) || (RR_PHAM_CU.every((k) => c.pham.includes(k)) && !c.pham.includes('ngu_hanh'));
   const rrActive = (c) => ({ lc: !rrPhamAll(c) || c.he.length > 0, tc: c.tc.length > 0 });
   // Một lần dò có đạt điều kiện không. Điều kiện nào chưa đặt thì coi như qua; nối “Một Trong Hai” chỉ có nghĩa khi cả hai điều kiện cùng được đặt.
   function rrMatch(r, c) {
@@ -13835,7 +14113,10 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     let lcOk = true;
     if (act.lc) {
       lcOk = rrPhamAll(c) || c.pham.includes(r.pham);
-      if (lcOk && c.he.length) {
+      if (lcOk && r.pham === 'ngu_hanh') {
+        const ex = rrHeNgoai(c.he), heR = rrHeNgoai(r.he).concat(rrHeNgoai(rrHeTheChat(r.tc)));   // hệ ngoài của linh căn + hệ ngoài do thể chất mang
+        if (ex.length) lcOk = c.heMode === 'all' ? ex.every((h) => heR.includes(h)) : ex.some((h) => heR.includes(h));
+      } else if (lcOk && c.he.length) {
         lcOk = c.heMode === 'all' ? c.he.every((h) => r.he.includes(h))
           : c.heMode === 'main' ? c.he.includes(r.he[0])
             : r.he.some((h) => c.he.includes(h));
@@ -13849,7 +14130,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     const act = rrActive(c), parts = [];
     if (act.lc) {
       const ph = rrPhamAll(c) ? 'mọi phẩm' : c.pham.map(rrPhamTen).join('/');
-      const he = c.he.length ? ' · hệ ' + (c.heMode === 'all' ? 'đủ ' : c.heMode === 'main' ? 'đầu thuộc ' : 'có ') + c.he.map(heTen).join('/') : '';
+      const ex = rrHeNgoai(c.he), ngu = c.pham.includes('ngu_hanh') && !rrPhamAll(c);
+      const he = ngu && rrChiNgu(c.pham) ? ' (đủ ' + rrNgu().map(heTen).join(' ') + ')' + (ex.length ? ' · thêm hệ ' + (c.heMode === 'all' ? 'đủ ' : '') + ex.map(heTen).join('/') : '')
+        : c.he.length ? ' · hệ ' + (c.heMode === 'all' ? 'đủ ' : c.heMode === 'main' ? 'đầu thuộc ' : 'có ') + c.he.map(heTen).join('/') : '';
       parts.push('Linh Căn ' + ph + he);
     }
     if (act.tc) parts.push('Thể Chất ' + c.tc.map(rrTcTen).join(' hoặc '));
@@ -14014,16 +14297,35 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     });
   }
   const RR_TM_GT = '<div style="font-size:13px;line-height:1.5"><b>Nước Sinh Ra</b>: kiếp tới sinh ở nước này; giá mua bán và phí phường thị theo nước đó. <b>Xuất Thân</b>: nhận quà khởi đầu (ưu điểm) nhưng có thể già hơn lúc bắt đầu hay bị hạn chế nơi khởi đầu (nhược điểm). <b>Hệ Linh Căn</b>: linh căn chắc chắn có hệ này; phẩm vẫn do trời (không ra vô linh căn hay biến dị). <b>Phẩm Linh Căn / Thể Chất</b>: chọn thẳng phẩm hay thể chất từng gặp, trả thêm điểm luân hồi mỗi kiếp; thiếu điểm thì về ngẫu nhiên.<br>Dùng bất kỳ quyền nào: mất thưởng Ngẫu nhiên ×1,2.</div>';
+  // Ô Hệ: chỉ tick Ngũ Hành thì 5 hệ gốc tự tick + khóa (luôn có), chỉ chọn thêm hệ ngoài.
+  function rrHeBoxHtml(c, chk) {
+    const khoa = rrChiNgu(c.pham), n = rrNgu();
+    return RR_HE.map((h) => { const k = khoa && n.includes(h); return k ? chk('rr-he', h, heTen(h), true).replace('type="checkbox"', 'type="checkbox" disabled style="opacity:.55"') : chk('rr-he', h, heTen(h), c.he.includes(h)); }).join('')
+      + (khoa ? '<div class="vk-mu" style="font-size:11px;margin:2px 0">Ngũ hành luôn đủ ' + n.map(heTen).join(', ') + '; chỉ chọn thêm hệ ngoài (' + RR_HE.filter((h) => !n.includes(h)).map(heTen).join(', ') + ') nếu muốn có thêm. Hệ ngoài cũng có thể đến từ thể chất (vd Cửu U Thể → Ám): tick Ám là khớp cả khi thể chất mang hệ đó.</div>' : '');
+  }
+  function rrHeVe() {
+    const box = body.querySelector('#rr-he-box'); if (!box) return;
+    const c = AU.cfg.rr, chk = (cls, val, lab, on) => `<label style="display:inline-flex;gap:5px;align-items:center;margin:3px 12px 3px 0;font-size:13px"><input type="checkbox" class="${cls}" value="${esc(val)}" ${on ? 'checked' : ''}><span>${lab}</span></label>`;
+    const khoa = rrChiNgu(c.pham), was = box.dataset.khoa === '1';
+    if (khoa === was) return;
+    if (!khoa && was) c.he = c.he.filter((h) => !rrNgu().includes(h));
+    box.dataset.khoa = khoa ? '1' : '0';
+    box.innerHTML = rrHeBoxHtml(c, chk);
+    box.querySelectorAll('input').forEach((el) => { el.onchange = () => { rrReadCfg(); rrModePaint(); }; });
+    rrReadCfg();
+  }
   function rrReadCfg() {
     const q = (id) => body.querySelector('#' + id);
     if (!q('rr-max')) return; // tab chưa vẽ
     const c = AU.cfg.rr, picked = (cls) => [...body.querySelectorAll('.' + cls + ':checked')].map((x) => x.value);
-    c.pham = picked('rr-pham').filter((x) => RR_PHAM.some((p) => p[0] === x));
+    c.pham = picked('rr-pham').filter((x) => rrPham().some((p) => p[0] === x));
     c.he = picked('rr-he').filter((x) => RR_HE.includes(x));
+    if (rrChiNgu(c.pham)) c.he = RR_HE.filter((h) => rrNgu().includes(h) || c.he.includes(h));
     c.tc = picked('rr-tc');
     const hm = q('rr-hemode').value; c.heMode = RR_HEMODE.some((x) => x[0] === hm) ? hm : 'any';
     c.join = q('rr-join').value === 'or' ? 'or' : 'and';
     c.max = Math.floor(auClamp(q('rr-max').value, 1, 200000, c.max));
+    if (q('rr-smp')) c.smp = Math.floor(auClamp(q('rr-smp').value, 10, 20000, c.smp || RR_SAMPLE));   // 8.4.2-thu.7
     const tc = q('au-toc'); if (tc && AU_TOC[tc.value]) c.toc = tc.value;
     c.swap = !!q('rr-swap').checked;
     const dl = q('rr-dl'); if (dl) { c.dl = rrDlOk(dl.value); const mo = q('rr-dl-mo'), tn = q('rr-dl-ten'); if (mo) { mo.innerHTML = rrDaoLoHtml(c.dl); rrDlBind(mo); } if (tn) tn.textContent = rrDlTen(c.dl); }
@@ -14044,8 +14346,8 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       const md = rrMode();
       if (!md.ok) { auLog(md.txt, 'vk-bad'); UI.notify(md.txt); auPaint(); return; }
     }
-    AU.run = { kind: 'rr', running: true, stop: false, sample: sample ? RR_SAMPLE : 0, tries: 0, hits: 0, cnt: { p: {}, t: {} }, last: null, found: null, ok: false, msg: '', t0: performance.now(), tEnd: 0, delay: (AU_TOC[c.toc] || AU_TOC.nhanh)[1] };
-    auLog((sample ? 'Bắt đầu dò tỉ lệ (' + RR_SAMPLE + ' lần, không đổi kiếp)' : 'Bắt đầu Auto Reroll Tư Chất') + ' · Đạo Lộ ' + rrDlTen(c.dl) + (!sample && c.lp ? ' · mua hết Lộ Phí Qua Sông khi tìm được' : '') + ' · điều kiện: ' + rrCriteria(c), 'vk-ok');
+    AU.run = { kind: 'rr', running: true, stop: false, sample: sample ? rrSmp(c) : 0, tries: 0, hits: 0, cnt: { p: {}, t: {} }, last: null, found: null, ok: false, msg: '', t0: performance.now(), tEnd: 0, delay: (AU_TOC[c.toc] || AU_TOC.nhanh)[1] };
+    auLog((sample ? 'Bắt đầu dò tỉ lệ (' + rrSmp(c) + ' lần, không đổi kiếp)' : 'Bắt đầu Auto Reroll Tư Chất') + ' · Đạo Lộ ' + rrDlTen(c.dl) + (!sample && c.lp ? ' · mua hết Lộ Phí Qua Sông khi tìm được' : '') + ' · điều kiện: ' + rrCriteria(c), 'vk-ok');
     drawTabs(); auPaint(); rrLoop(AU.run);
   }
   async function rrLoop(st) {
@@ -14135,14 +14437,77 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     if (st.found) rows.push(['Tư Chất Đã Chọn', '<span class="vk-ok">' + esc(rrDesc(st.found)) + '</span>']);
     if (st.lp) rows.push(['Lộ Phí Qua Sông', st.lp.err ? '<span class="vk-bad">' + esc(st.lp.err) + '</span>' : 'Mua ' + st.lp.bought.length + ' món · tốn ' + num(st.lp.spent, 0) + ' điểm' + (st.lp.skipped.length ? ' · bỏ qua ' + st.lp.skipped.length : '')]);
     if (st.lh) rows.push(['Auto Luân Hồi', st.lh.err ? '<span class="vk-bad">' + esc(st.lh.err) + '</span>' : 'Mua ' + st.lh.bought.length + ' bậc · tốn ' + num(st.lh.spent, 0) + ' điểm' + (st.lh.skipped.length ? ' · chưa mua ' + st.lh.skipped.length : '')]);
+    { const dm = []; if (!rrPhamAll(cfg)) for (const k of cfg.pham) dm.push(rrPhamTen(k) + ' ' + (st.cnt.p[k] || 0)); for (const id of cfg.tc) dm.push(rrTcTen(id) + ' ' + (st.cnt.t[id] || 0)); if (dm.length) rows.push(['Đã Gặp Loại Muốn', esc(dm.join(' · ')) + ' / ' + num(st.tries, 0) + ' lần']); }
     rows.push(['Linh Căn Đã Gặp', tally(st.cnt.p, rrPhamTen)]);
     rows.push(['Thể Chất Đã Gặp', tally(st.cnt.t, rrTcTen)]);
     return rows.map((r) => `<div class="vk-row"><span>${r[0]}</span><b style="text-align:right">${r[1]}</b></div>`).join('');
   }
+  // 8.4.2-thu.7: ước tính xác suất một lần dò khớp điều kiện. Trọng số phẩm = ti_le_nac[nấc] của từng phẩm (nấc = bậc mở khóa "mo_khoa.linh_can" trong meta, như lhRows; nấc vượt bảng lấy phần tử cuối, đúng mô tả tiLeNac);
+  // trọng số thể chất = ti_le. Chỉ tính phẩm, thể chất và hệ ngoài do thể chất mang (Ngũ Hành); hệ ngoài do chính linh căn mang, hệ của phẩm khác không tính. Trả { p, ghi } (p = null nếu chưa rõ).
+  function rrUocTinh(c) {
+    const ghi = [], K = S.core, act = rrActive(c);
+    if (!act.lc && !act.tc) return { p: null, ghi: [] };
+    const tcs = rrTheChat(), tong = tcs.reduce((s, t) => s + t.tl, 0) || 1;
+    let pL = 1, pT = 1, gop = false;
+    if (act.lc) {
+      let pPh = null;
+      if (rrPhamAll(c)) pPh = 1;
+      else {
+        try {
+          const meta = rrTmMeta(), nac = Number(((meta && meta.moKhoa) || {})['mo_khoa.linh_can']) || 0;
+          const w = (k) => { const d = K.linhCanDef(C(), k), a = d && d.ti_le_nac; if (!Array.isArray(a) || !a.length) throw new Error('thiếu ti_le_nac'); return Number(a[Math.min(nac, a.length - 1)]) || 0; };
+          const tot = rrPham().reduce((s, p) => s + w(p[0]), 0), sel = c.pham.reduce((s, k) => s + w(k), 0);
+          if (tot > 0) pPh = sel / tot;
+        } catch (e) { pPh = null; }
+      }
+      if (pPh === null) ghi.push('chưa rõ tỉ lệ phẩm linh căn');
+      pL = pPh;
+      const ex = rrHeNgoai(c.he);
+      if (pPh !== null && rrChiNgu(c.pham) && ex.length) {
+        const mang = tcs.filter((t) => { const h = rrHeNgoai(rrHeTheChat(t.id)); return c.heMode === 'all' ? ex.every((x) => h.includes(x)) : ex.some((x) => h.includes(x)); });
+        gop = !!c.tc.length && c.join !== 'or';   // "và": thể chất phải vừa mang hệ vừa nằm trong danh sách tick
+        const dung = gop ? mang.filter((t) => c.tc.includes(t.id)) : mang;
+        pL = pPh * dung.reduce((s, t) => s + t.tl, 0) / tong;
+        ghi.push('hệ ' + ex.map(heTen).join('/') + ' tính qua thể chất: ' + (mang.length ? mang.map((t) => t.ten + ' (' + pct(t.tl / tong, 1) + ')').join(', ') : 'không thể chất nào mang') + '; chưa tính hệ do chính linh căn mang');
+      } else if (c.he.length) ghi.push('chưa tính điều kiện hệ');
+    }
+    if (act.tc && !gop) pT = tcs.filter((t) => c.tc.includes(t.id)).reduce((s, t) => s + t.tl, 0) / tong;
+    let p;
+    if (act.lc && act.tc) p = pL === null ? null : (c.join === 'or' ? 1 - (1 - pL) * (1 - pT) : pL * pT);
+    else p = act.lc ? pL : pT;
+    return { p, ghi };
+  }
+  // Gợi ý chọn thẳng bằng Thiên Mệnh: phẩm / thể chất đang tick mà game cho chọn thẳng (có gia_chon).
+  function rrTmGoiY(c) {
+    const out = [];
+    try {
+      if (!rrTmCo()) return out;
+      const t = rrTmLcTc();
+      if (!rrPhamAll(c) && t.lc) for (const k of c.pham) { const x = t.lc.find((y) => y[0] === k); if (x && x[2] && x[2].gia_chon) out.push(x[1]); }
+      if (t.tc) for (const id of c.tc) { const x = t.tc.find((y) => y[0] === id); if (x && x[2] && x[2].gia_chon) out.push(x[1]); }
+    } catch (e) { /* bỏ qua */ }
+    return out;
+  }
+  function rrUocHtml(c) {
+    let u; try { u = rrUocTinh(c); } catch (e) { return ''; }
+    const gy = rrTmGoiY(c), mu = (t) => `<div class="vk-mu" style="font-size:12px;margin-top:2px">${esc(t)}</div>`;
+    let h = '';
+    if (u.p && u.p > 0) {
+      const n = 1 / u.p;
+      h += `<div style="font-size:12.5px;margin-top:4px">Ước tính khớp ~${pct(u.p, u.p < 0.01 ? 3 : 2)} mỗi lần · kỳ vọng ~${num(Math.round(n), 0)} lần dò (95%: ~${num(Math.round(3 * n), 0)})</div>`;
+      if (n > rrSmp(c)) h += mu('Dò Tỉ Lệ ' + num(rrSmp(c), 0) + ' lần có thể chưa gặp lần nào (cần cỡ ' + num(Math.round(n), 0) + ' lần); tăng ô Số Lần Dò Tỉ Lệ nếu muốn đo.');
+      if (n > (c.max || 0)) h += `<div style="font-size:12.5px;margin-top:2px;color:#c9a032">Quá hiếm so với ${num(c.max || 0, 0)} lần đang đặt.</div>`;
+    } else if (u.p === 0) h += `<div style="font-size:12.5px;margin-top:4px;color:#c9a032">Theo bảng tỉ lệ đọc được, điều kiện này gần như không thể ra.</div>`;
+    else if (u.ghi.length) h += mu('Chưa ước tính được tỉ lệ khớp.');
+    for (const g of u.ghi) h += mu('Ghi chú: ' + g + '.');
+    if (gy.length) h += `<div style="font-size:12.5px;margin-top:2px">Có thể chọn thẳng bằng Thiên Mệnh: ${esc(gy.join('; '))}.</div>`;
+    return h;
+  }
   function rrModePaint() {
     const el = body.querySelector('#rr-mode'); if (!el) return;
     const md = rrMode();
-    el.innerHTML = `<div style="border-left:3px solid ${md.ok ? '#3d8a4a' : '#c9a032'};padding:4px 8px;font-size:13px"><b>${md.ok ? 'Sẵn Sàng' : 'Chưa Chạy Được'}:</b> ${esc(md.txt)}</div><div class="vk-mu" style="font-size:12px;margin-top:4px">Điều Kiện Hiện Tại: ${esc(rrCriteria(AU.cfg.rr))}</div>`;
+    el.innerHTML = `<div style="border-left:3px solid ${md.ok ? '#3d8a4a' : '#c9a032'};padding:4px 8px;font-size:13px"><b>${md.ok ? 'Sẵn Sàng' : 'Chưa Chạy Được'}:</b> ${esc(md.txt)}</div><div class="vk-mu" style="font-size:12px;margin-top:4px">Điều Kiện Hiện Tại: ${esc(rrCriteria(AU.cfg.rr))}</div>${rrUocHtml(AU.cfg.rr)}`;
+    { const sb = body.querySelector('#au-smp'); if (sb) sb.textContent = 'Dò Tỉ Lệ (' + num(rrSmp(AU.cfg.rr), 0) + ' Lần)'; }
     const li = body.querySelector('#rr-lh-info'); if (li) li.textContent = rrLhInfoText();
     const lp = body.querySelector('#rr-lp-info');
     if (lp) { const i = rrLoPhiInfo(); lp.textContent = i ? 'Hiện có ' + num(i.diem, 0) + ' điểm luân hồi; còn ' + i.con + ' món chưa mua, mua hết cần ' + num(i.tong, 0) + ' điểm' + (i.da ? ' (đã mua sẵn ' + i.da + ' món)' : '') + (i.tong > i.diem && i.con ? '; không đủ điểm cho mọi món thì mua từ món rẻ trở lên tới khi hết điểm.' : '.') : 'Chưa đọc được danh sách Lộ Phí Qua Sông.'; }
@@ -14167,9 +14532,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       <div id="rr-mode" style="margin:8px 0"></div>
       <div style="margin:10px 0 2px"><b style="font-size:13px">Linh Căn</b></div>
       <div class="vk-mu" style="font-size:12px">Phẩm chấp nhận <span style="font-size:11px">(bỏ trống hoặc tích hết = mọi phẩm)</span></div>
-      <div>${RR_PHAM.map(([k, t]) => chk('rr-pham', k, t, c.pham.includes(k))).join('')}</div>
+      <div>${rrPham().map(([k, t]) => chk('rr-pham', k, t, c.pham.includes(k))).join('')}</div>
       <div class="vk-mu" style="font-size:12px;margin-top:4px">Hệ muốn có <span style="font-size:11px">(bỏ trống = không xét hệ)</span></div>
-      <div>${RR_HE.map((h) => chk('rr-he', h, heTen(h), c.he.includes(h))).join('')}</div>
+      <div id="rr-he-box">${rrHeBoxHtml(c, chk)}</div>
       ${sel('rr-hemode', 'Cách Xét Hệ', RR_HEMODE, c.heMode)}
       <div style="margin:10px 0 2px"><b style="font-size:13px">Thể Chất</b> <span class="vk-mu" style="font-size:11px">(bỏ trống = chấp nhận mọi thể chất; số % là tỉ lệ gốc, game còn đổi theo xuất thân và bến Vong Xuyên)</span></div>
       <div>${tcs.map((t) => chk('rr-tc', t.id, esc(t.ten), c.tc.includes(t.id), '~' + pct(t.tl / sum, 1))).join('') || '<span class="vk-mu">Không đọc được danh sách Thể Chất.</span>'}</div>
@@ -14177,6 +14542,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       ${sel('rr-join', 'Nối Hai Điều Kiện', [['and', 'Cả Hai (Linh Căn Và Thể Chất)'], ['or', 'Một Trong Hai']], c.join)}
       <div style="margin:10px 0 2px"><b style="font-size:13px">Chạy</b></div>
       ${auFld('rr-max', 'Số Lần Thử Tối Đa', c.max, '(1 – 200.000)')}
+      ${auFld('rr-smp', 'Số Lần Dò Tỉ Lệ', rrSmp(c), '(10 – 20.000; nút Dò Tỉ Lệ dùng số này)')}
       ${auTocSel(c.toc)}
       ${sel('rr-dl', 'Đạo Lộ', RR_DAOLO, c.dl)}
       <div class="vk-mu" style="font-size:11px;margin:-2px 0 4px">Đạo Lộ chọn lúc vào kiếp, không đổi giữa chừng: Thuận Thiên (${RR_DAOLO_HINT.easy}), Trung Đạo (${RR_DAOLO_HINT.normal}), Nghịch Thiên (${RR_DAOLO_HINT.hardcore}), Tuyệt Mệnh (${RR_DAOLO_HINT.oneLife}). Dò và tạo kiếp thật đều theo Đạo Lộ này.</div>
@@ -14193,11 +14559,12 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       ${auFld('rr-lhk', 'Giữ Lại Tối Thiểu', c.lhKeep, '(điểm luân hồi)')}
       <div class="vk-mu" id="rr-lh-info" style="font-size:12px;margin:0 0 4px 22px"></div>
       <label style="display:flex;gap:6px;align-items:flex-start;margin:6px 0;font-size:13px"><input type="checkbox" id="rr-swap" ${c.swap ? 'checked' : ''} style="margin-top:3px"><span>Cho Phép Thay Kiếp Vừa Vào <span class="vk-mu" style="font-size:11px">(chỉ khi kiếp chưa trôi năm nào; kiếp hiện tại bị xóa và thay bằng kiếp mới)</span></span></label>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="vk-btn au-go" id="au-run">Chạy Auto Reroll</button><button class="vk-btn sec au-go" id="au-smp">Dò Tỉ Lệ (${RR_SAMPLE} Lần)</button><button class="vk-btn sec" id="au-stop">Dừng</button></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="vk-btn au-go" id="au-run">Chạy Auto Reroll</button><button class="vk-btn sec au-go" id="au-smp">Dò Tỉ Lệ (${rrSmp(c)} Lần)</button><button class="vk-btn sec" id="au-stop">Dừng</button></div>
       <div class="vk-mu" style="font-size:12px;margin-top:6px">Nên bấm <b>Dò Tỉ Lệ</b> trước để biết điều kiện hiếm cỡ nào; Dò Tỉ Lệ không đổi kiếp và chạy được lúc nào cũng được.</div></div>
     <div class="vk-card"><h3>Tiến Trình</h3><div id="au-st"></div></div>
     <div class="vk-card"><h3>Nhật Ký</h3><div id="au-lg"></div></div>`;
-    body.querySelectorAll('input,select').forEach((el) => { el.onchange = () => { rrReadCfg(); rrModePaint(); }; });
+    body.querySelectorAll('input,select').forEach((el) => { el.onchange = () => { rrReadCfg(); rrHeVe(); rrModePaint(); }; });
+    { const hb = body.querySelector('#rr-he-box'); if (hb) hb.dataset.khoa = rrChiNgu(c.pham) ? '1' : '0'; }
     rrTmWarn(); rrTmInfoPaint(); rrDlBind(body.querySelector('#rr-dl-mo'));
     { const td = body.querySelector('#rr-tm-d'); if (td) td.addEventListener('toggle', () => { RR_TM_MO = td.open; }); }
     body.querySelector('#au-run').onclick = () => rrStart(false);
@@ -14926,7 +15293,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     try { them(((nv.kinhMach || {}).manh || []).filter((m) => m.item === id).length, 'kinh mạch đang gắn'); } catch (e) { /* bỏ qua */ }
     try { const km = nv.kinhMach || {}, act = km.activeLoadout || 0; (km.loadouts || []).forEach((l, i) => { if (i !== act) them(((l && l.pieces) || []).filter((m) => m.item === id).length, 'bộ đã lưu ' + (i + 1)); }); } catch (e) { /* bỏ qua */ }
     try { them((nv.choCat && nv.choCat[id]) || 0, 'đồ chờ cất'); } catch (e) { /* bỏ qua */ }
-    try { const c = ctx(); for (const [slot, nc] of Object.entries(run.noiChon || {})) { const kho = nc && nc.dongPhu && nc.dongPhu.kho; if (kho && kho[id] > 0) them(kho[id], 'kho động phủ ở ' + placeName(c, slot)); } } catch (e) { /* bỏ qua */ }
+    try { let c = null; for (const [slot, nc] of Object.entries(run.noiChon || {})) { const kho = nc && nc.dongPhu && nc.dongPhu.kho; if (kho && kho[id] > 0) { if (!c) c = ctx(); them(kho[id], 'kho động phủ ở ' + placeName(c, slot)); } } } catch (e) { /* bỏ qua */ } // 8.4.2-thu.6: ctx() (clone cả kiếp) chỉ gọi khi thật có món trong kho động phủ
     try { const st = run.tongMon && run.tongMon.storage; if (st && st[id] > 0) them(st[id], 'tĩnh thất tông môn'); } catch (e) { /* bỏ qua */ }
     return out;
   }
@@ -15530,7 +15897,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   UI.skThuong = (encId) => {
     try {
       const f = S.tcs && S.tcs.tce; if (!f || SKC.soi.ban === false || !Array.isArray(f.nhom) || !f.nhom.length) return null;
-      const a = skIndex().byId.get(encId); if (!a) return null;
+      const XX = skIndexNhe(); if (!XX) return null; const a = XX.byId.get(encId); if (!a) return null;
       const co = f.nhom.filter((n) => a.nhomTot.has(n));
       if (f.du ? co.length < f.nhom.length : !co.length) return null;
       return co.map((n) => n === 'tam_ma' ? 'Tâm ma giảm' : SK_NHOM_TEN[n] || n).join(', ');
@@ -16162,8 +16529,15 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   S.timTxt = S.timTxt || {};
   function timChup(k) {
     const chup = () => { try { if (S.tab === k) { const t = (body.textContent || '').replace(/\s+/g, ' ').slice(0, 300000); S.timTxt[k] = { t, ft: fold(t) }; } } catch (e) { /* bỏ qua */ } };
-    chup(); setTimeout(chup, 1500); // tab vẽ chậm (chờ lõi, dựng theo lô) chụp lại lần nữa
+    // 8.4.2-thu.2: không chụp ngay lúc vẽ (đọc textContent + fold 300k ký tự làm nặng khi chuyển tab liên tục): hoãn lúc rảnh, bấm tab khác thì hủy;
+    // chụp lần 2 sau 2 s cho tab vẽ chậm; ô tìm kiếm mở thì tự chụp tab hiện tại trước (timChupNgay)
+    S.chupK = k; S.chupFn = chup; S.chupGen = S.gen;
+    clearTimeout(S.chupT1); clearTimeout(S.chupT2);
+    const roi = (fn) => { if (S.tab !== k) return; try { if (typeof requestIdleCallback === 'function') requestIdleCallback(fn, { timeout: 2000 }); else fn(); } catch (e) { /* bỏ qua */ } };
+    S.chupT1 = setTimeout(() => roi(chup), 700);
+    S.chupT2 = setTimeout(() => roi(chup), 2500);
   }
+  function timChupNgay() { try { if (S.chupFn && S.chupK === S.tab) S.chupFn(); } catch (e) { /* bỏ qua */ } }
   UI.moTab = (k) => timDen(k);
   function timDen(k, q) {
     S.abort = true; S.tab = k; try { UI.open(); } catch (e) { /* bỏ qua */ } render();
@@ -16210,7 +16584,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       nhom('Sự Kiện', ds);
     } catch (e) { /* bỏ qua */ }
     // 5) chữ trong các mục đã mở
-    const trong = [];
+    const trong = []; timChupNgay();
     for (const k of Object.keys(S.timTxt)) {
       const { t, ft } = S.timTxt[k], p = ft.indexOf(f);
       if (p < 0) continue;
@@ -16233,7 +16607,22 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.4.1 · Bản Mod', d: '24/11/2026', now: true,
+            { t: 'Phiên Bản 8.5.0 · Bản Mod', d: '25/11/2026', now: true,
+            moi: [
+                '<b>Auto Build · Đàn Linh Vật:</b> ô mới "Đàn Linh Vật" (Không Xét / Đủ Ngự Lực / Pet Đánh Chính / Bầy Đàn) và "Số Con Muốn Mang"; Auto Build chọn bộ kinh mạch đủ ngự lực để dắt đàn, tính cả giảm giá của tâm pháp đúng loại. Có dòng "Ngự lực hiện tại: dùng X / Y" kèm giá từng con; chọn Ngự Thú Tu thì tự bật Đủ Ngự Lực. Chưa kiểm.',
+                '<b>Auto Reroll · Ước tính tỉ lệ:</b> hiện tỉ lệ khớp mỗi lần và số lần dò kỳ vọng, cảnh báo khi quá hiếm so với số lần đã đặt, gợi ý chọn thẳng bằng Thiên Mệnh; đếm số lần gặp phẩm/thể chất muốn sau mỗi lượt dò. Chưa kiểm.'
+            ],
+            nang: [
+                '<b>Auto Reroll · Ngũ Hành linh căn:</b> thêm phẩm Ngũ Hành (danh sách phẩm đọc thẳng từ game). Chọn Ngũ Hành thì 5 hệ Kim Mộc Thủy Hỏa Thổ tự có, chỉ chọn thêm hệ ngoài; hệ do thể chất mang cũng được tính (Cửu U Thể → Ám). Đã kiểm.',
+                '<b>Auto Reroll · Số lần Dò Tỉ Lệ:</b> tự đặt số lần dò (10–20.000), Tool nhớ số đã đặt. Chưa kiểm.',
+                '<b>Chuyển tab nhanh hơn:</b> bấm liên tục nhiều tab chỉ dựng tab cuối; Bộ món hết lag (trước ~1,5 giây mỗi lần mở); Đột phá & Thọ, Bản đồ, Bản mệnh pháp bảo vào lại gần như ngay; chỉ mục sự kiện dựng ngầm, không làm đơ game. Đã kiểm.'
+            ],
+            sua: [
+                '<b>Thẻ nhân vật:</b> linh căn Ngũ Hành hiện đúng tên thay vì mã ngu_hanh. Đã kiểm.',
+                '<b>Ô gợi ý tên:</b> không còn dồn thêm bộ nghe gõ phím mỗi lần mở tab (gõ càng lâu càng lag). Đã kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.4.1 · Bản Mod', d: '24/11/2026', now: false,
             sua: [
                 '<b>Tự cập nhật:</b> đọc version.json và main.js theo cùng một commit trên GitHub, nên vừa có bản mới là thấy ngay (trước có thể báo "đã là bản mới nhất" thêm vài phút) và không còn lỗi "sai kích thước (… ≠ …)" khi cập nhật đúng lúc GitHub chưa đồng bộ; lệch thì tự thử lại một lần. Chưa kiểm.',
                 '<b>Auto Buôn Bán:</b> ô Vốn Dùng Mỗi Chuyến tự về trong khoảng 1–100% (trước gõ 120 vẫn hiện 120 dù Tool chỉ dùng 100%), ghi rõ luôn chừa phần Luôn Giữ Lại; ô Lãi Tối Thiểu cũng tự kẹp. Chưa kiểm.'
@@ -16792,7 +17181,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     })(UI);
 
     /* ═══════════════ KHỞI ĐỘNG ═══════════════ */
-    gWin.__vkxMerged = UI;
+    gWin.__vkxMerged = UI; vkxMoc("UI");
 
     /* Trợ Lý: chỉ tính toán khi đang xem tab Trợ Lý; rời tab / đóng cửa sổ thì dừng. */
     UI.onSection(function(name, open) {
@@ -17268,11 +17657,13 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
       } });
     } catch (e) { console.error('[tro_ly] addPanel', e); }
 
-    EvMap.install();
-    Ghim.install();
+    EvMap.install(); vkxMoc("EvMap");
+    Ghim.install(); vkxMoc("Ghim");
 
-    NhatKy.init();
+    NhatKy.init(); vkxMoc("NhatKy");
+    vkxMoc("xong");
     })(tt, mod);
+    } catch (e) { console.error("[VKX] lỗi khởi động", e); throw e; }   // 8.4.2-thu.7: in lỗi rồi ném lại (game vẫn biết mod hỏng)
     }
     if (!window.__vkxTuNap && vkxNapBanMoi(tt, mod, chay)) return;
     chay(tt, mod);
