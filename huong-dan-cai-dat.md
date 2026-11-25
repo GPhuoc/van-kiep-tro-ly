@@ -1,4 +1,8 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.6.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.6.1)
+
+## Bản 8.6.1 · Săn yêu không lặp Thôi
+### Sửa lỗi
+- **Auto Săn yêu:** khi chỉ tích Quái Thường mà việc lạ Săn yêu ra con Tinh Anh, Auto không còn lặp mãi "chọn Thôi" nữa mà xem loại quái thật trước rồi vào "Săn loài khác" chọn loài hợp loại và màu đã tích; nếu một nơi bị Thôi 3 lần thì bỏ qua nơi đó. Nhật ký không còn ô vuông lạ quanh tên quái. Chưa kiểm.
 
 ## Bản 8.6.0 · Quan tâm sự kiện
 ### Tính năng mới

@@ -1,9 +1,9 @@
 {
-  "version": "8.6.0",
+  "version": "8.6.1",
   "ngay": "25/11/2026",
-  "kich_thuoc": 1781226,
-  "sha256": "1333072b1b926221db016478248bdbcaa96dea94d979e306b298eb5c3dd0015a",
-  "moi": [
-    "<b>Quan tâm sự kiện:</b> bấm ☆ trên thẻ ở Ngự Linh → Cơ Duyên hoặc Tra cứu Sự kiện để theo dõi. Khi sự kiện hiện trên bản đồ (hoặc có ngay tại nơi đang đứng) Tool báo, bấm báo là đi tới. Đầu tab Cơ Duyên có khung \"Đang Quan Tâm\": đang ở đâu, còn tới năm nào, đi mất mấy năm, cảnh báo đi không kịp, nút Đi tới / Ghim; cửa hàng trong thành gợi ý 3 nơi gần nhất. Sự kiện quan tâm được tô nổi trên bản đồ game. Chưa kiểm."
+  "kich_thuoc": 1783347,
+  "sha256": "00ef0394cecb6316e23c8c543633b829abb7b5d6845c4bea59584f94cb8e7d22",
+  "sua": [
+    "<b>Auto Săn yêu:</b> khi chỉ tích Quái Thường mà việc lạ Săn yêu ra con Tinh Anh, Auto không còn lặp mãi \"chọn Thôi\" nữa mà xem loại quái thật trước rồi vào \"Săn loài khác\" chọn loài hợp loại và màu đã tích; nếu một nơi bị Thôi 3 lần thì bỏ qua nơi đó. Nhật ký không còn ô vuông lạ quanh tên quái. Chưa kiểm."
   ]
 }

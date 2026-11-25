@@ -1,10 +1,10 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.6.0
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.6.1
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.6.0';
+const VKX_BAN_CAI = '8.6.1';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
@@ -150,7 +150,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.6.0',
+  version: '8.6.1',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
@@ -161,7 +161,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     try { (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
   if (gWin.__vkxMerged) { try { gWin.__vkxMerged.open(); } catch (e) {} return; }
-  var TOOL_VER = '8.6.0';
+  var TOOL_VER = '8.6.1';
   const VKX_TG = Object.freeze(['Minhndt3', 'Shgphuoc']);
 var MOD_CSS_EXTRA = `
 #vkx-toast:not(.on){pointer-events:none!important}
@@ -12217,7 +12217,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         const mk = ch ? auChoiceMuc(def, ch, a.vars) : null, mucs = auMucNorm(opt.muc);
         if (mk !== null && !mucs.includes(mk)) {
           const out = (v.choices || []).find((c) => c.available && c.thoat);
-          if (out) { auLog('Việc lạ “' + (v.ten || v.id) + '”: lựa chọn “' + pick.text + '” có ' + AU_MUC_TEN[mk] + ' (chưa tích), chọn “' + out.text + '”.', ''); const r = auCall(() => g.choose(out.index)); return r.ok ? 'ok' : { stop: 'Không chọn được “' + out.text + '”: ' + r.err }; }
+          if (out) {
+            if (v.id === 'ev.san_yeu') { const vt = run.viTri; st.thoiSY = st.thoiSY || {}; st.thoiSY[vt] = (st.thoiSY[vt] || 0) + 1; if (st.thoiSY[vt] >= 3) { st.bad.add(vt); st.thoiSY[vt] = 0; auLog('Săn yêu ở ' + placeName(ctxLite(), vt) + ': 3 lần chỉ ra loài chưa tích, bỏ qua nơi này.', 'vk-warn'); } } // 8.6.1-thu.1: lưới chống lặp vô hạn
+            auLog('Việc lạ “' + auSach(v.ten || v.id) + '”: lựa chọn “' + auSach(pick.text) + '” có ' + AU_MUC_TEN[mk] + ' (chưa tích), chọn “' + auSach(out.text) + '”.', ''); const r = auCall(() => g.choose(out.index)); return r.ok ? 'ok' : { stop: 'Không chọn được “' + out.text + '”: ' + r.err }; }
           return { stop: 'Việc lạ “' + (v.ten || v.id) + '”: lựa chọn còn lại “' + pick.text + '” có ' + AU_MUC_TEN[mk] + ', ngoài loại mục tiêu đã chọn (' + auMucLabel(mucs) + '). Dừng để bạn tự quyết định trong game.' };
         }
       }
@@ -12253,12 +12255,17 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
   // không có thì truy tìm loài hợp nhất trong cả sổ loài của ô (auTruyPick). Trả null = để luồng cũ lo.
   // 7.14.0-thu.5: nhận lựa chọn 'Lùng con đầu đàn' theo dữ liệu sự kiện (combat {dau_dan}), không theo chữ trên nút (game đã có bản tiếng Anh).
   function auDauDan(x) { try { const d = C().encounters.get('ev.san_yeu'), ch = d && (d.choices || [])[x.index]; if (ch) return JSON.stringify([ch.effects || [], ch.success || [], ch.failure || []]).includes('{dau_dan}'); } catch (e) { /* dùng chữ */ } return /đầu đàn|leader|alpha/i.test(String(x.text || '')); }
+  // 8.6.1-thu.1: bỏ ký tự điều khiển / ô □ khỏi nhãn in vào nhật ký (chỉ dùng khi in, không dùng để so khớp)
+  function auSach(s) { return String(s || '').replace(/[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2060\ufeff\u25a1\u25a0\ufffd]/g, '').replace(/\s+/g, ' ').trim(); }
+  // 8.6.1-thu.1: mức quái thật của một lựa chọn ev.san_yeu (con {yeu_thu} có thể là Tinh Anh dù nhãn chỉ ghi "Săn X"); null nếu không đọc được
+  function auSyMuc(x, vars) { try { const def = C().encounters.get('ev.san_yeu'); return auChoiceMuc(def, def && (def.choices || [])[x.index], vars); } catch (e) { return null; } }
   function auSanYeuMo(st, v, opt, a) {
     const g = G(), cfg = AU.cfg.san, mucs = auMucNorm(opt.muc), vars = (a && a.vars) || {};
     const cs = (v.choices || []).filter((c) => c.available && !c.thoat);
     const enemyOf = (x) => { const k = auDauDan(x) ? 'dau_dan' : 'yeu_thu', w = vars[k]; const id = typeof w === 'string' ? w : w && (w.id || w.value); let d = null; try { d = id ? C().enemies.get(id) : null; } catch (e) { d = null; } return d; };
     const hop = cs.filter((x) => {
       if (auDauDan(x) ? !mucs.includes('tinh_anh') : !mucs.includes('thuong')) return false;
+      const mk = auSyMuc(x, vars); if (mk !== null && !mucs.includes(mk)) { if (!st._syLog || st._syLog !== x.text) { st._syLog = x.text; auLog('Săn yêu: “' + auSach(x.text) + '” là ' + AU_MUC_TEN[mk] + ' (chưa tích), săn loài khác.', ''); } return false; } // 8.6.1-thu.1: con thật là loại chưa tích
       if (x.risk && !auColorOK(x.risk.level, opt.mau)) return false;
       if (opt.neDebuff) { const d = enemyOf(x); if (d && auKillDebuff(d).length) return false; }
       return true;
@@ -12266,7 +12273,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     if (hop.length) return null; // auPick chọn (ưu tiên đầu đàn khi tích Tinh Anh)
     if (typeof g.targetedHunt !== 'function') return null;
     const tp = auTruyPick(st, Object.assign({}, cfg, { cach: cfg.cach === 'nl' ? 'nl' : 'truy' }));
-    if (tp === 'ok') { auLog('“Săn ' + (cs[0] ? cs[0].text.replace(/^Săn\s*/i, '') : 'yêu thú') + '” và con đầu đàn không hợp (màu / loại / debuff) → chọn loài khác trong sổ loài của ô.', ''); return 'ok'; }
+    if (tp === 'ok') { auLog('“Săn ' + (cs[0] ? auSach(cs[0].text).replace(/^Săn\s*/i, '') : 'yêu thú') + '” và con đầu đàn không hợp (màu / loại / debuff) → chọn loài khác trong sổ loài của ô.', ''); return 'ok'; }
     if (tp === 'skip') { const out = (v.choices || []).find((c) => c.available && c.thoat); if (out) { const r = auCall(() => g.choose(out.index)); return r.ok ? 'ok' : { stop: 'Không chọn được “' + out.text + '”: ' + r.err }; } }
     return null;
   }
@@ -12275,8 +12282,9 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     if (opt.hunt) {
       const mucs = auMucNorm(opt.muc), okC = (x) => !x.risk || auColorOK(x.risk.level, opt.mau);
       if (v.id === 'ev.san_yeu') {
-        const norm = mucs.includes('thuong') ? cs.find((x) => !x.thoat && !auDauDan(x)) : null;
-        const apex = mucs.includes('tinh_anh') ? cs.find((x) => !x.thoat && auDauDan(x)) : null;
+        const syVars = (G().state.run.active || {}).vars, syOK = (x) => { const mk = auSyMuc(x, syVars); return mk === null || mucs.includes(mk); }; // 8.6.1-thu.1
+        const norm = mucs.includes('thuong') ? cs.find((x) => !x.thoat && !auDauDan(x) && syOK(x)) : null;
+        const apex = mucs.includes('tinh_anh') ? cs.find((x) => !x.thoat && auDauDan(x) && syOK(x)) : null;
         const list = [apex, norm].filter(Boolean); // Tinh Anh được ưu tiên khi cùng được tích
         const c = list.find(okC) || list[0]; if (c) return c;
       }
@@ -12856,8 +12864,10 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     for (const t of list) {
       let def = null; try { def = C().enemies.get(t.id); } catch (e) { def = null; }
       if (cfg.neDebuff !== false && auKillDebuff(def).length) { reasons.debuff++; continue; }
+      const mucLoai = auMucKey(def && def.muc); // 8.6.1-thu.1: loài thường mà thật ra là Tinh Anh/Boss thì chỉ chọn khi loại đó được tích
       for (const apex of [false, true]) {
         if (apex ? !mucs.includes('tinh_anh') : !mucs.includes('thuong')) continue;
+        if (!apex && !mucs.includes(mucLoai)) continue;
         let risk = null; try { risk = g.huntRisk(t.id, apex); } catch (e) { risk = null; }
         const lv = risk && risk.level ? risk.level : 'unknown';
         if (!auColorOK(lv, cfg.mau)) { reasons.mau++; continue; }
@@ -16752,7 +16762,12 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.6.0 · Bản Mod', d: '25/11/2026', now: true,
+            { t: 'Phiên Bản 8.6.1 · Bản Mod', d: '25/11/2026', now: true,
+            sua: [
+                '<b>Auto Săn yêu:</b> khi chỉ tích Quái Thường mà việc lạ Săn yêu ra con Tinh Anh, Auto không còn lặp mãi "chọn Thôi" nữa mà xem loại quái thật trước rồi vào "Săn loài khác" chọn loài hợp loại và màu đã tích; nếu một nơi bị Thôi 3 lần thì bỏ qua nơi đó. Nhật ký không còn ô vuông lạ quanh tên quái. Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.6.0 · Bản Mod', d: '25/11/2026', now: false,
             moi: [
                 '<b>Quan tâm sự kiện:</b> bấm ☆ trên thẻ ở Ngự Linh → Cơ Duyên hoặc Tra cứu Sự kiện để theo dõi. Khi sự kiện hiện trên bản đồ (hoặc có ngay tại nơi đang đứng) Tool báo, bấm báo là đi tới. Đầu tab Cơ Duyên có khung "Đang Quan Tâm": đang ở đâu, còn tới năm nào, đi mất mấy năm, cảnh báo đi không kịp, nút Đi tới / Ghim; cửa hàng trong thành gợi ý 3 nơi gần nhất. Sự kiện quan tâm được tô nổi trên bản đồ game. Chưa kiểm.'
             ]
