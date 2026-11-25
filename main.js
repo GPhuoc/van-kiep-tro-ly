@@ -1,10 +1,10 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.5.0
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.6.0
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.5.0';
+const VKX_BAN_CAI = '8.6.0';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
@@ -150,7 +150,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.5.0',
+  version: '8.6.0',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
@@ -161,7 +161,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     try { (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
   if (gWin.__vkxMerged) { try { gWin.__vkxMerged.open(); } catch (e) {} return; }
-  var TOOL_VER = '8.5.0';
+  var TOOL_VER = '8.6.0';
   const VKX_TG = Object.freeze(['Minhndt3', 'Shgphuoc']);
 var MOD_CSS_EXTRA = `
 #vkx-toast:not(.on){pointer-events:none!important}
@@ -7833,13 +7833,155 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     draw();
   }
 
+  // ═════════════════════════ QUAN TÂM SỰ KIỆN (8.5.1-thu.1, ghi-chu/ke-hoach/quan-tam-su-kien.md) ═════════════════════════
+  // Đánh ★ sự kiện ở Cơ Duyên / Tra cứu Sự kiện; khi nó hiện trên bản đồ hoặc có ở nơi đang đứng thì báo (toast bấm để đi tới). Chỉ đọc + lệnh game travelTo (ddDoTravel).
+  const QT_KEY = 'vkx_quantam_v1';
+  const QT = { ids: [], da: {}, ky: '', hien: [], tai: [], taiAct: [], taiSlot: '', taiBao: new Set(), tm: 0, nl: null, gy: null };
+  try { const j = JSON.parse(localStorage.getItem(QT_KEY) || 'null'); if (j && Array.isArray(j.ids)) { QT.ids = j.ids.filter((x) => typeof x === 'string'); if (j.da && typeof j.da === 'object') QT.da = j.da; } } catch (e) { /* bỏ qua */ }
+  const qtLuu = () => { try { localStorage.setItem(QT_KEY, JSON.stringify({ ids: QT.ids, da: QT.da })); } catch (e) { /* bỏ qua */ } };
+  const qtCo = (id) => QT.ids.includes(id);
+  UI.qtCo = qtCo; // EvMap (ngoài closure) hỏi để tô nổi sự kiện quan tâm
+  const qtNl = () => QT.nl || (QT.nl = new Map(NL_ENC.map((r) => [r[0], r])));
+  function qtTen(id) { const r = qtNl().get(id); if (r) return tcWord(r[1]); try { const d = C().encounters.get(id); if (d && d.ten) return tcClean(d.ten); } catch (e) { /* bỏ qua */ } return id; }
+  const qtNoi = (slot) => { try { return G().env.world.info(slot).ten || slot; } catch (e) { return slot; } };
+  function qtNam(slot) { try { const y = S.core.travelYears(ctxLite(), slot); return Number.isFinite(y) ? Math.round(y * 10) / 10 : null; } catch (e) { return null; } }
+  function qtDoi(id) {
+    const i = QT.ids.indexOf(id);
+    if (i >= 0) { QT.ids.splice(i, 1); for (const k of Object.keys(QT.da)) if (k.split('|')[1] === id) delete QT.da[k]; UI.notify('Đã bỏ quan tâm ' + qtTen(id)); }
+    else { QT.ids.push(id); UI.notify('★ Đã quan tâm ' + qtTen(id) + ': có là báo'); }
+    qtLuu(); QT.ky = ''; QT.gy = null; QT.taiSlot = '';
+    try { qtKiem(true, true); } catch (e) { console.error('[vkx quantam]', e); }
+  }
+  // Quét rẻ: chỉ đọc run.nodes (không clone). lang = true thì ghi nhận cái đang có mà không báo.
+  function qtKiem(ep, lang) {
+    if (!QT.ids.length) { QT.ky = ''; QT.hien = []; QT.tai = []; return; }
+    let run; try { run = G().state.run; } catch (e) { return; }
+    if (!run || run.ketThuc) return;
+    const nodes = run.nodes || {}; let nN = 0; for (const k in nodes) nN++;
+    const ky = run.nam + '|' + run.viTri + '|' + nN;
+    if (!ep && ky === QT.ky) return;
+    QT.ky = ky;
+    const hien = [];
+    for (const slot in nodes) {
+      const n = nodes[slot]; if (!n || !n.encounter || !QT.ids.includes(n.encounter)) continue;
+      if (n.hetHanNam !== undefined && n.hetHanNam <= run.nam) continue;
+      hien.push({ id: n.encounter, slot, het: n.hetHanNam });
+    }
+    QT.hien = hien;
+    if (QT.taiSlot !== run.viTri) { QT.taiSlot = run.viTri; QT.taiBao = new Set(); QT.taiAct = []; ep = true; }
+    if (ep && S.core && typeof S.core.placeActivities === 'function') {
+      const ds = []; try { for (const a of S.core.placeActivities(ctxLite(), run.viTri) || []) if (a && a.loai !== 'tien_ich' && QT.ids.includes(a.id) && !ds.includes(a.id)) ds.push(a.id); } catch (e) { /* bỏ qua */ }
+      QT.taiAct = ds;
+    }
+    const tai = new Set(QT.taiAct); for (const h of hien) if (h.slot === run.viTri) tai.add(h.id);
+    QT.tai = [...tai];
+    // dọn khóa đã báo của sự kiện hết hạn
+    let doi = false; for (const k of Object.keys(QT.da)) { const p = k.split('|'); if (p[2] !== '' && Number(p[2]) <= run.nam) { delete QT.da[k]; doi = true; } }
+    const moi = [];
+    for (const h of hien) { const k = h.slot + '|' + h.id + '|' + (h.het === undefined ? '' : h.het); if (QT.da[k] === undefined) { QT.da[k] = run.nam; doi = true; if (h.slot !== run.viTri) moi.push({ t: 'hien', id: h.id, slot: h.slot, het: h.het }); } }
+    for (const id of QT.tai) if (!QT.taiBao.has(id)) { QT.taiBao.add(id); moi.push({ t: 'tai', id }); }
+    if (doi) qtLuu();
+    if (lang || !moi.length) return;
+    qtBao(moi, run);
+  }
+  function qtBao(moi, run) {
+    if (moi.length === 1) {
+      const m = moi[0], ten = qtTen(m.id);
+      if (m.t === 'tai') { UI.notify('★ ' + ten + ' đang có ngay tại đây — bấm để mở Tool', 15000, () => { try { UI.open(); goTab('nlc'); } catch (e) { /* bỏ qua */ } }); return; }
+      const y = qtNam(m.slot), left = m.het !== undefined ? m.het - run.nam : null;
+      UI.notify('★ ' + ten + ' vừa hiện ở ' + qtNoi(m.slot) + (y !== null ? ' (đi ~' + y + ' năm' : ' (') + (left !== null ? (y !== null ? ', ' : '') + 'còn tới năm ' + m.het : '') + ')' + ' — bấm để đi tới', 15000, () => {
+        const r = ddDoTravel(m.slot); UI.notify((r.ok ? '✅ ' : '❌ ') + r.msg); try { render(); } catch (e) { /* bỏ qua */ }
+      });
+      return;
+    }
+    const ten = moi.slice(0, 3).map((m) => qtTen(m.id)).join(', ') + (moi.length > 3 ? '…' : '');
+    UI.notify('★ ' + moi.length + ' sự kiện quan tâm vừa hiện: ' + ten + ' — bấm để xem', 15000, () => { try { UI.open(); goTab('nlc'); } catch (e) { /* bỏ qua */ } });
+  }
+  function qtHen() { if (QT.tm) return; QT.tm = setTimeout(() => { QT.tm = 0; try { qtKiem(false); } catch (e) { console.error('[vkx quantam]', e); } }, 250); }
+  // Đăng ký một lần lúc nạp (không đăng ký lại khi vẽ tab). Listener bọc try vì game tạm tắt mod nếu listener ném lỗi.
+  try {
+    if (typeof TT.on === 'function') {
+      for (const ev of ['timePass', 'travel']) TT.on(ev, () => { try { if (QT.ids.length) qtHen(); } catch (e) { /* bỏ qua */ } });
+      TT.on('runStart', () => { try { QT.da = {}; QT.ky = ''; QT.taiSlot = ''; QT.hien = []; QT.tai = []; QT.gy = null; qtLuu(); } catch (e) { /* bỏ qua */ } });
+    }
+    if (typeof TT.subscribe === 'function') TT.subscribe(() => { try { if (QT.ids.length) qtHen(); } catch (e) { /* bỏ qua */ } });
+  } catch (e) { /* bỏ qua */ }
+  setTimeout(() => { try { if (QT.ids.length) qtKiem(false); } catch (e) { /* bỏ qua */ } }, 3000);
+
+  const QT_STYLE = 'background:none;border:0;cursor:pointer;font-size:18px;line-height:1;color:#e6b422;padding:0 4px;vertical-align:middle';
+  const qtSao = (id) => `<button type="button" class="vkx-qt" data-qt="${esc(id)}" title="Quan tâm: báo khi sự kiện này hiện trên bản đồ hoặc ở nơi bạn đứng" style="${QT_STYLE}">${qtCo(id) ? '★' : '☆'}</button>`;
+  // Gợi ý nơi gần nhất đúng loại (cửa hàng / NPC thành): lọc theo loại nơi, lấy 12 ô gần nhất theo đường thẳng, rồi tính số năm đi thật; nhớ theo (sự kiện, năm, nơi đứng).
+  function qtGoiY(id, loais, run) {
+    const kk = id + '|' + run.nam + '|' + run.viTri; QT.gy = QT.gy || {};
+    if (QT.gy[kk]) return QT.gy[kk];
+    let out = [];
+    try {
+      const c = ctxLite(), W = c.world, X = ddBuild(c), me = W.slot(run.viTri), K = S.core;
+      const cand = X.list.filter((x) => loais.includes(x.loai) && x.id !== run.viTri).map((x) => { let d = Infinity; try { const s = W.slot(x.id); d = Math.hypot(s.x - me.x, s.y - me.y); } catch (e) { /* bỏ qua */ } return { x, d }; }).sort((a, b) => a.d - b.d).slice(0, 12);
+      out = cand.map((o) => { let y = NaN; try { y = K.travelYears(c, o.x.id); } catch (e) { /* bỏ qua */ } return { slot: o.x.id, ten: o.x.name, loai: o.x.loai, y }; }).filter((o) => Number.isFinite(o.y)).sort((a, b) => a.y - b.y).slice(0, 3);
+    } catch (e) { out = []; }
+    QT.gy = { [kk]: out }; return out;
+  }
+  function qtPanelHtml(gon) {
+    if (!QT.ids.length) return '';
+    let run; try { run = G().state.run; } catch (e) { run = null; }
+    if (!run) return '<div class="vk-card"><h3>★ Đang Quan Tâm</h3><div class="vk-mu">Chưa có kiếp nào đang chơi.</div></div>';
+    const cg = run.nhanVat ? run.nhanVat.canhGioi || 0 : 0, here = run.viTri;
+    const rows = QT.ids.map((id) => {
+      const r = qtNl().get(id), ten = esc(qtTen(id)), hs = QT.hien.filter((h) => h.id === id), ngayDay = QT.tai.includes(id);
+      const bo = `<button type="button" class="vk-guide-btn" data-qt="${esc(id)}" title="Bỏ quan tâm">✕ Bỏ</button>`;
+      let st = '', acts = '';
+      if (ngayDay) { st = '<span class="vk-ok">Đang có ngay tại đây</span>'; }
+      const xa = hs.filter((h) => h.slot !== here);
+      if (xa.length) {
+        const ds = xa.map((h) => { const y = qtNam(h.slot), left = h.het !== undefined ? h.het - run.nam : null; const tre = y !== null && left !== null && y > left;
+          return `<div style="margin-top:3px">Đang có ở <b>${esc(qtNoi(h.slot))}</b>${left !== null ? ' · còn tới năm ' + h.het + ' (còn ' + left + ' năm)' : ''}${y !== null ? ' · đi ~' + y + ' năm' : ''}${tre ? ' <span class="vk-bad">· đi không kịp</span>' : ''} ${ddQuickTravelButton(h.slot, here, 'Đi tới')}</div>`; }).join('');
+        st += (st ? '<br>' : '') + ds;
+      }
+      if (!st) {
+        const lo = r ? r[3].filter((x) => ['thon', 'tran', 'thanh', 'kinh_do', 'thanh_tri', 'tong_mon'].includes(x)) : [];
+        const thanh = r && (r[7] === 'cua_hang' || lo.length);
+        if (thanh) {
+          const loais = lo.length ? lo : ['thon', 'tran', 'thanh', 'kinh_do'];
+          const gy = qtGoiY(id, loais, run);
+          st = '<span class="vk-mu">Chỉ biết khi tới nơi (không nằm trên bản đồ). Có thể gặp ở: ' + esc(loais.map((x) => NLW_NOI[x] || x).join(', ')) + '</span>'
+            + gy.map((o) => `<div style="margin-top:3px">Gần nhất: <b>${esc(o.ten)}</b> · đi ~${Math.round(o.y * 10) / 10} năm ${ddQuickTravelButton(o.slot, here, 'Đi tới')}</div>`).join('');
+        } else st = '<span class="vk-mu">Chưa xuất hiện</span>';
+        if (r && r[5] && (cg < r[5][0] || cg > r[5][1])) st += `<div class="vk-mu" style="font-size:12px">Cần cảnh giới ${esc(realmName(r[5][0]))}${r[5][1] !== r[5][0] ? ' – ' + esc(realmName(r[5][1])) : ''} (hiện chưa hợp).</div>`;
+      }
+      return `<div style="padding:5px 0;border-top:1px solid var(--vien,#8883)"><b>${ten}</b> ${bo}<div style="font-size:13px">${st}</div></div>`;
+    });
+    if (gon) {
+      const so = QT.ids.filter((id) => QT.tai.includes(id) || QT.hien.some((h) => h.id === id)).length;
+      return `<div class="vk-card" style="font-size:13px">★ Đang quan tâm ${QT.ids.length} sự kiện${so ? ', <b class="vk-ok">' + so + ' đang có</b>' : ''} · <a href="#" data-qt-mo>xem chi tiết ở Ngự Linh → Cơ Duyên</a></div>`;
+    }
+    return `<div class="vk-card"><h3>★ Đang Quan Tâm</h3>${rows.join('')}</div>`;
+  }
+  // Vẽ lại khung + cập nhật mọi ★ đang hiện. Gọi sau khi bấm sao và khi mở tab.
+  function qtVeLai(root) {
+    root = root || body;
+    root.querySelectorAll('[data-qt]').forEach((b) => { if (b.classList.contains('vkx-qt')) b.textContent = qtCo(b.dataset.qt) ? '★' : '☆'; });
+    for (const el of root.querySelectorAll('#qt-khung, #qt-gon')) {
+      el.innerHTML = qtPanelHtml(el.id === 'qt-gon');
+      ddBindQuickTravel(el);
+    }
+  }
+  // Một handler gán bằng thuộc tính onclick (không dồn khi vẽ lại tab). true = đã xử lý.
+  function qtBam(ev) {
+    const m = ev.target.closest && ev.target.closest('[data-qt-mo]'); if (m) { ev.preventDefault(); ev.stopPropagation(); goTab('nlc'); return true; }
+    const b = ev.target.closest && ev.target.closest('[data-qt]'); if (!b) return false;
+    ev.preventDefault(); ev.stopPropagation();
+    qtDoi(b.dataset.qt); qtVeLai(); return true;
+  }
+  function qtGan(el) { if (!el) return; el.onclick = (ev) => { qtBam(ev); }; }
+
   // ── Tab Cơ duyên Ngự Linh (sự kiện cho trứng, đồ phổ, công pháp Ngự Linh)
   function tabNLC() {
     const f = S.nl;
     body.innerHTML = `<div class="vk-card"><h3>Cơ Duyên Ngự Linh</h3>
       <input class="vk-sel" id="nc-q" style="width:100%" placeholder="Gõ tên sự kiện, nơi hoặc phần thưởng (không cần dấu)" value="${esc(f.qc)}" autocomplete="off">
       <div style="margin-top:6px;font-size:14px"><label><input type="checkbox" id="nc-realm" ${f.realm ? 'checked' : ''}> Chỉ sự kiện hợp cảnh giới hiện tại</label></div>
-      <div class="vk-mu" style="font-size:12px;margin-top:4px" id="nc-cnt"></div></div><div id="nc-list"></div>`;
+      <div class="vk-mu" style="font-size:12px;margin-top:4px" id="nc-cnt"></div></div><div id="qt-khung"></div><div id="nc-list"></div>`;
     const nv = nvNow(), cg = nv.canhGioi || 0;
     const draw = () => {
       const q = fold(body.querySelector('#nc-q').value).trim();
@@ -7850,13 +7992,15 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         return fold([r[1], r[3].map((x) => NLW_NOI[x] || x).join(' '), r[4].map((x) => NLW_DH[x] || x).join(' '), r[6].map(nlItemName).join(' ')].join(' ')).includes(q);
       });
       body.querySelector('#nc-cnt').textContent = `${list.length} sự kiện${list.length > 70 ? ' (hiện 70 sự kiện đầu, gõ tên để lọc thêm)' : ''}.`;
-      body.querySelector('#nc-list').innerHTML = list.slice(0, 70).map((r) => `<div class="vk-card"><b>${esc(tcWord(r[1]))}</b>${r[7] === 'cua_hang' ? ' <span class="vk-mu">· Cửa Hàng</span>' : r[7] === 'tong_mon' ? ' <span class="vk-mu">· Tông Môn</span>' : ''}<br>
+      body.querySelector('#nc-list').innerHTML = list.slice(0, 70).map((r) => `<div class="vk-card">${qtSao(r[0])}<b>${esc(tcWord(r[1]))}</b>${r[7] === 'cua_hang' ? ' <span class="vk-mu">· Cửa Hàng</span>' : r[7] === 'tong_mon' ? ' <span class="vk-mu">· Tông Môn</span>' : ''}<br>
         <span class="vk-mu" style="font-size:12.5px">${r[3].length ? 'Nơi: ' + esc(r[3].map((x) => NLW_NOI[x] || x).join(', ')) : ''}${r[4].length ? ' · Địa hình: ' + esc(r[4].map((x) => NLW_DH[x] || x).join(', ')) : ''}${r[5] ? ' · Cảnh giới: ' + esc(realmName(r[5][0])) + (r[5][1] !== r[5][0] ? ' – ' + esc(realmName(r[5][1])) : '') : ''}</span>
         ${r[6].length ? `<br><span style="font-size:13px">Có thể nhận: ${r[6].map((id) => esc(nlItemName(id))).join(', ')}</span>` : (r[7] === 'cua_hang' ? '<br><span class="vk-mu" style="font-size:12.5px">Bán trứng thú và nguyên liệu Ngự Linh (kệ hàng ngẫu nhiên mỗi lần).</span>' : '<br><span class="vk-mu" style="font-size:12.5px">Gặp thú / linh vật hoặc sự kiện liên quan Ngự Linh.</span>')}</div>`).join('') || '<div class="vk-card vk-mu">Không thấy sự kiện nào.</div>';
     };
     let tmr; body.querySelector('#nc-q').oninput = () => { clearTimeout(tmr); tmr = setTimeout(draw, 250); };
     body.querySelector('#nc-realm').onchange = draw;
     draw();
+    qtGan(body.querySelector('#nc-list')); qtGan(body.querySelector('#qt-khung'));
+    try { qtKiem(true, true); qtVeLai(); } catch (e) { console.error('[vkx quantam]', e); }
   }
 
   // ═════════════════════════ BẢN 2.5: Hướng build theo lưu phái (2.6: nối vào Kinh mạch) ═════════════════════════
@@ -10479,7 +10623,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         const meta = [SK_KIND[a.kind] || a.kind, a.noi.map(tcNoi).join('/'), a.cg ? tcRng(a.cg) : '', a.mot ? 'chọn một' : '', a.weight !== undefined ? 'hay gặp ' + a.weight : '', o.d !== undefined ? '≈ ' + Math.round(o.d) + ' điểm' : ''].filter(Boolean).join(' · ');
         let sn = '';
         if (o.nd) { const t = a.tx.normalize('NFC'), ft = fold(t), p = ft.length === t.length ? ft.indexOf(o.nd) : -1; if (p >= 0) sn = `<div class="vk-mu" style="font-size:11px;margin-top:2px">khớp nội dung: …${esc(t.slice(Math.max(0, p - 30), p + 70))}…</div>`; }
-        return `<details class="vk-card tc-card" style="--tq:${SK_KCOL[a.kind] || '#6b7280'}" data-i="${i}" ${f.focus === a.id ? 'open' : ''}><summary><span class="tc-q tx">${esc(a.kind === 'bi_canh' ? 'BC' : a.kind === 'chien_dau' ? 'ĐÁNH' : 'SK')}</span><span class="tc-nm"><b>${esc(a.ten)}</b><small>${esc(meta)} ${ico}</small>${sn}</span></summary><div class="tc-bd"></div></details>`;
+        return `<details class="vk-card tc-card" style="--tq:${SK_KCOL[a.kind] || '#6b7280'}" data-i="${i}" ${f.focus === a.id ? 'open' : ''}><summary><span class="tc-q tx">${esc(a.kind === 'bi_canh' ? 'BC' : a.kind === 'chien_dau' ? 'ĐÁNH' : 'SK')}</span><span class="tc-nm"><b>${esc(a.ten)}</b>${qtSao(a.id)}<small>${esc(meta)} ${ico}</small>${sn}</span></summary><div class="tc-bd"></div></details>`;
       }).join('') + (res.length > shown.length ? `<button class="vk-btn sec" id="tc-more" style="width:100%">Xem Thêm ${Math.min(40, res.length - shown.length)} Kết Quả</button>` : '') || '<div class="vk-card vk-mu">Không thấy sự kiện nào.</div>';
       body.querySelectorAll('#tc-list details').forEach((el) => {
         const fill = () => { if (el.dataset.done) return; el.dataset.done = 1; const o = shown[+el.dataset.i]; try { el.querySelector('.tc-bd').innerHTML = skTheHtml(o.a); } catch (e) { console.error(e); el.querySelector('.tc-bd').innerHTML = errBox(e); } };
@@ -10494,9 +10638,10 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     let tmr; const deb = () => { clearTimeout(tmr); tmr = setTimeout(redraw, 200); };
     $('tc-q').oninput = deb; $('sk-vat').oninput = deb;
     body.querySelectorAll('.tc-opts input:not(#tc-sticky), .tc-row select').forEach((el) => { el.onchange = redraw; });
-    body.onclick = (ev) => { if (skXtBam(ev)) return; const a = ev.target.closest && ev.target.closest('.tc-lk'); if (a) { ev.preventDefault(); tcGo(a.dataset.k, a.dataset.id); } };
+    body.onclick = (ev) => { if (qtBam(ev)) return; if (skXtBam(ev)) return; const a = ev.target.closest && ev.target.closest('.tc-lk'); if (a) { ev.preventDefault(); tcGo(a.dataset.k, a.dataset.id); } };
     tsDraw();
     draw();
+    if (QT.ids.length) { try { qtKiem(true, true); body.insertAdjacentHTML('afterbegin', '<div id="qt-gon"></div>'); qtVeLai(); } catch (e) { console.error('[vkx quantam]', e); } }
   }
 
   // ═════════════════════════ SỰ KIỆN: Ô NỔI SOI SỰ KIỆN ═════════════════════════
@@ -16607,7 +16752,12 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.5.0 · Bản Mod', d: '25/11/2026', now: true,
+            { t: 'Phiên Bản 8.6.0 · Bản Mod', d: '25/11/2026', now: true,
+            moi: [
+                '<b>Quan tâm sự kiện:</b> bấm ☆ trên thẻ ở Ngự Linh → Cơ Duyên hoặc Tra cứu Sự kiện để theo dõi. Khi sự kiện hiện trên bản đồ (hoặc có ngay tại nơi đang đứng) Tool báo, bấm báo là đi tới. Đầu tab Cơ Duyên có khung "Đang Quan Tâm": đang ở đâu, còn tới năm nào, đi mất mấy năm, cảnh báo đi không kịp, nút Đi tới / Ghim; cửa hàng trong thành gợi ý 3 nơi gần nhất. Sự kiện quan tâm được tô nổi trên bản đồ game. Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.5.0 · Bản Mod', d: '25/11/2026', now: false,
             moi: [
                 '<b>Auto Build · Đàn Linh Vật:</b> ô mới "Đàn Linh Vật" (Không Xét / Đủ Ngự Lực / Pet Đánh Chính / Bầy Đàn) và "Số Con Muốn Mang"; Auto Build chọn bộ kinh mạch đủ ngự lực để dắt đàn, tính cả giảm giá của tâm pháp đúng loại. Có dòng "Ngự lực hiện tại: dùng X / Y" kèm giá từng con; chọn Ngự Thú Tu thì tự bật Đủ Ngự Lực. Chưa kiểm.',
                 '<b>Auto Reroll · Ước tính tỉ lệ:</b> hiện tỉ lệ khớp mỗi lần và số lần dò kỳ vọng, cảnh báo khi quá hiếm so với số lần đã đặt, gợi ý chọn thẳng bằng Thiên Mệnh; đếm số lần gặp phẩm/thể chất muốn sau mỗi lượt dò. Chưa kiểm.'
@@ -17285,7 +17435,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
             glyph = task ? ic.viec : (ic.kind[kind] || GLYPH_FB[kind] || '?');
           }
           var left = n.hetHanNam !== undefined ? n.hetHanNam - run.nam : null;
-          var hl = null; if (!hidden) { try { hl = UI.skThuong ? UI.skThuong(n.encounter) : null; } catch (e) { hl = null; } } // 7.13.0-thu.28
+          var hl = null; if (!hidden) { try { hl = UI.skThuong ? UI.skThuong(n.encounter) : null; } catch (e) { hl = null; } try { if (UI.qtCo && UI.qtCo(n.encounter)) hl = hl ? 'quan tâm · ' + hl : 'đang quan tâm'; } catch (e) { /* bỏ qua */ } } // 7.13.0-thu.28; 8.5.1-thu.1: tô cả sự kiện đang quan tâm
           out.push({ type: 'ev', slot: slot, x: p.x, y: p.y, kind: kind, color: color, glyph: glyph, name: name, left: left, hl: hl,
             soon: left !== null && left <= SOON_YEARS, open: false, fog: false,
             text: (hl ? '★ ' : '') + name + (left !== null ? ' · còn ' + fmtLeft(left) : '') + (hl ? ' · ' + hl : '') });

@@ -1,4 +1,8 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.5.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.6.0)
+
+## Bản 8.6.0 · Quan tâm sự kiện
+### Tính năng mới
+- **Quan tâm sự kiện:** bấm ☆ trên thẻ ở Ngự Linh → Cơ Duyên hoặc Tra cứu Sự kiện để theo dõi. Khi sự kiện hiện trên bản đồ (hoặc có ngay tại nơi đang đứng) Tool báo, bấm báo là đi tới. Đầu tab Cơ Duyên có khung "Đang Quan Tâm": đang ở đâu, còn tới năm nào, đi mất mấy năm, cảnh báo đi không kịp, nút Đi tới / Ghim; cửa hàng trong thành gợi ý 3 nơi gần nhất. Sự kiện quan tâm được tô nổi trên bản đồ game. Chưa kiểm.
 
 ## Bản 8.5.0 · Đàn linh vật, Ngũ Hành, chuyển tab nhanh
 ### Tính năng mới
