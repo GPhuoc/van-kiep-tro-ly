@@ -1,4 +1,29 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.6.1)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.7.0)
+
+## Bản 8.7.0 · Đoán đột phá, Ý cảnh, sự kiện ẩn
+### Tính năng mới
+- **Đoán trước đột phá:** bảng chọn đan ở Đột phá & Thọ có cột Dự đoán (Thành / Bại / Chết / Tâm ma) và phẩm đạo cơ, tính bằng chính hàm của game trên bản sao; dòng số rút và bộ đan rẻ nhất mà qua; gợi ý chờ thêm tháng nếu phẩm cao hơn. Đã kiểm (không lỗi).
+- **Thẻ Ý Cảnh (Tổng Quan):** đủ 13 ý cảnh và Ngũ hành ý: ý đang theo, buff, điểm còn thiếu tới bậc kế, cách tích điểm; dị anh đang có (chiêu cùng hệ +15%) hoặc sẽ ra khi lên Nguyên Anh. Đã kiểm.
+- **Soi sự kiện ẩn (mặc định tắt):** ô 🔓 ở khung Đang Quan Tâm / Tra cứu: báo khi sự kiện ẩn đã ★ có trên bản đồ, danh sách sự kiện ẩn đang có kèm Đi tới. Chưa kiểm.
+- **Sổ Sự Kiện Vừa Gặp (Tra cứu Sự kiện):** tự ghi 40 sự kiện và thông báo lạ gần nhất, bấm mở thẻ, nút Chép. Đã kiểm.
+- **Chấm đỏ trên nút ☯:** sự kiện ★ hiện lúc cửa sổ đang thu nhỏ thì nút nổi có chấm đỏ kèm số, mở cửa sổ là mất. Chưa kiểm.
+- **Tâm ma & Nghiệp (Đột phá & Thọ):** tâm ma trong đó bao nhiêu là nghiệp, cách gỡ (khổ tu sám hối, việc thiện). Chưa kiểm.
+- **Cơ duyên tích dần (Ngự Linh):** điểm xui từng nhóm (đồ quý rơi, đồ ngon, tư chất tiến hóa, Thánh huyết trứng quý). Chưa kiểm.
+- **Đồ mượn của tông (Tàng Kinh Các):** món sẽ bị thu khi xuống núi, giá chuộc, phí xuống núi. Chưa kiểm.
+- **Thu Được Theo Nguồn (Tìm & Săn Đồ):** sổ đồ thu được trong kiếp theo nguồn (trận, sự kiện, tiệm...). Chưa kiểm.
+- **Màn trận:** dòng dự kiến của game ngay trên màn trận và nút Dự Kiến Thật (chỉ chạy khi bấm). Chưa kiểm.
+
+### Nâng cấp tính năng
+- **Tìm Đồ:** dùng hàm vẽ tiệm của game (viewShop) nên xét tồn kho, món khóa điều kiện, hàng giả đã nhìn ra; tiệm hết hàng ghi '~k năm có lại'; ghi 'Dự đoán có ... (còn N)'; cảnh báo sát mốc năm; tới nơi không thấy món thì báo lý do; Giá chợ bỏ món hết. Chưa kiểm.
+- **Auto Săn yêu:** dự đoán trước khi chọn con (ô 'Dự đoán trước khi đánh', mặc định bật), bỏ con thua chắc ở Truy tìm và việc lạ; Truy tìm kiểm cả màu; thua trận ghi lại Dự Kiến Thật trước trận. Chưa kiểm.
+- **Tra cứu Sự kiện:** dịch hết chữ thô (biến, nhóm người, ~150 hiệu ứng, tên cảnh), nút Kiểm chữ thô; huy hiệu sự kiện Ẩn / Mật bí, tìm theo id hoặc 'bất thường', lọc 'Chỉ sự kiện ẩn'. Đã kiểm.
+- **Theo bản game nghiệp:** Auto sự kiện né lựa chọn cộng nghiệp, lời khuyên và nhãn đan ghi rõ đan/chùa không gỡ nghiệp. Chưa kiểm.
+- **Ngự Linh:** bậc Thánh Huyết (tư chất 6), Thần Huyết tiến hóa có 3% lên Thánh Huyết; món biến thể tra đúng món gốc. Chưa kiểm.
+- **Tổng Quan:** Ngũ hành ý cho linh căn Ngũ Hành (hệ yếu nhất quyết định bậc). Chưa kiểm.
+
+### Sửa lỗi
+- **Tự cập nhật:** không còn bị GitHub chặn (403) khi Nạp lại nhiều lần: nhớ kết quả 15 phút, bị chặn thì tạm nghỉ. Chưa kiểm.
+- **Quan tâm sự kiện:** ★ một sự kiện ẩn không còn lộ tên khi chưa bật Soi sự kiện ẩn. Chưa kiểm.
 
 ## Bản 8.6.1 · Săn yêu không lặp Thôi
 ### Sửa lỗi
