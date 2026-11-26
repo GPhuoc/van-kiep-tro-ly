@@ -1,4 +1,32 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.9.1)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.10.0)
+
+## Bản 8.10.0 · Món muốn có, đánh thử đúng hơn, game 0.3.1a
+### Tính năng mới
+- **Món muốn có:** ô gõ tên món (không giới hạn số món) thay 3 ô Chủ Đạo, nhãn đang có / chưa có; Tool ưu tiên xếp món đang có vào kinh mạch. Chưa kiểm.
+- **Ưu tiên bộ + Xếp đủ bộ:** chọn bộ đang có ≥ 2 món (hiện số món), Tool thêm món bộ vào Món muốn có và ép xếp đủ các món đang có, kể cả bộ 5 món. Chưa kiểm.
+- **Không dùng dị bảo:** ô tick ở Auto Build, bỏ món dị bảo trừ món bạn chọn muốn có. Chưa kiểm.
+- **Chuyển máy:** Hệ Thống, xuất / nhập cài đặt Tool ra file json (gộp hoặc thay hết, có hoàn tác). Chưa kiểm.
+- **Lọc Tình trạng:** Vật Phẩm và Dị Bảo lọc Đang có / Còn thiếu / Đã gặp / Chưa gặp (Đã gặp tính từ bản này). Chưa kiểm.
+- **Khung mẹo:** đầu 8 tab chính có khung Cách làm · Cần biết · Mẹo thu gọn được; tắt ở Hệ Thống. Chưa kiểm.
+- **Lưu Phái, Cơ chế riêng:** Thể tu (nền thể theo khí huyết, Căn Cốt), Hợp Hoan (thải bổ, song tu), Độc, Thi, Ma có dòng cơ chế kèm số. Chưa kiểm.
+
+### Nâng cấp tính năng
+- **Auto Build không nghịch:** mặc định không cho điểm nghịch (tắt được), báo khi túi không có cách 0 nghịch. Chưa kiểm.
+- **Auto Build lấp đầy ô:** thêm vòng lấp cả viền ngoài, nhận món phủ thêm ô khi điểm gần như không đổi. Chưa kiểm.
+- **Auto Build ưu tiên đủ bộ:** thưởng theo mốc bộ (mốc hợp kích thưởng thêm), cùng phẩm thì món cuối của bộ thắng món lẻ. Chưa kiểm.
+- **Auto Build đánh thử:** trận hết 30 hiệp còn máu tính là hòa (nửa trận); phạt bố cục tiêu linh lực nhiều hơn hồi; Kỹ đánh thử 8 lượt; thẻ kết quả và Chấm Các Bộ Đã Lưu có Thắng · Hòa, hồi / tiêu linh lực. Chưa kiểm.
+- **Auto Build tìm chỗ đặt:** dùng hàm chỗ đặt hợp lệ của game (tự so với cách cũ, lệch thì quay về). Chưa kiểm.
+- **Chợ Quanh Đây:** ô Chỉ món hợp phái (mặc định bật), không còn khuyên đồ tà tu cho người chính đạo. Chưa kiểm.
+- **Thẻ món gốc:** Vật Phẩm hiện thẻ món của game, nhãn Món muốn có có icon. Chưa kiểm.
+- **Cảnh báo Đa Năng:** báo khi đang bật mod Vạn Kiếp Đa Năng (đổi luật kinh mạch, điểm Auto Build có thể lệch). Chưa kiểm.
+- **Báo Lỗi:** thẻ Lỗi Tool đã tự bỏ qua, có nút Chép. Chưa kiểm.
+- **Game 0.3.1a, bình cảnh:** cảnh báo khi đứng ải (tu vi ×0,1); Auto phá bình cảnh chạy cả Luyện Khí; Lộ trình ghi chưa tính thời gian đứng ải; sửa chữ hướng dẫn cũ. Chưa kiểm.
+
+### Sửa lỗi
+- **Auto Sự Kiện (game 0.3.1a xáo lựa chọn):** ghép lựa chọn theo chữ, không theo thứ tự; không nhận ra thì dừng. Chưa kiểm.
+- **Auto gặp mini game / màn lạ:** ưu tiên Bỏ qua, không bấm bừa lựa chọn có hiệu ứng lạ; dừng báo khi không rõ. Chưa kiểm.
+- **Auto Build bản mệnh:** không đưa món bản mệnh vào kinh mạch; đổi bản mệnh thì chấm lại. Chưa kiểm.
+- **Ước linh lực tiêu hao:** trước đây ước thấp hơn thực tế, nay cộng đủ phí chiêu; Linh lực dư hiện số âm đỏ. Chưa kiểm.
 
 ## Bản 8.9.1 · Đi tới chỗ bế quan
 ### Nâng cấp tính năng

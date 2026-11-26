@@ -1,10 +1,34 @@
 {
-  "version": "8.9.1",
+  "version": "8.10.0",
   "ngay": "26/11/2026",
-  "tep": "ban/8.9.1/main.js",
-  "kich_thuoc": 1943315,
-  "sha256": "94c091a6ecf7a6aa6c266324ba5675300cabc5c1a8b0c3525a689b2ecbaa6d77",
+  "tep": "ban/8.10.0/main.js",
+  "kich_thuoc": 1993836,
+  "sha256": "499908e59108f9dbfeb7f2c35308be7c072681177b9c5f724b1706b7dd74ef30",
+  "moi": [
+    "<b>Món muốn có:</b> ô gõ tên món (không giới hạn số món) thay 3 ô Chủ Đạo, nhãn đang có / chưa có; Tool ưu tiên xếp món đang có vào kinh mạch. Chưa kiểm.",
+    "<b>Ưu tiên bộ + Xếp đủ bộ:</b> chọn bộ đang có ≥ 2 món (hiện số món), Tool thêm món bộ vào Món muốn có và ép xếp đủ các món đang có, kể cả bộ 5 món. Chưa kiểm.",
+    "<b>Không dùng dị bảo:</b> ô tick ở Auto Build, bỏ món dị bảo trừ món bạn chọn muốn có. Chưa kiểm.",
+    "<b>Chuyển máy:</b> Hệ Thống, xuất / nhập cài đặt Tool ra file json (gộp hoặc thay hết, có hoàn tác). Chưa kiểm.",
+    "<b>Lọc Tình trạng:</b> Vật Phẩm và Dị Bảo lọc Đang có / Còn thiếu / Đã gặp / Chưa gặp (Đã gặp tính từ bản này). Chưa kiểm.",
+    "<b>Khung mẹo:</b> đầu 8 tab chính có khung Cách làm · Cần biết · Mẹo thu gọn được; tắt ở Hệ Thống. Chưa kiểm.",
+    "<b>Lưu Phái, Cơ chế riêng:</b> Thể tu (nền thể theo khí huyết, Căn Cốt), Hợp Hoan (thải bổ, song tu), Độc, Thi, Ma có dòng cơ chế kèm số. Chưa kiểm."
+  ],
   "nang": [
-    "<b>Chỗ bế quan tốt nhất gần đây (Đột Phá & Thọ):</b> mỗi nơi trong bảng có thêm nút ↗ Đi Tới (đi bằng đường của game), 📌 Ghim (ghim nơi và đường đi lên bản đồ game) và ⇢ Chỉ Dẫn (mũi tên đường đi hiện ngay dưới bảng), giống bảng Cơ duyên ở tab Bản Đồ. Chưa kiểm."
+    "<b>Auto Build không nghịch:</b> mặc định không cho điểm nghịch (tắt được), báo khi túi không có cách 0 nghịch. Chưa kiểm.",
+    "<b>Auto Build lấp đầy ô:</b> thêm vòng lấp cả viền ngoài, nhận món phủ thêm ô khi điểm gần như không đổi. Chưa kiểm.",
+    "<b>Auto Build ưu tiên đủ bộ:</b> thưởng theo mốc bộ (mốc hợp kích thưởng thêm), cùng phẩm thì món cuối của bộ thắng món lẻ. Chưa kiểm.",
+    "<b>Auto Build đánh thử:</b> trận hết 30 hiệp còn máu tính là hòa (nửa trận); phạt bố cục tiêu linh lực nhiều hơn hồi; Kỹ đánh thử 8 lượt; thẻ kết quả và Chấm Các Bộ Đã Lưu có Thắng · Hòa, hồi / tiêu linh lực. Chưa kiểm.",
+    "<b>Auto Build tìm chỗ đặt:</b> dùng hàm chỗ đặt hợp lệ của game (tự so với cách cũ, lệch thì quay về). Chưa kiểm.",
+    "<b>Chợ Quanh Đây:</b> ô Chỉ món hợp phái (mặc định bật), không còn khuyên đồ tà tu cho người chính đạo. Chưa kiểm.",
+    "<b>Thẻ món gốc:</b> Vật Phẩm hiện thẻ món của game, nhãn Món muốn có có icon. Chưa kiểm.",
+    "<b>Cảnh báo Đa Năng:</b> báo khi đang bật mod Vạn Kiếp Đa Năng (đổi luật kinh mạch, điểm Auto Build có thể lệch). Chưa kiểm.",
+    "<b>Báo Lỗi:</b> thẻ Lỗi Tool đã tự bỏ qua, có nút Chép. Chưa kiểm.",
+    "<b>Game 0.3.1a, bình cảnh:</b> cảnh báo khi đứng ải (tu vi ×0,1); Auto phá bình cảnh chạy cả Luyện Khí; Lộ trình ghi chưa tính thời gian đứng ải; sửa chữ hướng dẫn cũ. Chưa kiểm."
+  ],
+  "sua": [
+    "<b>Auto Sự Kiện (game 0.3.1a xáo lựa chọn):</b> ghép lựa chọn theo chữ, không theo thứ tự; không nhận ra thì dừng. Chưa kiểm.",
+    "<b>Auto gặp mini game / màn lạ:</b> ưu tiên Bỏ qua, không bấm bừa lựa chọn có hiệu ứng lạ; dừng báo khi không rõ. Chưa kiểm.",
+    "<b>Auto Build bản mệnh:</b> không đưa món bản mệnh vào kinh mạch; đổi bản mệnh thì chấm lại. Chưa kiểm.",
+    "<b>Ước linh lực tiêu hao:</b> trước đây ước thấp hơn thực tế, nay cộng đủ phí chiêu; Linh lực dư hiện số âm đỏ. Chưa kiểm."
   ]
 }

@@ -9,3 +9,10 @@ Mod trợ lý cho game Vạn Kiếp Tu Tiên. Tác giả: Minhndt3 · Shgphuoc �
 ## Tự cập nhật
 Tool tự kiểm tra bản mới ở repo này (Hệ Thống → Cập nhật). Bấm Cập nhật là xong, trang tự tải lại khi an toàn.
 `version.json` là thông tin bản mới nhất mà Tool đọc.
+
+## Cài bằng link (một lần)
+Trong game: Cấu hình → Mods → Cài mod → ô "Dán link tới .zip / .js", dán:
+
+`https://github.com/GPhuoc/van-kiep-tro-ly/raw/main/vktt_tro_ly.zip`
+
+rồi bấm Cài, bật mod, tải lại trang. Từ đó Tool tự báo bản mới.
