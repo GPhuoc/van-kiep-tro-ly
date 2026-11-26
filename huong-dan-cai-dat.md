@@ -1,4 +1,18 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.7.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.8.0)
+
+## Bản 8.8.0 · Chạy ngầm tắt được, sửa tự cập nhật
+### Tính năng mới
+- **Tính năng chạy ngầm (Hệ Thống):** thẻ mới đo từng việc Tool chạy ngầm (lần/phút, ms/phút, lâu nhất) và cho "Tắt hẳn" từng việc: việc đã tắt không còn chạy chút nào sau khi Nạp lại / F5. Nút "Chế độ nhẹ" tắt hết gợi ý ngầm (giữ các Auto), nút "Chép số đo" để gửi khi báo lag. Báo cáo nhanh kèm số đo. Chưa kiểm.
+- **Mệnh đồ trói:** Nhân Mạch và Thiên Kiêu gắn nhãn đỏ cho NPC còn bị mệnh đồ trói (chỉ lên cảnh giới theo mốc, không nhận đan đột phá; kết thân thì thoát). Chưa kiểm.
+
+### Nâng cấp tính năng
+- **Tìm tông môn:** nhắc lập Lộ trình theo cảnh giới trước (có nút mở). Đã có Lộ trình thì chấm cả món của cảnh giới sau, tông có nhiều món lộ trình lên đầu, mỗi tông ghi "Khớp lộ trình: n món". Chưa kiểm.
+- **Dự Kiến Thật / Auto Săn Yêu:** trận có luật (tỉ thí…) ghi "thua tối đa Thương nhẹ", Auto không bỏ chạy oan vì sợ thương nặng / tử trận. Chưa kiểm.
+- **Tự cập nhật:** tải xong mà đang trận / sự kiện / Auto thì thẻ Cập nhật ghi lý do đang chờ và có nút "Tải lại ngay"; Nạp lại mod mà trang vẫn chạy bản cũ thì báo F5; thẻ ghi rõ Cấu hình → Mods vẫn hiện bản cài là bình thường. Không kiểm khi tab game đang ẩn. Chưa kiểm.
+
+### Sửa lỗi
+- **Tự cập nhật:** nút "Cập nhật ngay" trên băng vàng và bấm thông báo bản mới giờ tải luôn (trước chỉ mở tab Hệ Thống). Hết lỗi "sai kích thước" (đọc version.json mới, tải theo tệp cố định của từng bản). Mạng treo thì báo lỗi sau 20 giây thay vì kẹt "đang kiểm". Tự tải lỗi thì nghỉ 2 giờ, không tải đi tải lại gây giật. Chưa kiểm.
+- **Hộp đột phá:** bỏ dòng "Đột phá · ẩn kết quả" thừa cạnh nút Xung kích; dòng kết quả của sự kiện có hàng nút ngang nằm dưới hàng nút. Chưa kiểm.
 
 ## Bản 8.7.0 · Đoán đột phá, Ý cảnh, sự kiện ẩn
 ### Tính năng mới

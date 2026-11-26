@@ -1,30 +1,20 @@
 {
-  "version": "8.7.0",
-  "ngay": "25/11/2026",
-  "kich_thuoc": 1866407,
-  "sha256": "cf0bbf591954e57a067927b661c594f160c7093097fe24c25c7c6786e9f81026",
+  "version": "8.8.0",
+  "ngay": "26/11/2026",
+  "tep": "ban/8.8.0/main.js",
+  "kich_thuoc": 1885035,
+  "sha256": "9a61661bd5823e13cd1d5cb6985b00507737dee014da9230369ba7ee95284a33",
   "moi": [
-    "<b>Đoán trước đột phá:</b> bảng chọn đan ở Đột phá & Thọ có cột Dự đoán (Thành / Bại / Chết / Tâm ma) và phẩm đạo cơ, tính bằng chính hàm của game trên bản sao; dòng số rút và bộ đan rẻ nhất mà qua; gợi ý chờ thêm tháng nếu phẩm cao hơn. Đã kiểm (không lỗi).",
-    "<b>Thẻ Ý Cảnh (Tổng Quan):</b> đủ 13 ý cảnh và Ngũ hành ý: ý đang theo, buff, điểm còn thiếu tới bậc kế, cách tích điểm; dị anh đang có (chiêu cùng hệ +15%) hoặc sẽ ra khi lên Nguyên Anh. Đã kiểm.",
-    "<b>Soi sự kiện ẩn (mặc định tắt):</b> ô 🔓 ở khung Đang Quan Tâm / Tra cứu: báo khi sự kiện ẩn đã ★ có trên bản đồ, danh sách sự kiện ẩn đang có kèm Đi tới. Chưa kiểm.",
-    "<b>Sổ Sự Kiện Vừa Gặp (Tra cứu Sự kiện):</b> tự ghi 40 sự kiện và thông báo lạ gần nhất, bấm mở thẻ, nút Chép. Đã kiểm.",
-    "<b>Chấm đỏ trên nút ☯:</b> sự kiện ★ hiện lúc cửa sổ đang thu nhỏ thì nút nổi có chấm đỏ kèm số, mở cửa sổ là mất. Chưa kiểm.",
-    "<b>Tâm ma & Nghiệp (Đột phá & Thọ):</b> tâm ma trong đó bao nhiêu là nghiệp, cách gỡ (khổ tu sám hối, việc thiện). Chưa kiểm.",
-    "<b>Cơ duyên tích dần (Ngự Linh):</b> điểm xui từng nhóm (đồ quý rơi, đồ ngon, tư chất tiến hóa, Thánh huyết trứng quý). Chưa kiểm.",
-    "<b>Đồ mượn của tông (Tàng Kinh Các):</b> món sẽ bị thu khi xuống núi, giá chuộc, phí xuống núi. Chưa kiểm.",
-    "<b>Thu Được Theo Nguồn (Tìm & Săn Đồ):</b> sổ đồ thu được trong kiếp theo nguồn (trận, sự kiện, tiệm...). Chưa kiểm.",
-    "<b>Màn trận:</b> dòng dự kiến của game ngay trên màn trận và nút Dự Kiến Thật (chỉ chạy khi bấm). Chưa kiểm."
+    "<b>Tính năng chạy ngầm (Hệ Thống):</b> thẻ mới đo từng việc Tool chạy ngầm (lần/phút, ms/phút, lâu nhất) và cho \"Tắt hẳn\" từng việc: việc đã tắt không còn chạy chút nào sau khi Nạp lại / F5. Nút \"Chế độ nhẹ\" tắt hết gợi ý ngầm (giữ các Auto), nút \"Chép số đo\" để gửi khi báo lag. Báo cáo nhanh kèm số đo. Chưa kiểm.",
+    "<b>Mệnh đồ trói:</b> Nhân Mạch và Thiên Kiêu gắn nhãn đỏ cho NPC còn bị mệnh đồ trói (chỉ lên cảnh giới theo mốc, không nhận đan đột phá; kết thân thì thoát). Chưa kiểm."
   ],
   "nang": [
-    "<b>Tìm Đồ:</b> dùng hàm vẽ tiệm của game (viewShop) nên xét tồn kho, món khóa điều kiện, hàng giả đã nhìn ra; tiệm hết hàng ghi '~k năm có lại'; ghi 'Dự đoán có ... (còn N)'; cảnh báo sát mốc năm; tới nơi không thấy món thì báo lý do; Giá chợ bỏ món hết. Chưa kiểm.",
-    "<b>Auto Săn yêu:</b> dự đoán trước khi chọn con (ô 'Dự đoán trước khi đánh', mặc định bật), bỏ con thua chắc ở Truy tìm và việc lạ; Truy tìm kiểm cả màu; thua trận ghi lại Dự Kiến Thật trước trận. Chưa kiểm.",
-    "<b>Tra cứu Sự kiện:</b> dịch hết chữ thô (biến, nhóm người, ~150 hiệu ứng, tên cảnh), nút Kiểm chữ thô; huy hiệu sự kiện Ẩn / Mật bí, tìm theo id hoặc 'bất thường', lọc 'Chỉ sự kiện ẩn'. Đã kiểm.",
-    "<b>Theo bản game nghiệp:</b> Auto sự kiện né lựa chọn cộng nghiệp, lời khuyên và nhãn đan ghi rõ đan/chùa không gỡ nghiệp. Chưa kiểm.",
-    "<b>Ngự Linh:</b> bậc Thánh Huyết (tư chất 6), Thần Huyết tiến hóa có 3% lên Thánh Huyết; món biến thể tra đúng món gốc. Chưa kiểm.",
-    "<b>Tổng Quan:</b> Ngũ hành ý cho linh căn Ngũ Hành (hệ yếu nhất quyết định bậc). Chưa kiểm."
+    "<b>Tìm tông môn:</b> nhắc lập Lộ trình theo cảnh giới trước (có nút mở). Đã có Lộ trình thì chấm cả món của cảnh giới sau, tông có nhiều món lộ trình lên đầu, mỗi tông ghi \"Khớp lộ trình: n món\". Chưa kiểm.",
+    "<b>Dự Kiến Thật / Auto Săn Yêu:</b> trận có luật (tỉ thí…) ghi \"thua tối đa Thương nhẹ\", Auto không bỏ chạy oan vì sợ thương nặng / tử trận. Chưa kiểm.",
+    "<b>Tự cập nhật:</b> tải xong mà đang trận / sự kiện / Auto thì thẻ Cập nhật ghi lý do đang chờ và có nút \"Tải lại ngay\"; Nạp lại mod mà trang vẫn chạy bản cũ thì báo F5; thẻ ghi rõ Cấu hình → Mods vẫn hiện bản cài là bình thường. Không kiểm khi tab game đang ẩn. Chưa kiểm."
   ],
   "sua": [
-    "<b>Tự cập nhật:</b> không còn bị GitHub chặn (403) khi Nạp lại nhiều lần: nhớ kết quả 15 phút, bị chặn thì tạm nghỉ. Chưa kiểm.",
-    "<b>Quan tâm sự kiện:</b> ★ một sự kiện ẩn không còn lộ tên khi chưa bật Soi sự kiện ẩn. Chưa kiểm."
+    "<b>Tự cập nhật:</b> nút \"Cập nhật ngay\" trên băng vàng và bấm thông báo bản mới giờ tải luôn (trước chỉ mở tab Hệ Thống). Hết lỗi \"sai kích thước\" (đọc version.json mới, tải theo tệp cố định của từng bản). Mạng treo thì báo lỗi sau 20 giây thay vì kẹt \"đang kiểm\". Tự tải lỗi thì nghỉ 2 giờ, không tải đi tải lại gây giật. Chưa kiểm.",
+    "<b>Hộp đột phá:</b> bỏ dòng \"Đột phá · ẩn kết quả\" thừa cạnh nút Xung kích; dòng kết quả của sự kiện có hàng nút ngang nằm dưới hàng nút. Chưa kiểm."
   ]
 }
