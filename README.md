@@ -13,6 +13,6 @@ Tool tự kiểm tra bản mới ở repo này (Hệ Thống → Cập nhật). 
 ## Cài bằng link (một lần)
 Trong game: Cấu hình → Mods → Cài mod → ô "Dán link tới .zip / .js", dán:
 
-`https://github.com/GPhuoc/van-kiep-tro-ly/raw/main/vktt_tro_ly.zip`
+`https://raw.githubusercontent.com/GPhuoc/van-kiep-tro-ly/main/vktt_tro_ly.zip`
 
 rồi bấm Cài, bật mod, tải lại trang. Từ đó Tool tự báo bản mới.
