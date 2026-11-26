@@ -1,20 +1,24 @@
 {
-  "version": "8.8.0",
+  "version": "8.9.0",
   "ngay": "26/11/2026",
-  "tep": "ban/8.8.0/main.js",
-  "kich_thuoc": 1885035,
-  "sha256": "9a61661bd5823e13cd1d5cb6985b00507737dee014da9230369ba7ee95284a33",
+  "tep": "ban/8.9.0/main.js",
+  "kich_thuoc": 1942411,
+  "sha256": "84d774ed2410db60e032110fc61620f60bfc2f856e1812c311408d1532e350b9",
   "moi": [
-    "<b>Tính năng chạy ngầm (Hệ Thống):</b> thẻ mới đo từng việc Tool chạy ngầm (lần/phút, ms/phút, lâu nhất) và cho \"Tắt hẳn\" từng việc: việc đã tắt không còn chạy chút nào sau khi Nạp lại / F5. Nút \"Chế độ nhẹ\" tắt hết gợi ý ngầm (giữ các Auto), nút \"Chép số đo\" để gửi khi báo lag. Báo cáo nhanh kèm số đo. Chưa kiểm.",
-    "<b>Mệnh đồ trói:</b> Nhân Mạch và Thiên Kiêu gắn nhãn đỏ cho NPC còn bị mệnh đồ trói (chỉ lên cảnh giới theo mốc, không nhận đan đột phá; kết thân thì thoát). Chưa kiểm."
+    "<b>Auto Build · Đánh thử với quái đặc tính:</b> trước khi chốt, Tool đánh thử từng lượt (Auto của game) vài bộ tốt nhất với đội quái phủ đủ mọi đặc tính (Phản Chấn, Hư Ảnh, Hú Bầy, Bầy Đàn, Thạch Bì…), cả bản thường và tinh anh, cộng các quái nhiều đặc tính. Bộ thắng nhiều hơn rõ thì được chọn. Kết quả hiện bảng thắng/thua từng đặc tính và dòng \"Bộ này yếu trước: …\". Chỉ chạy ở Độ Kỹ Vừa/Kỹ. Đã kiểm.",
+    "<b>Auto Build · Ưu tiên đặc tính quái:</b> ô mới ở Auto Kinh Mạch, tích đặc tính sắp gặp (vd Phản Chấn) thì Tool cân đặc tính đó nặng gấp 3 khi đánh thử. Chưa kiểm.",
+    "<b>Auto Build · Cách Xếp Trước:</b> Tool lưu 3 cách xếp gần nhất trước mỗi lần áp (Auto Kinh Mạch, Xếp Từ Đồ Trong Túi, Xếp 2 bộ); nút \"Quay lại cách này\" đưa kinh mạch về như cũ. Chưa kiểm."
   ],
   "nang": [
-    "<b>Tìm tông môn:</b> nhắc lập Lộ trình theo cảnh giới trước (có nút mở). Đã có Lộ trình thì chấm cả món của cảnh giới sau, tông có nhiều món lộ trình lên đầu, mỗi tông ghi \"Khớp lộ trình: n món\". Chưa kiểm.",
-    "<b>Dự Kiến Thật / Auto Săn Yêu:</b> trận có luật (tỉ thí…) ghi \"thua tối đa Thương nhẹ\", Auto không bỏ chạy oan vì sợ thương nặng / tử trận. Chưa kiểm.",
-    "<b>Tự cập nhật:</b> tải xong mà đang trận / sự kiện / Auto thì thẻ Cập nhật ghi lý do đang chờ và có nút \"Tải lại ngay\"; Nạp lại mod mà trang vẫn chạy bản cũ thì báo F5; thẻ ghi rõ Cấu hình → Mods vẫn hiện bản cài là bình thường. Không kiểm khi tab game đang ẩn. Chưa kiểm."
+    "<b>Auto Build · nhanh hơn:</b> Xếp Từ Đồ Trong Túi ở Độ Kỹ Vừa từ ~47 giây còn ~26 giây (máy tính, Hóa Thần): bỏ bước chạy phí, cắt sớm trận chắc chắn bị loại, Vừa dừng sớm các bước tinh chỉnh khi hết cải thiện. Độ Kỹ Kỹ vẫn chạy đủ mọi bước để ra bộ tốt nhất. Đã kiểm.",
+    "<b>Auto Build · tìm tốt hơn:</b> sửa bộ sinh số ngẫu nhiên (trước đây các lượt tìm trùng nhau), thêm bước đổi chỗ hai món và phá-xếp-lại một vùng, chọn vị trí đặt theo tiềm năng khi lưới lớn. Đã kiểm.",
+    "<b>Auto Build · không đứng máy:</b> phần cuối nhường máy trước mỗi lần chấm, thanh tiến độ ghi đúng pha (Đổi món lớn, Thử huyệt ×2, Lấp ô, Đánh thử…) thay cho \"còn ~0 giây\". Điện thoại nhường máy dày hơn và nhường ngay khi chạm. Đã kiểm.",
+    "<b>Auto Build · Xếp 2 bộ:</b> chỉ áp bộ nào tốt hơn bộ đang có, bộ không hơn giữ nguyên và ghi rõ. Giá mở bộ lấy từ game. Chưa kiểm.",
+    "<b>Auto Build · số đo:</b> Console có dòng [VKX km] ghi thời gian, lợi điểm từng pha và điểm cuối; thẻ Tính năng chạy ngầm có dòng \"Lần xếp kinh mạch gần nhất\"; Báo lỗi nhanh kèm số đo. Đã kiểm."
   ],
   "sua": [
-    "<b>Tự cập nhật:</b> nút \"Cập nhật ngay\" trên băng vàng và bấm thông báo bản mới giờ tải luôn (trước chỉ mở tab Hệ Thống). Hết lỗi \"sai kích thước\" (đọc version.json mới, tải theo tệp cố định của từng bản). Mạng treo thì báo lỗi sau 20 giây thay vì kẹt \"đang kiểm\". Tự tải lỗi thì nghỉ 2 giờ, không tải đi tải lại gây giật. Chưa kiểm.",
-    "<b>Hộp đột phá:</b> bỏ dòng \"Đột phá · ẩn kết quả\" thừa cạnh nút Xung kích; dòng kết quả của sự kiện có hàng nút ngang nằm dưới hàng nút. Chưa kiểm."
+    "<b>Auto Kinh Mạch:</b> bấm hai lần ra hai bộ khác nhau, máy lag thì gỡ mất món tốt (pháp khí tiên cấp): đồng hồ không tính lúc nhường máy cho game/mod khác, luôn xuất phát từ cách đang xếp, tính chưa kịp thì không gỡ món mạnh, đồ đổi trong lúc tính thì tính lại. Chưa kiểm.",
+    "<b>Auto Kinh Mạch:</b> món bị Cấm / dưới phẩm tối thiểu / trái bộ lọc hệ đang gắn sẵn giờ bị thay; món chủ đạo là món tà không còn làm Auto dừng hẳn; nhiều bộ không lật bộ đang dùng khi không bộ nào cần đổi, lỗi giữa chừng thì về bộ ban đầu; không chạy chồng lên Lộ trình / xếp tay. Chưa kiểm.",
+    "<b>Auto Build:</b> đổi hệ ở Hướng Kết Hợp không còn dùng điểm cũ; món chưa có số thuần thục coi là đã thuần thục (theo game); gợi ý mở ô không còn thổi phồng lợi. Chưa kiểm."
   ]
 }

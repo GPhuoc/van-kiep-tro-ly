@@ -1,4 +1,22 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.8.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.9.0)
+
+## Bản 8.9.0 · Auto Build đánh thử quái đặc tính
+### Tính năng mới
+- **Auto Build · Đánh thử với quái đặc tính:** trước khi chốt, Tool đánh thử từng lượt (Auto của game) vài bộ tốt nhất với đội quái phủ đủ mọi đặc tính (Phản Chấn, Hư Ảnh, Hú Bầy, Bầy Đàn, Thạch Bì…), cả bản thường và tinh anh, cộng các quái nhiều đặc tính. Bộ thắng nhiều hơn rõ thì được chọn. Kết quả hiện bảng thắng/thua từng đặc tính và dòng "Bộ này yếu trước: …". Chỉ chạy ở Độ Kỹ Vừa/Kỹ. Đã kiểm.
+- **Auto Build · Ưu tiên đặc tính quái:** ô mới ở Auto Kinh Mạch, tích đặc tính sắp gặp (vd Phản Chấn) thì Tool cân đặc tính đó nặng gấp 3 khi đánh thử. Chưa kiểm.
+- **Auto Build · Cách Xếp Trước:** Tool lưu 3 cách xếp gần nhất trước mỗi lần áp (Auto Kinh Mạch, Xếp Từ Đồ Trong Túi, Xếp 2 bộ); nút "Quay lại cách này" đưa kinh mạch về như cũ. Chưa kiểm.
+
+### Nâng cấp tính năng
+- **Auto Build · nhanh hơn:** Xếp Từ Đồ Trong Túi ở Độ Kỹ Vừa từ ~47 giây còn ~26 giây (máy tính, Hóa Thần): bỏ bước chạy phí, cắt sớm trận chắc chắn bị loại, Vừa dừng sớm các bước tinh chỉnh khi hết cải thiện. Độ Kỹ Kỹ vẫn chạy đủ mọi bước để ra bộ tốt nhất. Đã kiểm.
+- **Auto Build · tìm tốt hơn:** sửa bộ sinh số ngẫu nhiên (trước đây các lượt tìm trùng nhau), thêm bước đổi chỗ hai món và phá-xếp-lại một vùng, chọn vị trí đặt theo tiềm năng khi lưới lớn. Đã kiểm.
+- **Auto Build · không đứng máy:** phần cuối nhường máy trước mỗi lần chấm, thanh tiến độ ghi đúng pha (Đổi món lớn, Thử huyệt ×2, Lấp ô, Đánh thử…) thay cho "còn ~0 giây". Điện thoại nhường máy dày hơn và nhường ngay khi chạm. Đã kiểm.
+- **Auto Build · Xếp 2 bộ:** chỉ áp bộ nào tốt hơn bộ đang có, bộ không hơn giữ nguyên và ghi rõ. Giá mở bộ lấy từ game. Chưa kiểm.
+- **Auto Build · số đo:** Console có dòng [VKX km] ghi thời gian, lợi điểm từng pha và điểm cuối; thẻ Tính năng chạy ngầm có dòng "Lần xếp kinh mạch gần nhất"; Báo lỗi nhanh kèm số đo. Đã kiểm.
+
+### Sửa lỗi
+- **Auto Kinh Mạch:** bấm hai lần ra hai bộ khác nhau, máy lag thì gỡ mất món tốt (pháp khí tiên cấp): đồng hồ không tính lúc nhường máy cho game/mod khác, luôn xuất phát từ cách đang xếp, tính chưa kịp thì không gỡ món mạnh, đồ đổi trong lúc tính thì tính lại. Chưa kiểm.
+- **Auto Kinh Mạch:** món bị Cấm / dưới phẩm tối thiểu / trái bộ lọc hệ đang gắn sẵn giờ bị thay; món chủ đạo là món tà không còn làm Auto dừng hẳn; nhiều bộ không lật bộ đang dùng khi không bộ nào cần đổi, lỗi giữa chừng thì về bộ ban đầu; không chạy chồng lên Lộ trình / xếp tay. Chưa kiểm.
+- **Auto Build:** đổi hệ ở Hướng Kết Hợp không còn dùng điểm cũ; món chưa có số thuần thục coi là đã thuần thục (theo game); gợi ý mở ô không còn thổi phồng lợi. Chưa kiểm.
 
 ## Bản 8.8.0 · Chạy ngầm tắt được, sửa tự cập nhật
 ### Tính năng mới
