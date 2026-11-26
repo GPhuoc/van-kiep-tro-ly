@@ -1,10 +1,10 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.9.0
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.9.1
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.9.0';
+const VKX_BAN_CAI = '8.9.1';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
@@ -150,7 +150,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.9.0',
+  version: '8.9.1',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
@@ -160,7 +160,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     const vkxMoc = (n) => { try { const ms = Math.round(performance.now() - vkxT0); vkxMocL.push(n + " " + ms); if (n === "xong") console.info("[VKX] khởi động", ms + " ms", "(" + vkxMocL.join(" · ") + ")"); } catch (e) { /* bỏ qua */ } };
     try { (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
-  var TOOL_VER = '8.9.0';
+  var TOOL_VER = '8.9.1';
   if (gWin.__vkxMerged) {
     try { gWin.__vkxMerged.open(); } catch (e) {}
     // 8.7.1-thu.6: nạp lại mod không F5 mà số bản khác: bản cũ vẫn chạy (không tự dọn: nhiều listener), nhắc F5 thay vì lặng lẽ mở bản cũ
@@ -5729,11 +5729,13 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
         const list = await scanRetreat(c, +body.querySelector('#vk-bqy').value, prog);
         body.querySelector('#vk-pr5').style.display = 'none';
         const top = list.slice(0, 8);
-        body.querySelector('#vk-bqo').innerHTML = top.length ? `<table class="vk-t"><tr><th>Nơi</th><th>Tu vi/năm</th><th>Tới ĐVM</th></tr>` + top.map((r) => {
+        body.querySelector('#vk-bqo').innerHTML = top.length ? `<table class="vk-t"><tr><th>Nơi</th><th>Tu vi/năm</th><th>Tới ĐVM</th><th class="vk-map-tele">Đi Tới</th></tr>` + top.map((r) => {
           const yy = p.need > 0 ? p.need / r.info.tuViNam : 0;
           const ok = r.y + yy < p.left - 5;
-          return `<tr><td><b>${esc(placeName(c, r.slot))}</b><br><span class="vk-mu" style="font-size:12px">${esc(r.info.ten)} · linh khí ${esc(r.info.linhKhi && r.info.linhKhi.ten)}${r.info.doYen ? ' · ' + esc(r.info.doYen) : ''} · ${yrs(r.y)} · ${dangerTag(r.d)}${r.info.rentPerYear ? ` · ${Math.round(r.info.rentPerYear)} lt/năm` : ''}${r.info.meritPerYear ? ` · ${Math.round(r.info.meritPerYear)} cống hiến/năm` : ''}</span></td><td>${num(r.info.tuViNam, 2)}</td><td class="${ok ? 'vk-ok' : 'vk-bad'}">${p.need > 0 ? Math.ceil(yy) + ' năm' : '—'}</td></tr>`;
+          return `<tr><td><b>${esc(placeName(c, r.slot))}</b><br><span class="vk-mu" style="font-size:12px">${esc(r.info.ten)} · linh khí ${esc(r.info.linhKhi && r.info.linhKhi.ten)}${r.info.doYen ? ' · ' + esc(r.info.doYen) : ''} · ${yrs(r.y)} · ${dangerTag(r.d)}${r.info.rentPerYear ? ` · ${Math.round(r.info.rentPerYear)} lt/năm` : ''}${r.info.meritPerYear ? ` · ${Math.round(r.info.meritPerYear)} cống hiến/năm` : ''}</span></td><td>${num(r.info.tuViNam, 2)}</td><td class="${ok ? 'vk-ok' : 'vk-bad'}">${p.need > 0 ? Math.ceil(yy) + ' năm' : '—'}</td><td class="vk-map-tele"><div class="vk-map-btns">${ddQuickTravelButton(r.slot, c.run && c.run.viTri, 'Đi Tới')}${ddGuideButton(r.slot, c.run && c.run.viTri, 'Chỉ Dẫn')}</div></td></tr>`;
         }).join('') + '</table><div class="vk-mu" style="font-size:12px">Mỗi lần ngồi bị giới hạn số năm theo loại chỗ; ngồi xong cứ ngồi tiếp. Động phủ của mình không giới hạn.</div>' : '<div class="vk-mu">Không tìm thấy chỗ bế quan nào trong bán kính này.</div>';
+        const bqo = body.querySelector('#vk-bqo'); ddBindQuickTravel(bqo);
+        bqo.querySelectorAll('[data-vk-guide]').forEach((btn) => { btn.onclick = (ev2) => { ev2.preventDefault(); ev2.stopPropagation(); bdShowGuide(body, btn.dataset.vkGuide); }; });
       } catch (e) { body.querySelector('#vk-bqo').innerHTML = errBox(e); }
       ev.target.disabled = false;
     };
@@ -5763,7 +5765,7 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     </div>
     <div class="vk-card"><h3>Chỗ bế quan tốt nhất gần đây</h3>
       <select class="vk-sel" id="vk-bqy"><option value="1">Trong 1 năm đường</option><option value="3" selected>Trong 3 năm đường</option><option value="8">Trong 8 năm đường</option></select>
-      <button class="vk-btn" id="vk-bq">So sánh</button>${progressHtml('vk-pr5')}<div id="vk-bqo"></div></div>
+      <button class="vk-btn" id="vk-bq">So sánh</button>${progressHtml('vk-pr5')}<div id="vk-bqo"></div><div id="vk-guide"></div></div>
     <div class="vk-card"><h3>Hạn mức đan trong cảnh giới này</h3><div id="vk-dcap"></div></div>
     <div class="vk-card"><h3>Đan giúp tu vi và thọ</h3><div id="vk-pill"></div></div>
     <div class="vk-card"><h3>Muốn đạt tỉ lệ đột phá cao nhất</h3><div id="vk-tgt"></div></div>
@@ -18085,7 +18087,12 @@ table.vk-t th { text-transform:none; letter-spacing:.2px; }
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.9.0 · Bản Mod', d: '26/11/2026', now: true,
+            { t: 'Phiên Bản 8.9.1 · Bản Mod', d: '26/11/2026', now: true,
+            nang: [
+                '<b>Chỗ bế quan tốt nhất gần đây (Đột Phá & Thọ):</b> mỗi nơi trong bảng có thêm nút ↗ Đi Tới (đi bằng đường của game), 📌 Ghim (ghim nơi và đường đi lên bản đồ game) và ⇢ Chỉ Dẫn (mũi tên đường đi hiện ngay dưới bảng), giống bảng Cơ duyên ở tab Bản Đồ. Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.9.0 · Bản Mod', d: '26/11/2026', now: false,
             moi: [
                 '<b>Auto Build · Đánh thử với quái đặc tính:</b> trước khi chốt, Tool đánh thử từng lượt (Auto của game) vài bộ tốt nhất với đội quái phủ đủ mọi đặc tính (Phản Chấn, Hư Ảnh, Hú Bầy, Bầy Đàn, Thạch Bì…), cả bản thường và tinh anh, cộng các quái nhiều đặc tính. Bộ thắng nhiều hơn rõ thì được chọn. Kết quả hiện bảng thắng/thua từng đặc tính và dòng "Bộ này yếu trước: …". Chỉ chạy ở Độ Kỹ Vừa/Kỹ. Đã kiểm.',
                 '<b>Auto Build · Ưu tiên đặc tính quái:</b> ô mới ở Auto Kinh Mạch, tích đặc tính sắp gặp (vd Phản Chấn) thì Tool cân đặc tính đó nặng gấp 3 khi đánh thử. Chưa kiểm.',

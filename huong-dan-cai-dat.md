@@ -1,4 +1,8 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.9.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.9.1)
+
+## Bản 8.9.1 · Đi tới chỗ bế quan
+### Nâng cấp tính năng
+- **Chỗ bế quan tốt nhất gần đây (Đột Phá & Thọ):** mỗi nơi trong bảng có thêm nút ↗ Đi Tới (đi bằng đường của game), 📌 Ghim (ghim nơi và đường đi lên bản đồ game) và ⇢ Chỉ Dẫn (mũi tên đường đi hiện ngay dưới bảng), giống bảng Cơ duyên ở tab Bản Đồ. Chưa kiểm.
 
 ## Bản 8.9.0 · Auto Build đánh thử quái đặc tính
 ### Tính năng mới

@@ -1,24 +1,10 @@
 {
-  "version": "8.9.0",
+  "version": "8.9.1",
   "ngay": "26/11/2026",
-  "tep": "ban/8.9.0/main.js",
-  "kich_thuoc": 1942411,
-  "sha256": "84d774ed2410db60e032110fc61620f60bfc2f856e1812c311408d1532e350b9",
-  "moi": [
-    "<b>Auto Build · Đánh thử với quái đặc tính:</b> trước khi chốt, Tool đánh thử từng lượt (Auto của game) vài bộ tốt nhất với đội quái phủ đủ mọi đặc tính (Phản Chấn, Hư Ảnh, Hú Bầy, Bầy Đàn, Thạch Bì…), cả bản thường và tinh anh, cộng các quái nhiều đặc tính. Bộ thắng nhiều hơn rõ thì được chọn. Kết quả hiện bảng thắng/thua từng đặc tính và dòng \"Bộ này yếu trước: …\". Chỉ chạy ở Độ Kỹ Vừa/Kỹ. Đã kiểm.",
-    "<b>Auto Build · Ưu tiên đặc tính quái:</b> ô mới ở Auto Kinh Mạch, tích đặc tính sắp gặp (vd Phản Chấn) thì Tool cân đặc tính đó nặng gấp 3 khi đánh thử. Chưa kiểm.",
-    "<b>Auto Build · Cách Xếp Trước:</b> Tool lưu 3 cách xếp gần nhất trước mỗi lần áp (Auto Kinh Mạch, Xếp Từ Đồ Trong Túi, Xếp 2 bộ); nút \"Quay lại cách này\" đưa kinh mạch về như cũ. Chưa kiểm."
-  ],
+  "tep": "ban/8.9.1/main.js",
+  "kich_thuoc": 1943315,
+  "sha256": "94c091a6ecf7a6aa6c266324ba5675300cabc5c1a8b0c3525a689b2ecbaa6d77",
   "nang": [
-    "<b>Auto Build · nhanh hơn:</b> Xếp Từ Đồ Trong Túi ở Độ Kỹ Vừa từ ~47 giây còn ~26 giây (máy tính, Hóa Thần): bỏ bước chạy phí, cắt sớm trận chắc chắn bị loại, Vừa dừng sớm các bước tinh chỉnh khi hết cải thiện. Độ Kỹ Kỹ vẫn chạy đủ mọi bước để ra bộ tốt nhất. Đã kiểm.",
-    "<b>Auto Build · tìm tốt hơn:</b> sửa bộ sinh số ngẫu nhiên (trước đây các lượt tìm trùng nhau), thêm bước đổi chỗ hai món và phá-xếp-lại một vùng, chọn vị trí đặt theo tiềm năng khi lưới lớn. Đã kiểm.",
-    "<b>Auto Build · không đứng máy:</b> phần cuối nhường máy trước mỗi lần chấm, thanh tiến độ ghi đúng pha (Đổi món lớn, Thử huyệt ×2, Lấp ô, Đánh thử…) thay cho \"còn ~0 giây\". Điện thoại nhường máy dày hơn và nhường ngay khi chạm. Đã kiểm.",
-    "<b>Auto Build · Xếp 2 bộ:</b> chỉ áp bộ nào tốt hơn bộ đang có, bộ không hơn giữ nguyên và ghi rõ. Giá mở bộ lấy từ game. Chưa kiểm.",
-    "<b>Auto Build · số đo:</b> Console có dòng [VKX km] ghi thời gian, lợi điểm từng pha và điểm cuối; thẻ Tính năng chạy ngầm có dòng \"Lần xếp kinh mạch gần nhất\"; Báo lỗi nhanh kèm số đo. Đã kiểm."
-  ],
-  "sua": [
-    "<b>Auto Kinh Mạch:</b> bấm hai lần ra hai bộ khác nhau, máy lag thì gỡ mất món tốt (pháp khí tiên cấp): đồng hồ không tính lúc nhường máy cho game/mod khác, luôn xuất phát từ cách đang xếp, tính chưa kịp thì không gỡ món mạnh, đồ đổi trong lúc tính thì tính lại. Chưa kiểm.",
-    "<b>Auto Kinh Mạch:</b> món bị Cấm / dưới phẩm tối thiểu / trái bộ lọc hệ đang gắn sẵn giờ bị thay; món chủ đạo là món tà không còn làm Auto dừng hẳn; nhiều bộ không lật bộ đang dùng khi không bộ nào cần đổi, lỗi giữa chừng thì về bộ ban đầu; không chạy chồng lên Lộ trình / xếp tay. Chưa kiểm.",
-    "<b>Auto Build:</b> đổi hệ ở Hướng Kết Hợp không còn dùng điểm cũ; món chưa có số thuần thục coi là đã thuần thục (theo game); gợi ý mở ô không còn thổi phồng lợi. Chưa kiểm."
+    "<b>Chỗ bế quan tốt nhất gần đây (Đột Phá & Thọ):</b> mỗi nơi trong bảng có thêm nút ↗ Đi Tới (đi bằng đường của game), 📌 Ghim (ghim nơi và đường đi lên bản đồ game) và ⇢ Chỉ Dẫn (mũi tên đường đi hiện ngay dưới bảng), giống bảng Cơ duyên ở tab Bản Đồ. Chưa kiểm."
   ]
 }
