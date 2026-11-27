@@ -1,4 +1,34 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.10.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.11.0)
+
+## Bản 8.11.0 · Auto Build chấm đúng, trận thật, game 0.3.1a
+### Tính năng mới
+- **Auto Build: thuật toán xếp Mới (mặc định):** nhiều khởi đầu (lõi + cầu kiểu game tự xếp, lấp kín quét 4 hướng, ô khó nhất, bộ đang xếp, bộ đã lưu), chỗ đặt chia theo vùng nên viền ngoài cũng được lấp; vẫn chọn lại thuật toán Cũ được. Đã kiểm (Tool tự thử trên save người chơi).
+- **Chấm Trận:** mặc định "Ước nhanh + xác nhận trận thật": cuối lượt chấm lại hơn 24 bố cục tốt nhất bằng trận Auto thật của game, có linh thú/đồng hành đang mang; có mức "Trận thật toàn bộ" và "Ước nhanh". Đã kiểm.
+- **Trận mẫu mới:** 15 trận lấy từ kho quái game (tu sĩ / yêu thú / tà vật nhiều hệ), cảnh giới theo tỉ lệ game gặp (cùng cảnh giới 60%, thấp hơn 25%, cao hơn 15%), đủ tiểu cảnh; ưu tiên yêu thú ô đang săn. Đã kiểm.
+- **Chấm Theo Thuần Thục:** tối ưu theo Lĩnh Ngộ đầy (mặc định), sức hiện tại, hoặc sau 5 / 10 / 20 năm. Chưa kiểm.
+- **Linh thú mẫu:** build ngự linh chưa mang con nào thì khi đánh thử có thêm linh thú mẫu cùng cảnh giới (chỉ tính, không đổi gì trong game). Chưa kiểm.
+- **Đạo chướng và ngộ (game 0.3.1a):** Tổng quan và Đột Phá & Thọ hiện chướng đang mang kèm gợi ý phá; có ngộ chờ chọn thì báo và Auto dừng (Tool không tự chọn ngộ). Chưa kiểm.
+- **Lệnh Console __vkxKmSo() / __vkxKmBench():** so thuật toán Cũ / Mới / bộ đang xếp / bộ đã lưu trên cùng một thang (trận thật), có tu luyện, đột phá, khí huyết, hộ thể, linh lực; in danh sách trận mẫu. Đã kiểm.
+
+### Nâng cấp tính năng
+- **Auto Build chấm đúng hơn:** bỏ phần cộng hai lần hiệu ứng lưới (huyệt, tương sinh, màu ô game đã tính); Hướng Build, Hướng Xếp, Ưu tiên phẩm cao chỉ còn để phá hòa giữa các bộ mạnh ngang nhau; thưởng bộ nén mềm. Đã kiểm.
+- **Chế độ có ý nghĩa thật:** Cân Bằng = 70% đánh nhau + 20% tu luyện + 10% đột phá; Tu Luyện, Đột Phá, Thủ cũng là tỉ lệ rõ ràng so với bộ đang xếp. Đã kiểm.
+- **Điểm thật và quyết định đổi bộ:** bảng so có Điểm thật / Trận / Ngoài trận / Thưởng / Phạt, bảng kiểm 7 dòng, dòng Lấp đầy x/y ô; chỉ đề xuất đổi khi điểm thật hơn ≥ 1,5% hoặc ít vi phạm hơn, chỉ hơn nhờ thưởng thì ghi "Không đáng đổi". Đã kiểm.
+- **Không ra bộ tệ hơn bộ đã lưu:** so với mọi bộ kinh mạch đã lưu; đổi trận thắng lấy tu luyện thì báo dòng vàng, Auto Kinh Mạch không tự áp khi thua ≥ 2 trận (trừ khi tu luyện +15% hoặc đột phá +2%). Đã kiểm.
+- **Máu cuối, hòa, địch bỏ chạy:** tính máu còn lúc hết trận, hòa là nửa trận, địch bỏ chạy gần như thắng. Đã kiểm.
+- **Mặc định cấu hình:** tắt lọc cứng theo linh căn và ép tỉ lệ tâm pháp : chiến pháp (game không có luật này; bật lại được). Đã kiểm.
+- **Nhanh và ổn định:** ngân sách theo số lần chấm (máy nào cũng ra cùng kết quả), đánh thử quái đặc tính thành nút bấm, bỏ sớm bố cục kém trước trận đầu. Đã kiểm.
+- **Auto bỏ qua mini game (game 0.3.1a):** gặp mini game thì bấm Bỏ qua (kết theo chỉ số) nếu game cho, không bấm bừa lựa chọn lạ; ô tắt ở Auto Sự Kiện. Chưa kiểm.
+- **Auto phá bình cảnh:** chạy cả ải đỉnh Luyện Khí; không dùng đan ở ải lớn có đạo chướng (qua bằng đan thì mất lượt chọn ngộ), có ô bật riêng. Chưa kiểm.
+- **Ải bình cảnh:** cảnh báo khi đứng ải (tu vi thấm rất ít), Lộ trình ghi chú thời gian đứng ải, Mục tiêu tỉ lệ coi như đã phá ải. Chưa kiểm.
+- **Định nghĩa món tà:** theo hàm của game. Chưa kiểm.
+
+### Sửa lỗi
+- **Lấp đầy ô nhét món tương khắc:** vòng lấp đầy không còn nhận món làm tụt điểm thật hay thêm cặp tương khắc (viền đỏ) với món kề. Đã kiểm.
+- **Lựa chọn sự kiện bị xáo (game 0.3.1a):** Auto Sự Kiện và Soi Sự Kiện ghép lựa chọn theo số gốc, chọn đúng. Chưa kiểm.
+- **Bế quan bị thư nhà ngắt:** Auto ghi bị ngắt và để bạn xử lý thư, không coi là bị chặn; Auto dưỡng thương / đợi tiệm không dừng sai khi đứng ải. Chưa kiểm.
+- **Ước linh lực tiêu hao:** cộng đủ phí chiêu; linh lực dư âm hiện đỏ. Đã kiểm.
+- **Chữ hướng dẫn mini game:** Cấu hình → Trò chơi → Tắt mini game (theo giao diện game mới). Đã kiểm.
 
 ## Bản 8.10.0 · Món muốn có, đánh thử đúng hơn, game 0.3.1a
 ### Tính năng mới

@@ -1,34 +1,36 @@
 {
-  "version": "8.10.0",
-  "ngay": "26/11/2026",
-  "tep": "ban/8.10.0/main.js",
-  "kich_thuoc": 1993836,
-  "sha256": "499908e59108f9dbfeb7f2c35308be7c072681177b9c5f724b1706b7dd74ef30",
+  "version": "8.11.0",
+  "ngay": "27/11/2026",
+  "tep": "ban/8.11.0/main.js",
+  "kich_thuoc": 2119835,
+  "sha256": "1414f46164adda936128fbfd9ffb408870737d7718aa32ba53f35b3b4ee17aed",
   "moi": [
-    "<b>Món muốn có:</b> ô gõ tên món (không giới hạn số món) thay 3 ô Chủ Đạo, nhãn đang có / chưa có; Tool ưu tiên xếp món đang có vào kinh mạch. Chưa kiểm.",
-    "<b>Ưu tiên bộ + Xếp đủ bộ:</b> chọn bộ đang có ≥ 2 món (hiện số món), Tool thêm món bộ vào Món muốn có và ép xếp đủ các món đang có, kể cả bộ 5 món. Chưa kiểm.",
-    "<b>Không dùng dị bảo:</b> ô tick ở Auto Build, bỏ món dị bảo trừ món bạn chọn muốn có. Chưa kiểm.",
-    "<b>Chuyển máy:</b> Hệ Thống, xuất / nhập cài đặt Tool ra file json (gộp hoặc thay hết, có hoàn tác). Chưa kiểm.",
-    "<b>Lọc Tình trạng:</b> Vật Phẩm và Dị Bảo lọc Đang có / Còn thiếu / Đã gặp / Chưa gặp (Đã gặp tính từ bản này). Chưa kiểm.",
-    "<b>Khung mẹo:</b> đầu 8 tab chính có khung Cách làm · Cần biết · Mẹo thu gọn được; tắt ở Hệ Thống. Chưa kiểm.",
-    "<b>Lưu Phái, Cơ chế riêng:</b> Thể tu (nền thể theo khí huyết, Căn Cốt), Hợp Hoan (thải bổ, song tu), Độc, Thi, Ma có dòng cơ chế kèm số. Chưa kiểm."
+    "<b>Auto Build: thuật toán xếp Mới (mặc định):</b> nhiều khởi đầu (lõi + cầu kiểu game tự xếp, lấp kín quét 4 hướng, ô khó nhất, bộ đang xếp, bộ đã lưu), chỗ đặt chia theo vùng nên viền ngoài cũng được lấp; vẫn chọn lại thuật toán Cũ được. Đã kiểm (Tool tự thử trên save người chơi).",
+    "<b>Chấm Trận:</b> mặc định \"Ước nhanh + xác nhận trận thật\": cuối lượt chấm lại hơn 24 bố cục tốt nhất bằng trận Auto thật của game, có linh thú/đồng hành đang mang; có mức \"Trận thật toàn bộ\" và \"Ước nhanh\". Đã kiểm.",
+    "<b>Trận mẫu mới:</b> 15 trận lấy từ kho quái game (tu sĩ / yêu thú / tà vật nhiều hệ), cảnh giới theo tỉ lệ game gặp (cùng cảnh giới 60%, thấp hơn 25%, cao hơn 15%), đủ tiểu cảnh; ưu tiên yêu thú ô đang săn. Đã kiểm.",
+    "<b>Chấm Theo Thuần Thục:</b> tối ưu theo Lĩnh Ngộ đầy (mặc định), sức hiện tại, hoặc sau 5 / 10 / 20 năm. Chưa kiểm.",
+    "<b>Linh thú mẫu:</b> build ngự linh chưa mang con nào thì khi đánh thử có thêm linh thú mẫu cùng cảnh giới (chỉ tính, không đổi gì trong game). Chưa kiểm.",
+    "<b>Đạo chướng và ngộ (game 0.3.1a):</b> Tổng quan và Đột Phá & Thọ hiện chướng đang mang kèm gợi ý phá; có ngộ chờ chọn thì báo và Auto dừng (Tool không tự chọn ngộ). Chưa kiểm.",
+    "<b>Lệnh Console __vkxKmSo() / __vkxKmBench():</b> so thuật toán Cũ / Mới / bộ đang xếp / bộ đã lưu trên cùng một thang (trận thật), có tu luyện, đột phá, khí huyết, hộ thể, linh lực; in danh sách trận mẫu. Đã kiểm."
   ],
   "nang": [
-    "<b>Auto Build không nghịch:</b> mặc định không cho điểm nghịch (tắt được), báo khi túi không có cách 0 nghịch. Chưa kiểm.",
-    "<b>Auto Build lấp đầy ô:</b> thêm vòng lấp cả viền ngoài, nhận món phủ thêm ô khi điểm gần như không đổi. Chưa kiểm.",
-    "<b>Auto Build ưu tiên đủ bộ:</b> thưởng theo mốc bộ (mốc hợp kích thưởng thêm), cùng phẩm thì món cuối của bộ thắng món lẻ. Chưa kiểm.",
-    "<b>Auto Build đánh thử:</b> trận hết 30 hiệp còn máu tính là hòa (nửa trận); phạt bố cục tiêu linh lực nhiều hơn hồi; Kỹ đánh thử 8 lượt; thẻ kết quả và Chấm Các Bộ Đã Lưu có Thắng · Hòa, hồi / tiêu linh lực. Chưa kiểm.",
-    "<b>Auto Build tìm chỗ đặt:</b> dùng hàm chỗ đặt hợp lệ của game (tự so với cách cũ, lệch thì quay về). Chưa kiểm.",
-    "<b>Chợ Quanh Đây:</b> ô Chỉ món hợp phái (mặc định bật), không còn khuyên đồ tà tu cho người chính đạo. Chưa kiểm.",
-    "<b>Thẻ món gốc:</b> Vật Phẩm hiện thẻ món của game, nhãn Món muốn có có icon. Chưa kiểm.",
-    "<b>Cảnh báo Đa Năng:</b> báo khi đang bật mod Vạn Kiếp Đa Năng (đổi luật kinh mạch, điểm Auto Build có thể lệch). Chưa kiểm.",
-    "<b>Báo Lỗi:</b> thẻ Lỗi Tool đã tự bỏ qua, có nút Chép. Chưa kiểm.",
-    "<b>Game 0.3.1a, bình cảnh:</b> cảnh báo khi đứng ải (tu vi ×0,1); Auto phá bình cảnh chạy cả Luyện Khí; Lộ trình ghi chưa tính thời gian đứng ải; sửa chữ hướng dẫn cũ. Chưa kiểm."
+    "<b>Auto Build chấm đúng hơn:</b> bỏ phần cộng hai lần hiệu ứng lưới (huyệt, tương sinh, màu ô game đã tính); Hướng Build, Hướng Xếp, Ưu tiên phẩm cao chỉ còn để phá hòa giữa các bộ mạnh ngang nhau; thưởng bộ nén mềm. Đã kiểm.",
+    "<b>Chế độ có ý nghĩa thật:</b> Cân Bằng = 70% đánh nhau + 20% tu luyện + 10% đột phá; Tu Luyện, Đột Phá, Thủ cũng là tỉ lệ rõ ràng so với bộ đang xếp. Đã kiểm.",
+    "<b>Điểm thật và quyết định đổi bộ:</b> bảng so có Điểm thật / Trận / Ngoài trận / Thưởng / Phạt, bảng kiểm 7 dòng, dòng Lấp đầy x/y ô; chỉ đề xuất đổi khi điểm thật hơn ≥ 1,5% hoặc ít vi phạm hơn, chỉ hơn nhờ thưởng thì ghi \"Không đáng đổi\". Đã kiểm.",
+    "<b>Không ra bộ tệ hơn bộ đã lưu:</b> so với mọi bộ kinh mạch đã lưu; đổi trận thắng lấy tu luyện thì báo dòng vàng, Auto Kinh Mạch không tự áp khi thua ≥ 2 trận (trừ khi tu luyện +15% hoặc đột phá +2%). Đã kiểm.",
+    "<b>Máu cuối, hòa, địch bỏ chạy:</b> tính máu còn lúc hết trận, hòa là nửa trận, địch bỏ chạy gần như thắng. Đã kiểm.",
+    "<b>Mặc định cấu hình:</b> tắt lọc cứng theo linh căn và ép tỉ lệ tâm pháp : chiến pháp (game không có luật này; bật lại được). Đã kiểm.",
+    "<b>Nhanh và ổn định:</b> ngân sách theo số lần chấm (máy nào cũng ra cùng kết quả), đánh thử quái đặc tính thành nút bấm, bỏ sớm bố cục kém trước trận đầu. Đã kiểm.",
+    "<b>Auto bỏ qua mini game (game 0.3.1a):</b> gặp mini game thì bấm Bỏ qua (kết theo chỉ số) nếu game cho, không bấm bừa lựa chọn lạ; ô tắt ở Auto Sự Kiện. Chưa kiểm.",
+    "<b>Auto phá bình cảnh:</b> chạy cả ải đỉnh Luyện Khí; không dùng đan ở ải lớn có đạo chướng (qua bằng đan thì mất lượt chọn ngộ), có ô bật riêng. Chưa kiểm.",
+    "<b>Ải bình cảnh:</b> cảnh báo khi đứng ải (tu vi thấm rất ít), Lộ trình ghi chú thời gian đứng ải, Mục tiêu tỉ lệ coi như đã phá ải. Chưa kiểm.",
+    "<b>Định nghĩa món tà:</b> theo hàm của game. Chưa kiểm."
   ],
   "sua": [
-    "<b>Auto Sự Kiện (game 0.3.1a xáo lựa chọn):</b> ghép lựa chọn theo chữ, không theo thứ tự; không nhận ra thì dừng. Chưa kiểm.",
-    "<b>Auto gặp mini game / màn lạ:</b> ưu tiên Bỏ qua, không bấm bừa lựa chọn có hiệu ứng lạ; dừng báo khi không rõ. Chưa kiểm.",
-    "<b>Auto Build bản mệnh:</b> không đưa món bản mệnh vào kinh mạch; đổi bản mệnh thì chấm lại. Chưa kiểm.",
-    "<b>Ước linh lực tiêu hao:</b> trước đây ước thấp hơn thực tế, nay cộng đủ phí chiêu; Linh lực dư hiện số âm đỏ. Chưa kiểm."
+    "<b>Lấp đầy ô nhét món tương khắc:</b> vòng lấp đầy không còn nhận món làm tụt điểm thật hay thêm cặp tương khắc (viền đỏ) với món kề. Đã kiểm.",
+    "<b>Lựa chọn sự kiện bị xáo (game 0.3.1a):</b> Auto Sự Kiện và Soi Sự Kiện ghép lựa chọn theo số gốc, chọn đúng. Chưa kiểm.",
+    "<b>Bế quan bị thư nhà ngắt:</b> Auto ghi bị ngắt và để bạn xử lý thư, không coi là bị chặn; Auto dưỡng thương / đợi tiệm không dừng sai khi đứng ải. Chưa kiểm.",
+    "<b>Ước linh lực tiêu hao:</b> cộng đủ phí chiêu; linh lực dư âm hiện đỏ. Đã kiểm.",
+    "<b>Chữ hướng dẫn mini game:</b> Cấu hình → Trò chơi → Tắt mini game (theo giao diện game mới). Đã kiểm."
   ]
 }
