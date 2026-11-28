@@ -1,4 +1,11 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.13.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.14.0)
+
+## Bản 8.14.0 · Hình ô kinh mạch, báo boss dị bảo
+### Tính năng mới
+- **Báo boss rơi dị bảo:** tab Dị Bảo có thẻ "Boss rơi dị bảo" liệt kê boss có tỉ lệ rơi dị bảo (cảnh giới, tỉ lệ), boss đang có trên bản đồ xếp đầu kèm nơi, số năm còn lại và nút Đi tới. Boss mới xuất hiện trên bản đồ thì hiện thông báo, bấm vào mở tab Dị Bảo (tắt được ở Việc chạy ngầm). Chưa kiểm.
+
+### Nâng cấp tính năng
+- **Tra Cứu vật phẩm:** công pháp và pháp khí hiện hình ô kinh mạch: hình nhỏ ngay trên dòng kết quả, mở thẻ thấy lưới lớn tô màu theo hệ và số ô. Chưa kiểm.
 
 ## Bản 8.13.0 · Auto Ấp Trứng
 ### Tính năng mới

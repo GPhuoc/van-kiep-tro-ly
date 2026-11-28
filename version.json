@@ -1,13 +1,13 @@
 {
-  "version": "8.13.0",
+  "version": "8.14.0",
   "ngay": "28/11/2026",
-  "tep": "ban/8.13.0/main.js",
-  "kich_thuoc": 2193037,
-  "sha256": "22c4662151b6c7fe9b4adfb149b3654b8da20f5c545042cdd52bc0453c8df664",
+  "tep": "ban/8.14.0/main.js",
+  "kich_thuoc": 2201376,
+  "sha256": "d7367065aaf34f6e5e79a3eff0f36ed8274f97bc281c47a90f0508944cf0e7b7",
   "moi": [
-    "<b>Auto Ấp Trứng (Tự Động):</b> chọn liệu chính đang có trong túi (trứng, đồ phổ khôi lỗi, xác luyện thi…) kèm tỉ lệ ra từng phẩm, Tool tự ấp bằng lệnh game, bế quan chờ nghi thức xong, con ra thì chấm: đạt tư chất (mặc định Thánh huyết) hoặc đặc tính bạn chọn thì dừng, không đạt thì giữ con và ấp tiếp tới hết số trứng tối đa. Mặc định tối đa 5 trứng, không dùng trứng quý trừ khi tick, giữ lại linh thạch và thọ, không thả con, không mua trứng, không tua lại kết quả. Chưa kiểm ấp ra con (đã kiểm phần chặn khi chưa có công pháp đúng loại)."
+    "<b>Báo boss rơi dị bảo:</b> tab Dị Bảo có thẻ \"Boss rơi dị bảo\" liệt kê boss có tỉ lệ rơi dị bảo (cảnh giới, tỉ lệ), boss đang có trên bản đồ xếp đầu kèm nơi, số năm còn lại và nút Đi tới. Boss mới xuất hiện trên bản đồ thì hiện thông báo, bấm vào mở tab Dị Bảo (tắt được ở Việc chạy ngầm). Chưa kiểm."
   ],
   "nang": [
-    "<b>Thẻ tỉ lệ ấp trứng (Ngự Linh):</b> dùng chung cách chọn liệu phụ tốt nhất với Auto Ấp Trứng. Chưa kiểm."
+    "<b>Tra Cứu vật phẩm:</b> công pháp và pháp khí hiện hình ô kinh mạch: hình nhỏ ngay trên dòng kết quả, mở thẻ thấy lưới lớn tô màu theo hệ và số ô. Chưa kiểm."
   ]
 }

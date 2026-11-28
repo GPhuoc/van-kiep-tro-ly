@@ -1,10 +1,10 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.13.0
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.14.0
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.13.0';
+const VKX_BAN_CAI = '8.14.0';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
@@ -150,7 +150,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.13.0',
+  version: '8.14.0',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
@@ -160,7 +160,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     const vkxMoc = (n) => { try { const ms = Math.round(performance.now() - vkxT0); vkxMocL.push(n + " " + ms); if (n === "xong") console.info("[VKX] khởi động", ms + " ms", "(" + vkxMocL.join(" · ") + ")"); } catch (e) { /* bỏ qua */ } };
     try { (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
-  var TOOL_VER = '8.13.0';
+  var TOOL_VER = '8.14.0';
   if (gWin.__vkxMerged) {
     try { gWin.__vkxMerged.open(); } catch (e) {}
     // 8.7.1-thu.6: nạp lại mod không F5 mà số bản khác: bản cũ vẫn chạy (không tự dọn: nhiều listener), nhắc F5 thay vì lặng lẽ mở bản cũ
@@ -183,6 +183,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     { id: 'sdbao', ten: 'Báo săn đồ (báo ngầm)', nhom: 'Kiếm Lời', nhe: true, mo_ta: 'Sau mỗi lần state đổi, xem tiệm/đấu giá/sự kiện đang mở để báo món bạn đang săn.' },
     { id: 'skdlg', ten: 'Kết quả dưới nút lựa chọn sự kiện', nhom: 'Tra Cứu', nhe: true, nen: true, mo_ta: 'Vẽ dòng "kết quả" dưới nút lựa chọn trong hộp sự kiện của game (theo dõi thay đổi giao diện khi có sự kiện).' },
     { id: 'skkq', ten: 'Đối chiếu dự đoán sự kiện', nhom: 'Tra Cứu', nhe: true, nen: true, mo_ta: 'Chụp tỉ lệ dự đoán mỗi lần state đổi, ghi lại khi bạn chọn để so với kết quả thật.' },
+    { id: 'bossdb', ten: 'Báo boss rơi dị bảo', nhom: 'Tra Cứu', nhe: true, mo_ta: 'Boss có tỉ lệ rơi dị bảo xuất hiện trên bản đồ thì hiện thông báo (bấm để mở tab Dị Bảo).' },
     { id: 'qt', ten: 'Theo dõi sự kiện quan tâm', nhom: 'Tra Cứu', nhe: true, mo_ta: 'Khi đổi tháng/di chuyển/state đổi, quét sự kiện đang có để báo cái bạn đã đánh dấu quan tâm.' },
     { id: 'gyt', ten: 'Báo nổi gợi ý lượt trận', nhom: 'Đột Phá', nhe: true, mo_ta: 'Khi dock Mod đóng, tính gợi ý lượt đánh và báo nổi (mặc định tắt trong cấu hình).' },
     { id: 'thu', ten: 'Sổ thu được theo nguồn', nhom: 'Nhân Vật', nen: true, mo_ta: 'Ghi mỗi lần nhận vật phẩm để thống kê nguồn thu.' },
@@ -4377,14 +4378,99 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       return `<div class="vk-card"><h3>${esc(i.ten || e.relic)}</h3><div style="margin-bottom:4px">${badge(r)}</div><div class="vk-mu" style="font-size:13px">Sự kiện: «${esc(e.ten)}»<br>${bits.join('<br>')}</div>${bay ? `<div class="vk-dibao-actions">${bay}</div>` : noTarget}</div>`;
     };
     const rowsV = rows.filter((r) => okTt(r.e.relic)), bossV = bossRows.filter((r) => okTt(r.id)), chungV = chungRows.filter((r) => okTt(r.id));
+    // 8.13.1-thu.1: thẻ "Boss rơi dị bảo" (boss có tỉ lệ rơi dị bảo; đang có trên bản đồ thì xếp đầu kèm nút Đi tới)
+    const bossMap = diBaoBossTrenMap(), bossDs = diBaoBossDs();
+    const bossCard = (() => {
+      if (!bossDs.length) return '';
+      const rowsB = bossDs.map((b) => ({ b, on: bossMap.filter((m) => m.boss.id === b.id) })).sort((x, y) => (y.on.length > 0) - (x.on.length > 0));
+      const dong = ({ b, on }) => {
+        const head = `<span>${esc(b.ten)} <span class="vk-mu">· ${b.cg != null ? esc(realmName(b.cg)) : ''}${b.rate != null ? ' · rơi ' + pct(b.rate, 1) : ''}</span></span>`;
+        if (!on.length) return `<div class="vk-row">${head}<b class="vk-mu">Chưa xuất hiện</b></div>`;
+        return `<div class="vk-row">${head}<b class="vk-ok">Đang có trên bản đồ</b></div>` + on.map((m) => `<div class="vk-mu" style="font-size:12.5px;margin:0 0 4px 10px">${esc(qtNoi(m.slot))}${m.hetHan != null ? ' · còn ' + Math.max(0, Math.floor(m.hetHan)) + ' năm' : ''} ${ddQuickTravelButton(m.slot, run.viTri, 'Đi tới ' + qtNoi(m.slot))}</div>`).join('');
+      };
+      return `<div class="vk-card"><h3>Boss rơi dị bảo (${bossDs.length})</h3><div class="vk-mu" style="font-size:12px;margin-bottom:6px">Hạ boss này có thể rơi dị bảo (rơi chung, không rõ món nào). ${bossMap.length ? 'Đang có ' + bossMap.length + ' nơi trên bản đồ.' : 'Hiện chưa thấy boss nào trên bản đồ.'}</div>${rowsB.map(dong).join('')}</div>`;
+    })();
     body.innerHTML = `<div class="vk-card"><h3>Dị bảo đã nhận: ${nDone}/${rows.length + bossRows.length + chungRows.length}</h3><div class="vk-mu" style="font-size:13px">Trạng thái đọc thẳng từ save đang chơi. Dị bảo chỉ hiện trên bản đồ khi game cho sự kiện xuất hiện; node tồn tại vài năm rồi tan, nên đủ điều kiện chưa chắc đã thấy. Bảng này không thể hiện được tỉ lệ rơi từ boss.</div><div style="margin-top:8px">${ttSelHtml('db', tt)}${tt ? ` <span class="vk-mu" style="font-size:12px">hiện ${rowsV.length + bossV.length + chungV.length} / ${rows.length + bossRows.length + chungRows.length} món (mục “ngẫu nhiên” không lọc được)</span>` : ''}</div></div>` +
-      rowsV.map(card).join('') +
+      bossCard + rowsV.map(card).join('') +
       (bossV.length ? `<div class="vk-card"><h3>Chỉ rơi từ boss Hóa Thần</h3>${bossV.map((b) => `<div class="vk-row"><span>${esc(b.info.ten || b.id)}</span><b>${b.done ? 'Đã nhận' : 'Chưa có'}</b></div>`).join('')}</div>` : '') +
-      (chungV.length ? `<div class="vk-card"><h3>Rơi chung (${chungV.length})</h3><div class="vk-mu" style="font-size:12px;margin-bottom:6px">Không có sự kiện riêng. Rơi ngẫu nhiên một dị bảo khi hạ boss có rơi dị bảo, hoặc từ thủ quan Vô Nhai Uyên tầng 40 trở lên.</div>${chungV.map((r) => `<div class="vk-row"><span>${esc(r.ten)} <span class="vk-mu">· ${esc(LOAI_VI[r.loai] || (r.loai ? loaiTen(r.loai) : ''))}</span></span><b>${r.done ? 'Đã nhận' : 'Chưa có'}</b></div>`).join('')}${chung.boss.length ? `<div class="vk-mu" style="font-size:12px;margin-top:8px">Boss có rơi dị bảo: ${chung.boss.map((b) => esc(b.ten) + (b.cg != null ? ' (' + esc(realmName(b.cg)) + ')' : '') + (b.rate != null ? ' ' + pct(b.rate, 1) : '')).join(' · ')}</div>` : ''}</div>` : '') +
+      (chungV.length ? `<div class="vk-card"><h3>Rơi chung (${chungV.length})</h3><div class="vk-mu" style="font-size:12px;margin-bottom:6px">Không có sự kiện riêng. Rơi ngẫu nhiên một dị bảo khi hạ boss có rơi dị bảo, hoặc từ thủ quan Vô Nhai Uyên tầng 40 trở lên.</div>${chungV.map((r) => `<div class="vk-row"><span>${esc(r.ten)} <span class="vk-mu">· ${esc(LOAI_VI[r.loai] || (r.loai ? loaiTen(r.loai) : ''))}</span></span><b>${r.done ? 'Đã nhận' : 'Chưa có'}</b></div>`).join('')}</div>` : '') +
       (randRows.length ? `<div class="vk-card"><h3>Dị bảo ngẫu nhiên (${randRows.length})</h3><div class="vk-mu" style="font-size:13px;margin-bottom:6px">Sự kiện chỉ cho một vật ngẫu nhiên theo loại, không có món cố định, nên không đánh dấu “đã nhận”. Đọc thẳng từ dữ liệu game.</div>${randRows.map((r) => `<div class="vk-row" style="align-items:flex-start"><span>${esc(r.ten)}<div class="vk-mu" style="font-size:12px">${esc(r.noi)}${r.gate ? ' · cần ' + esc(realmName(r.gate[0])) : ''}${r.loai ? ' · thưởng ' + esc(LOAI_VI[r.loai] || loaiTen(r.loai)) : ''}${r.hc ? ' · hồi chiêu ' + r.hc + ' năm' : ''}</div></span><b>${r.stt === 'map' ? '<span class="vk-ok">Đang có trên bản đồ' + (r.nodeLeft != null ? ' · còn ' + Math.max(0, Math.floor(r.nodeLeft)) + ' năm' : '') + '</span>' : r.stt === 'cd' ? '<span class="vk-bad">Hồi chiêu · còn ' + Math.ceil(r.left) + ' năm</span>' : r.stt === 'lock' ? '<span class="vk-bad">Chưa đủ cảnh giới</span>' : '<span class="vk-ok">Đủ điều kiện</span>'}</b></div>`).join('')}</div>` : '');
     { const se = body.querySelector('#tt-db'); if (se) se.onchange = () => { ttLuu('db', se.value); tabDiBao(); }; }
     ddBindQuickTravel(body);
   }
+  // 8.13.1-thu.1: boss có tỉ lệ rơi dị bảo (quái có roi_di_bao). Đệm theo object content (đổi content thì quét lại).
+  let DBB_C = null, DBB_DS = [], DBB_ENC = new Map(), DBB_QUET = false;
+  function diBaoBossDs() {
+    try {
+      const c = C();
+      if (DBB_C !== c) {
+        DBB_C = c; DBB_DS = []; DBB_ENC = new Map(); DBB_QUET = false;
+        for (const def of c.enemies.values()) {
+          const js = JSON.stringify((def && def.roi) || '');
+          if (js.indexOf('"roi_di_bao"') < 0) continue;
+          const m = /"roi_di_bao":([\d.]+)/.exec(js);
+          DBB_DS.push({ id: def.id, ten: def.ten || def.id, cg: def.canh_gioi, tc: def.tieu_canh_gioi, rate: m ? parseFloat(m[1]) : null });
+        }
+      }
+    } catch (e) { console.error('[dibao] boss ds', e); }
+    return DBB_DS;
+  }
+  // Encounter nào có chuỗi id boss (đúng cả chuỗi, có nháy) trong định nghĩa: encId → [boss…]. Quái gọi trực tiếp (combat: "enemy.x") hoặc qua vars mặc định của encounter.
+  function diBaoEncBoss() {
+    const ds = diBaoBossDs();
+    if (DBB_QUET || !ds.length) return DBB_ENC;
+    try {
+      for (const [eid, def] of C().encounters) {
+        const js = JSON.stringify(def || '');
+        const hit = ds.filter((b) => b.id && js.indexOf('"' + b.id + '"') >= 0);
+        if (hit.length) DBB_ENC.set(eid, hit);
+      }
+    } catch (e) { console.error('[dibao] enc boss', e); }
+    DBB_QUET = true;
+    return DBB_ENC;
+  }
+  // Boss rơi dị bảo đang có trên bản đồ: node có encounter thuộc bảng trên, hoặc vars có giá trị là id boss.
+  function diBaoBossTrenMap() {
+    const out = [];
+    try {
+      const run = G().state.run, nam = typeof run.nam === 'number' ? run.nam : null, byEnc = diBaoEncBoss(), byId = new Map(diBaoBossDs().map((b) => [b.id, b]));
+      for (const [slot, nd] of Object.entries(run.nodes || {})) {
+        if (!nd) continue;
+        const got = new Map();
+        if (typeof nd.encounter === 'string' && byEnc.has(nd.encounter)) for (const b of byEnc.get(nd.encounter)) got.set(b.id, b);
+        if (nd.vars && typeof nd.vars === 'object') for (const v of Object.values(nd.vars)) if (typeof v === 'string' && byId.has(v)) got.set(v, byId.get(v));
+        for (const b of got.values()) out.push({ slot, encId: nd.encounter || '', boss: b, hetHan: typeof nd.hetHanNam === 'number' && nam != null ? nd.hetHanNam - nam : null });
+      }
+    } catch (e) { console.error('[dibao] boss tren map', e); }
+    return out;
+  }
+  // Báo boss rơi dị bảo (việc ngầm 'bossdb'): boss mới hiện trên bản đồ thì thông báo một lần; rời bản đồ rồi hiện lại thì báo lại. Khóa đã báo nhớ ở localStorage vkx_bossdb_v1.
+  const DBB_DA = new Set((() => { try { const a = JSON.parse(localStorage.getItem('vkx_bossdb_v1') || '[]'); return Array.isArray(a) ? a.filter((x) => typeof x === 'string').slice(-200) : []; } catch (e) { return []; } })());
+  let DBB_TM = 0, DBB_T0 = 0;
+  function diBaoBossBao() {
+    try {
+      const ds = diBaoBossDs(); if (!ds.length) return;
+      const cur = diBaoBossTrenMap(), moi = [], dang = new Set();
+      for (const m of cur) { const k = m.slot + '|' + (m.encId || m.boss.id); dang.add(k); if (!DBB_DA.has(k)) { DBB_DA.add(k); moi.push(m); } }
+      let doi = moi.length > 0;
+      for (const k of [...DBB_DA]) if (!dang.has(k)) { DBB_DA.delete(k); doi = true; }
+      if (doi) { try { localStorage.setItem('vkx_bossdb_v1', JSON.stringify([...DBB_DA].slice(-200))); } catch (e) { /* bỏ qua */ } }
+      if (!moi.length) return;
+      const mo = () => { try { if (!UI.isOpen()) UI.open(); UI.setSection('tl'); goTab('db'); } catch (e) { /* bỏ qua */ } };
+      if (moi.length === 1) { const m = moi[0]; UI.notify('Boss rơi dị bảo xuất hiện: ' + m.boss.ten + ' tại ' + qtNoi(m.slot) + (m.boss.rate != null ? ' (tỉ lệ ' + pct(m.boss.rate, 1) + ')' : '') + ' — bấm để xem', 8000, mo); return; }
+      UI.notify('Boss rơi dị bảo xuất hiện: ' + moi.slice(0, 3).map((m) => m.boss.ten + ' (' + qtNoi(m.slot) + ')').join(', ') + (moi.length > 3 ? '…' : '') + ' — bấm để xem', 8000, mo);
+    } catch (e) { console.error('[dibao] bao boss', e); }
+  }
+  function diBaoBossHen() { // gộp nhịp: tối đa một lần quét mỗi ~2 giây
+    if (DBB_TM) return;
+    const cho = Math.max(0, 2000 - (Date.now() - DBB_T0));
+    DBB_TM = setTimeout(() => { DBB_TM = 0; DBB_T0 = Date.now(); diBaoBossBao(); }, cho);
+  }
+  try {
+    if (typeof TT.on === 'function') for (const ev of ['timePass', 'travel']) nenOn('bossdb', ev, diBaoBossHen);
+    nenSub('bossdb', diBaoBossHen);
+  } catch (e) { /* bỏ qua */ }
+  setTimeout(() => { try { if (!nenTat('bossdb')) diBaoBossHen(); } catch (e) { /* bỏ qua */ } }, 3500);
   // Dị bảo rơi chung (game 0.0.3): vật tag di_bao không thuộc DIBAO nhúng, không có sự kiện riêng; rơi từ quái có roi_di_bao hoặc thủ quan Vô Nhai Uyên 40+.
   function diBaoChung() {
     const out = { items: [], boss: [] };
@@ -4394,12 +4480,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
         if (!it || !Array.isArray(it.tag) || !it.tag.includes('di_bao') || known.has(it.id) || known.has(idGoc(it.id))) continue;
         out.items.push({ id: it.id, ten: it.ten || it.id, loai: it.loai, gia: it.gia, bd: it.theo_kiep ? 'Có' : 'Không' });
       }
-      for (const def of C().enemies.values()) {
-        const js = JSON.stringify((def && def.roi) || '');
-        if (js.indexOf('"roi_di_bao"') < 0) continue;
-        const m = /"roi_di_bao":([\d.]+)/.exec(js);
-        out.boss.push({ ten: def.ten || def.id, cg: def.canh_gioi, tc: def.tieu_canh_gioi, rate: m ? parseFloat(m[1]) : null });
-      }
+      out.boss = diBaoBossDs().slice();
     } catch (e) { console.error('[dibao] chung', e); return { items: [], boss: [] }; }
     return out;
   }
@@ -12034,6 +12115,26 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
   const tcPills = (arr) => arr.map((s) => `<span class="tc-pill">${s}</span>`).join('');
   const tcChance = (p) => pct(Math.min(1, p), p < 0.1 ? 1 : 0);
   const tcRow = (a, b) => `<div class="vk-row"><span>${esc(a)}</span><b style="text-align:right">${b}</b></div>`;
+  // 8.13.1-thu.1: hình ô kinh mạch của công pháp / pháp khí (it.hinh: '.' = trống, 'X' / 'A' = hệ đầu, 'B'… = hệ kế theo CHU_HE). Màu theo hệ lấy từ BASE ở mục "Vẽ kinh mạch".
+  try { const o = document.getElementById('vkx-hinh-css'); if (o) o.remove(); const st = document.createElement('style'); st.id = 'vkx-hinh-css'; st.textContent = '.tc-hinh{display:grid;gap:2px;justify-content:end;margin:2px 0}.tc-hinh i{display:block;width:14px;height:14px;border-radius:3px;background:var(--hc,#888)}.tc-hinh i.k{background:transparent;box-shadow:inset 0 0 0 1px #8883}.tc-hinh.nho{gap:1px;margin:0 0 0 auto;flex:0 0 auto}.tc-hinh.nho i{width:6px;height:6px;border-radius:1px}.tc-hinh.nho i.k{box-shadow:none}.tc-hinh-n{font-size:11px;color:var(--mut);text-align:right}'; document.head.appendChild(st); } catch (e) { /* bỏ qua */ }
+  function tcHinhHtml(it, nho) {
+    try {
+      if (!it || (it.loai !== 'cong_phap' && it.loai !== 'phap_khi') || !Array.isArray(it.hinh) || !it.hinh.length) return '';
+      const hang = it.hinh.map((r) => String(r)), rong = Math.max(...hang.map((r) => r.length));
+      if (!(rong > 0) || rong > 40 || hang.length > 40) return '';
+      const he = Array.isArray(it.he) ? it.he : [];
+      let n = 0, cells = '';
+      for (const r of hang) for (let i = 0; i < rong; i++) {
+        const ch = r[i] || '.';
+        if (ch === '.' || ch === ' ') { cells += '<i class="k"></i>'; continue; }
+        n++;
+        const idx = ch === 'X' ? 0 : Math.max(0, 'ABCDE'.indexOf(ch)), h = he[idx] || he[0], col = (BASE[h] || ['#888'])[0];
+        cells += `<i style="--hc:${col}" title="${esc(heTen(h || ''))}"></i>`;
+      }
+      const grid = `<div class="tc-hinh${nho ? ' nho' : ''}" style="grid-template-columns:repeat(${rong},${nho ? 6 : 14}px)">${cells}</div>`;
+      return nho ? grid : grid + `<div class="tc-hinh-n">${n} ô</div>`;
+    } catch (e) { return ''; }
+  }
   const tcItemName = (id) => { const it = C().items.get(id); return it ? tcWord(it.ten) : tcWord(String(id).replace(/^item\./, '').replace(/_/g, ' ')); };
   const tcMonName = (id) => { const e = C().enemies.get(id); return e ? tcWord(e.ten) : tcWord(String(id).replace(/^enemy\./, '').replace(/_/g, ' ')); };
   const tcAdd = (map, k, v) => { let a = map.get(k); if (!a) map.set(k, (a = [])); a.push(v); };
@@ -12260,6 +12361,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     if (it.canh_gioi !== undefined) rows.push(tcRow('Yêu Cầu', esc(tcRealm(it.canh_gioi))));
     if (it.he && it.he.length) rows.push(tcRow('Hệ', esc(it.he.map(heTen).join(' / '))));
     if (it.gia) rows.push(tcRow('Giá Gốc', it.gia + ' Linh Thạch'));
+    { const hh = tcHinhHtml(it); if (hh) rows.push(tcRow('Hình Ô', hh)); }
     if (own) rows.push(tcRow('Đang Có Trong Túi', `<span class="vk-ok">${own}</span>`));
     { const boId = Cc.setOfItem && Cc.setOfItem.get(it.id), boDef = boId && Cc.itemSets && Cc.itemSets.get(boId); if (boDef) rows.push(tcRow('Thuộc Bộ', tcLk('b', boId, boDef.ten) + ` (${(boDef.mon || []).length} món)`)); }
     if (typeof it.khuon === 'string' && Cc.enemies.has(it.khuon)) rows.push(tcRow('Nở Ra', tcLk('q', it.khuon, tcMonName(it.khuon))));
@@ -12609,7 +12711,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
         const own = isV && bag[x.id] > 0 ? ` <span class="vk-ok" style="font-size:12px">có ×${bag[x.id]}</span>` : '';
         const qv = isV ? (x.it.pham_cap || 0) : 0, col = isV ? TC_QCOL[Math.min(8, qv)] : TC_MCOL[x.e.muc || 'thuong'] || '#9ca3af';
         const badge = isV ? (qv ? phNgan(qv) : '·') : (TC_MUC[x.e.muc || 'thuong'] || '');
-        return `<details class="vk-card tc-card" style="--tq:${col}" data-i="${i}" ${f.focus === x.id ? 'open' : ''}><summary><span class="tc-q${isV ? '' : ' tx'}">${esc(badge)}</span><span class="tc-nm"><b>${esc(x.name)}${own}${modxTag(x.id)}</b><small>${esc(meta.filter(Boolean).join(' · '))}</small>${isV && f.cd.length ? '<small style="color:var(--ok,#4ade80)">' + esc(cdVals(x, f)) + '</small>' : ''}</span></summary><div class="tc-bd"></div></details>`;
+        return `<details class="vk-card tc-card" style="--tq:${col}" data-i="${i}" ${f.focus === x.id ? 'open' : ''}><summary><span class="tc-q${isV ? '' : ' tx'}">${esc(badge)}</span><span class="tc-nm"><b>${esc(x.name)}${own}${modxTag(x.id)}</b><small>${esc(meta.filter(Boolean).join(' · '))}</small>${isV && f.cd.length ? '<small style="color:var(--ok,#4ade80)">' + esc(cdVals(x, f)) + '</small>' : ''}</span>${isV ? tcHinhHtml(x.it, true) : ''}</summary><div class="tc-bd"></div></details>`;
       }).join('') + (res.length > shown.length ? `<button class="vk-btn sec" id="tc-more" style="width:100%">Xem Thêm ${Math.min(40, res.length - shown.length)} Kết Quả</button>` : '') || '<div class="vk-card vk-mu">Không thấy kết quả nào.</div>';
       body.querySelectorAll('#tc-list details').forEach((el) => {
         const fill = () => { if (el.dataset.done) return; el.dataset.done = 1; const x = shown[+el.dataset.i]; try { el.querySelector('.tc-bd').innerHTML = isV ? tcItemHtml(x) : tcMonHtml(x); if (isV) vkxKitGan(el.querySelector('.tc-bd'), 'itemCard', { id: x.id }, true); } catch (e) { console.error(e); el.querySelector('.tc-bd').innerHTML = errBox(e); } };
@@ -20251,7 +20353,15 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.13.0 · Bản Mod', d: '28/11/2026', now: true,
+            { t: 'Phiên Bản 8.14.0 · Bản Mod', d: '28/11/2026', now: true,
+            moi: [
+                '<b>Báo boss rơi dị bảo:</b> tab Dị Bảo có thẻ "Boss rơi dị bảo" liệt kê boss có tỉ lệ rơi dị bảo (cảnh giới, tỉ lệ), boss đang có trên bản đồ xếp đầu kèm nơi, số năm còn lại và nút Đi tới. Boss mới xuất hiện trên bản đồ thì hiện thông báo, bấm vào mở tab Dị Bảo (tắt được ở Việc chạy ngầm). Chưa kiểm.'
+            ],
+            nang: [
+                '<b>Tra Cứu vật phẩm:</b> công pháp và pháp khí hiện hình ô kinh mạch: hình nhỏ ngay trên dòng kết quả, mở thẻ thấy lưới lớn tô màu theo hệ và số ô. Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.13.0 · Bản Mod', d: '28/11/2026', now: false,
             moi: [
                 '<b>Auto Ấp Trứng (Tự Động):</b> chọn liệu chính đang có trong túi (trứng, đồ phổ khôi lỗi, xác luyện thi…) kèm tỉ lệ ra từng phẩm, Tool tự ấp bằng lệnh game, bế quan chờ nghi thức xong, con ra thì chấm: đạt tư chất (mặc định Thánh huyết) hoặc đặc tính bạn chọn thì dừng, không đạt thì giữ con và ấp tiếp tới hết số trứng tối đa. Mặc định tối đa 5 trứng, không dùng trứng quý trừ khi tick, giữ lại linh thạch và thọ, không thả con, không mua trứng, không tua lại kết quả. Chưa kiểm ấp ra con (đã kiểm phần chặn khi chưa có công pháp đúng loại).'
             ],
