@@ -1,13 +1,17 @@
 {
-  "version": "8.14.0",
+  "version": "8.15.0",
   "ngay": "28/11/2026",
-  "tep": "ban/8.14.0/main.js",
-  "kich_thuoc": 2201376,
-  "sha256": "d7367065aaf34f6e5e79a3eff0f36ed8274f97bc281c47a90f0508944cf0e7b7",
+  "tep": "ban/8.15.0/main.js",
+  "kich_thuoc": 2209870,
+  "sha256": "3cd992552c7f7906ad132a5a61c21d457093bb3bed5d28b56d82df7c2236e158",
   "moi": [
-    "<b>Báo boss rơi dị bảo:</b> tab Dị Bảo có thẻ \"Boss rơi dị bảo\" liệt kê boss có tỉ lệ rơi dị bảo (cảnh giới, tỉ lệ), boss đang có trên bản đồ xếp đầu kèm nơi, số năm còn lại và nút Đi tới. Boss mới xuất hiện trên bản đồ thì hiện thông báo, bấm vào mở tab Dị Bảo (tắt được ở Việc chạy ngầm). Chưa kiểm."
+    "<b>Cách phá đạo chướng:</b> tab Đột Phá & Thọ, thẻ Đạo chướng chỉ cách phá chướng đang mang (việc ngoài đời cho Sát / Ngã / Trần / Tử, các sự kiện tâm cảnh phá được và kiếp này đã gặp chưa), các ngộ đang chờ chọn kèm số; chưa mang chướng thì có bảng chướng có thể rút ở ải lớn tới. Chưa kiểm."
   ],
   "nang": [
-    "<b>Tra Cứu vật phẩm:</b> công pháp và pháp khí hiện hình ô kinh mạch: hình nhỏ ngay trên dòng kết quả, mở thẻ thấy lưới lớn tô màu theo hệ và số ô. Chưa kiểm."
+    "<b>Ải đỉnh Luyện Khí:</b> thẻ Lên Trúc Cơ ghi rõ chưa phá ải (phạt giảm dần theo phần còn thiếu, còn n%; phẩm đạo cơ −1 bậc tới khi phá hẳn) và các dòng nguồn tỉ lệ của game. Tỉ lệ các phương án đan nay đã tính cả phạt chưa phá ải. Chưa kiểm.",
+    "<b>Mô phỏng trận:</b> theo luật hết hiệp mới của game: địch tháo chạy tính thắng, hết hiệp mà ta kém khí huyết là ta rút. Chưa kiểm."
+  ],
+  "sua": [
+    "<b>Auto Sự Kiện:</b> không còn chọn lựa chọn cộng nghiệp (vd Hái Vân Vụ Cổ Trà nghiệp +2); có ô \"Né lựa chọn cộng nghiệp\" (mặc định bật). Việc lạ trong các Auto khác bắt được nghiệp nằm sâu trong kết quả nửa vời / ngẫu nhiên. Chưa kiểm."
   ]
 }

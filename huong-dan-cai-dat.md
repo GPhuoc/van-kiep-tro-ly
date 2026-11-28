@@ -1,4 +1,15 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.14.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.15.0)
+
+## Bản 8.15.0 · Cách phá đạo chướng
+### Tính năng mới
+- **Cách phá đạo chướng:** tab Đột Phá & Thọ, thẻ Đạo chướng chỉ cách phá chướng đang mang (việc ngoài đời cho Sát / Ngã / Trần / Tử, các sự kiện tâm cảnh phá được và kiếp này đã gặp chưa), các ngộ đang chờ chọn kèm số; chưa mang chướng thì có bảng chướng có thể rút ở ải lớn tới. Chưa kiểm.
+
+### Nâng cấp tính năng
+- **Ải đỉnh Luyện Khí:** thẻ Lên Trúc Cơ ghi rõ chưa phá ải (phạt giảm dần theo phần còn thiếu, còn n%; phẩm đạo cơ −1 bậc tới khi phá hẳn) và các dòng nguồn tỉ lệ của game. Tỉ lệ các phương án đan nay đã tính cả phạt chưa phá ải. Chưa kiểm.
+- **Mô phỏng trận:** theo luật hết hiệp mới của game: địch tháo chạy tính thắng, hết hiệp mà ta kém khí huyết là ta rút. Chưa kiểm.
+
+### Sửa lỗi
+- **Auto Sự Kiện:** không còn chọn lựa chọn cộng nghiệp (vd Hái Vân Vụ Cổ Trà nghiệp +2); có ô "Né lựa chọn cộng nghiệp" (mặc định bật). Việc lạ trong các Auto khác bắt được nghiệp nằm sâu trong kết quả nửa vời / ngẫu nhiên. Chưa kiểm.
 
 ## Bản 8.14.0 · Hình ô kinh mạch, báo boss dị bảo
 ### Tính năng mới
