@@ -1,10 +1,10 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.12.0
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.13.0
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.12.0';
+const VKX_BAN_CAI = '8.13.0';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
@@ -150,7 +150,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.12.0',
+  version: '8.13.0',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
@@ -160,7 +160,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     const vkxMoc = (n) => { try { const ms = Math.round(performance.now() - vkxT0); vkxMocL.push(n + " " + ms); if (n === "xong") console.info("[VKX] khởi động", ms + " ms", "(" + vkxMocL.join(" · ") + ")"); } catch (e) { /* bỏ qua */ } };
     try { (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
-  var TOOL_VER = '8.12.0';
+  var TOOL_VER = '8.13.0';
   if (gWin.__vkxMerged) {
     try { gWin.__vkxMerged.open(); } catch (e) {}
     // 8.7.1-thu.6: nạp lại mod không F5 mà số bản khác: bản cũ vẫn chạy (không tự dọn: nhiều listener), nhắc F5 thay vì lặng lẽ mở bản cũ
@@ -3348,12 +3348,12 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
   const TABS = [['tq', 'Tổng Quan'], ['tkc', 'Tàng Kinh Các'], ['dp', 'Đột Phá & Thọ'], ['tr', 'Trận'], ['tien', 'Kiếm Linh Thạch'], ['cho', 'Chợ Quanh Đây'], ['ld', 'Luyện Đan'], ['cph', 'Chế Phù'], ['lbo', 'Luyện Bảo'], ['tph', 'Trận Pháp'], ['tt', 'Treo Thưởng'], ['tcv', 'Vật Phẩm'], ['tcq', 'Quái Vật'], ['tcd', 'Địa Danh'], ['san', 'Đồ Nên Săn'], ['bd', 'Bản Đồ'], ['db', 'Dị Bảo'], ['tce', 'Sự Kiện']];
   TABS.push(['bm', 'Bản Mệnh Pháp Bảo']);
   TABS.push(['nlw', 'Tổng Quan'], ['nlm', 'Của Tôi'], ['nls', 'Sinh Vật'], ['nlv', 'Vật Phẩm'], ['nlc', 'Cơ Duyên']);
-  TABS.push(['abb', 'Auto Buôn Bán'], ['asy', 'Auto Săn Yêu'], ['akm', 'Auto Build'], ['arr', 'Auto Reroll Tư Chất'], ['atd', 'Tìm & Săn Đồ'], ['adg', 'Auto Đấu Giá']);
+  TABS.push(['abb', 'Auto Buôn Bán'], ['asy', 'Auto Săn Yêu'], ['akm', 'Auto Build'], ['arr', 'Auto Reroll Tư Chất'], ['atd', 'Tìm & Săn Đồ'], ['adg', 'Auto Đấu Giá'], ['aap', 'Auto Ấp Trứng']);
   TABS.push(['tbm', 'Bộ Món'], ['tkh', 'Kế Hoạch Đi'], ['lpk', 'Lưu Phái'], ['tcn', 'Thể Chất'], ['syt', 'Săn Yêu'], ['hth', 'Hái Thuốc']);
   TABS.push(['hts', 'Hệ Thống'], ['aus', 'Auto Sự Kiện'], ['bl', 'Báo Lỗi']);
   TABS.push(['lhs', 'Mở Khóa'], ['lht', 'Thành Tựu'], ['lhd', 'Dự Tính Điểm'], ['tkb', 'Thiên Kiêu Bảng'], ['nmn', 'Nhân Mạch']);
   const TNAME = Object.fromEntries(TABS);
-  const GROUPS = [['nv', 'Nhân Vật', ['tq', 'tcn', 'tkc', 'bm']], ['cd', 'Đột Phá', ['dp', 'tr', 'lpk']], ['kl', 'Kiếm Lời', ['tien', 'cho', 'ld', 'cph', 'lbo', 'tph', 'tt']], ['tc', 'Tra Cứu', ['tcv', 'tcq', 'tcd', 'tce', 'tbm', 'san', 'bd', 'tkh', 'syt', 'hth', 'db']], ['nl', 'Ngự Linh', ['nlw', 'nlm', 'nls', 'nlv', 'nlc']], ['lh', 'Luân Hồi', ['lhs', 'lht', 'lhd']], ['nm', 'Nhân Mạch', ['tkb', 'nmn']], ['au', 'Tự Động', ['abb', 'asy', 'akm', 'arr', 'atd', 'adg', 'aus']], ['ht', 'Hệ Thống', ['hts', 'bl']]];
+  const GROUPS = [['nv', 'Nhân Vật', ['tq', 'tcn', 'tkc', 'bm']], ['cd', 'Đột Phá', ['dp', 'tr', 'lpk']], ['kl', 'Kiếm Lời', ['tien', 'cho', 'ld', 'cph', 'lbo', 'tph', 'tt']], ['tc', 'Tra Cứu', ['tcv', 'tcq', 'tcd', 'tce', 'tbm', 'san', 'bd', 'tkh', 'syt', 'hth', 'db']], ['nl', 'Ngự Linh', ['nlw', 'nlm', 'nls', 'nlv', 'nlc']], ['lh', 'Luân Hồi', ['lhs', 'lht', 'lhd']], ['nm', 'Nhân Mạch', ['tkb', 'nmn']], ['au', 'Tự Động', ['abb', 'asy', 'akm', 'arr', 'atd', 'adg', 'aap', 'aus']], ['ht', 'Hệ Thống', ['hts', 'bl']]];
   const grpOf = (k) => GROUPS.find((g) => g[2].includes(k)) || GROUPS[0];
   S.tab = 'tq';
   // Dựng lại thanh tab nhưng giữ nguyên vị trí vuốt (trước đây mỗi lần bấm tab là thanh nhảy về đầu) và cuộn nút đang chọn vào vùng nhìn thấy.
@@ -3904,6 +3904,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     atd: [/^Tìm Đồ/, /^Săn Đồ/],
     aus: [/^Auto Sự Kiện/, /^Tùy chọn/, /^Sự kiện bỏ qua/, /^Nhật ký/],
     adg: [/^Auto Đấu Giá/, /^Tiến Trình/, /^Nhật Ký/, /^Nhà Đấu Giá/, /^Thế Cục/],
+    aap: [/^Auto Ấp Trứng/, /^Tiến Trình/, /^Nhật Ký/],
     tbm: [/^Tra Cứu Bộ Món/],
     lpk: [/^Phái Của Bạn/, /^Khuyến Cáo Cho Bạn/, /^Các Phái Và Ảnh Hưởng/],
     tkh: [/^Kế Hoạch Đi/, /^Lộ trình/],
@@ -3964,6 +3965,11 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       lam: ['Chọn nhà đấu giá và các món cần, đặt giá tối đa rồi bấm Chạy Tự Động.'],
       biet: ['Tự nộp lệ phí vào thành / tông cũng áp dụng khi đi tới nhà đấu giá hoặc đại hội ở nơi thu phí (mặc định bật, trần 200 linh thạch; phần linh thạch giữ lại tối thiểu vẫn được chừa).'],
       meo: ['Cổng thu phí quá trần thì Auto dừng báo; tăng trần hoặc tự vào trong game.'],
+    },
+    aap: {
+      lam: ['Chọn liệu chính (chỉ liệu đang có trong túi), điều kiện dừng rồi bấm Chạy Tự Động.'],
+      biet: ['Auto ấp trứng bằng lệnh game, bế quan chờ nghi thức xong, con ra thì chấm điều kiện: đạt thì dừng, không đạt thì giữ con và ấp tiếp tới hết số trứng tối đa. Trứng quý chỉ ấp khi tick "Dùng cả trứng quý". Không thả con, không mua trứng.'],
+      meo: ['Mỗi lần ấp tốn trứng và linh thạch thật; Tool không tua lại kết quả.'],
     },
     cho: {
       lam: ['Xem Đồ đáng mua bằng linh thạch và Bộ mua tốt nhất với số linh thạch hiện có; Toàn bộ hàng theo nơi để tra từng điểm bán.'],
@@ -4047,7 +4053,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       S.abort = false; if (S.core && S.core.sync) S.core.sync();
       clearTimeout(S.skxT); // 8.4.2-thu.3: dựng ngầm chỉ mục sự kiện chỉ khi người dùng đứng yên ~5 s (mỗi lần dựng tab lại tính từ đầu) và luồng rảnh, mỗi lô ≤ 40 ms
       if (S.tab !== 'tce' && !(S.skx && S.skx.src === C()) && !S.skxP) S.skxT = setTimeout(() => { try { const chay = () => { try { if (G().state.run) skIndexLo(); } catch (e) { /* bỏ qua */ } }; if (typeof requestIdleCallback === 'function') requestIdleCallback(chay, { timeout: 5000 }); else chay(); } catch (e) { /* bỏ qua */ } }, 5000);
-      ({ tq: () => { tabTongQuan(); tongQuanExtra(); }, dp: tabDotPha2, tr: tabTran, tkc: tabTKC, bm: tabBanMenh, cho: tabCho, ld: tabLuyenDan, cph: tabCheePhu, lbo: tabLuyenBao, tph: tabTranPhap, tien: tabTien, bd: tabBanDo, tt: tabTreoThuong, san: tabSan, tcv: tabVatPham, tcq: tabQuaiVat, tcd: tabDiaDanh, db: tabDiBao, tce: tabSuKien, nlw: tabNLW, nlm: tabNLM, nls: tabNLS, nlv: tabNLV, nlc: tabNLC, lhd: tabDuTinhDiem, tkb: tabThienKieu, nmn: tabNhanMach, abb: tabAutoBuon, asy: tabAutoSan, akm: tabAutoKm, arr: tabAutoReroll, atd: tabTimSanDo, adg: tabAutoDauGia, tbm: tabBoMon, tkh: tabKeHoachDi, lpk: tabLuuPhai, tcn: tabTheChat, syt: tabSanYeu, hth: tabHaiThuoc, hts: tabHeThong, aus: tabAutoSuKien, bl: tabBaoLoi })[S.tab]();
+      ({ tq: () => { tabTongQuan(); tongQuanExtra(); }, dp: tabDotPha2, tr: tabTran, tkc: tabTKC, bm: tabBanMenh, cho: tabCho, ld: tabLuyenDan, cph: tabCheePhu, lbo: tabLuyenBao, tph: tabTranPhap, tien: tabTien, bd: tabBanDo, tt: tabTreoThuong, san: tabSan, tcv: tabVatPham, tcq: tabQuaiVat, tcd: tabDiaDanh, db: tabDiBao, tce: tabSuKien, nlw: tabNLW, nlm: tabNLM, nls: tabNLS, nlv: tabNLV, nlc: tabNLC, lhd: tabDuTinhDiem, tkb: tabThienKieu, nmn: tabNhanMach, abb: tabAutoBuon, asy: tabAutoSan, akm: tabAutoKm, arr: tabAutoReroll, atd: tabTimSanDo, adg: tabAutoDauGia, aap: tabAutoApTrung, tbm: tabBoMon, tkh: tabKeHoachDi, lpk: tabLuuPhai, tcn: tabTheChat, syt: tabSanYeu, hth: tabHaiThuoc, hts: tabHeThong, aus: tabAutoSuKien, bl: tabBaoLoi })[S.tab]();
       timChup(S.tab);
     } catch (e) {
       console.error(e); body.innerHTML = errBox(e) + '<button class="vk-btn sec" id="vk-retry">↻ Thử Lại</button><div class="vk-card" id="vk-ds" style="margin-top:10px"></div>';
@@ -10233,8 +10239,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
             if (have(m) <= 0) continue;
             let aux = [], odds = null, odds0 = null, yrs = null, cost = null, rare = false, top = 0;
             try {
-              const opts = (RT.ritualAuxOptions(Cc, def, m) || []).filter((id) => have(id) > (id === m ? 1 : 0)).map((id) => ({ id, sh: typeof RT.ritualAuxShift === 'function' ? Number(RT.ritualAuxShift(Cc, m, id)) || 1 : 1 })).sort((a, b) => b.sh - a.sh);
-              const used = {}; for (const o of opts) { while (aux.length < auxMax && (used[o.id] || 0) < have(o.id) - (o.id === m ? 1 : 0)) { aux.push(o.id); used[o.id] = (used[o.id] || 0) + 1; } if (aux.length >= auxMax) break; }
+              aux = apAuxTot(RT, Cc, def, m, have, auxMax);   // 8.12.1-thu.1: chung với Auto Ấp Trứng
               odds = RT.ritualAptitudeOdds(Cc, def, m, aux); odds0 = RT.ritualAptitudeOdds(Cc, def, m, []);
               yrs = RT.ritualYears(Cc, def, m); cost = RT.ritualCost(Cc, def, m); rare = !!RT.isRareEgg(Cc, m); top = Number(RT.topAptitudeChance(Cc, m)) || 0;
             } catch (e) { continue; }
@@ -14061,6 +14066,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     san: { maxY: 3, mau: ['an_toan', 'ngang_suc', 'hiem'], tran: 20, thuong: 2, tho: 15, rut: 30, mucLa: 'chay', cach: 'ngau', kt: true, neDebuff: true, giaiTu: 0, giaiDen: 5, muc: ['thuong'], toc: 'nhanh', sk: true, sks: false, dkt: true, doanTruoc: true, dktThang: 90, dktNang: 10, dktSom: 30, duong: false, duongMax: 30, danThuong: true, nlMuc: [] },
     km: { petKind: 'linh_thu', mode: 'bal', algo: 'moi', tranThat: 'xn', thuan: 'day', linhThuMau: true, mau: { id: '', bat: false, loai: {} }, de: {}, kieuTran: 'don', phai: '', uu: { ht: false, ll: false, du: false, ma: '' }, dir: 'tien', kb: '', prio: false, khongNghich: true, lapDay: true, uuBo: true, bk: 5, ratio: '0', iters: 3000, mo: false, moMax: 1, two: false, mixHe: [], bo: '1', fb: 'bal', ln: 'tho', tay: false, bos: [], thuTu: 'danh,tu,dot', keep: 'tu', moBo: false, watch: false, core: [], coreBo: '', boUu: '', duBo: true, khongDiBao: false, coreW: 'manh', phamCao: true, phMinCp: 0, phMinPk: 0, phMinAuto: false, cam: [], heChi: [], dt: [], pet: '', petN: 0 },
     sd: { on: false, ds: [], duTru: 0, bao: true },
+    ap: { lieu: '', aux: 'tot', max: 5, quy: false, giu: 500, tho: 15, tu: 6, dac: '', dong: 0 },   // 8.12.1-thu.1 (I3): Auto Ấp Trứng
     phi: { tu: true, tran: 200 },   // 8.11.1-thu.9 (K1): Auto tự nộp lệ phí vào thành / tông (dùng chung các Auto đi lại)
     dg: { ds: [], noi: '', tho: 15, giuLt: 0, toc: 'nhanh', cach: 'yen' },   // 7.17.4-thu.30: Auto Đấu Giá
     rr: { pham: ['thien', 'bien_di'], he: [], heMode: 'any', tc: [], join: 'and', max: 3000, smp: 400, toc: 'nhanh', swap: false, lp: false, dl: 'normal', lh: false, lhIds: [], lhKeep: 0, tm: { nuoc: '', xt: '', he: '', lc: '', tc: '' } },
@@ -14798,7 +14804,8 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
   }
   function auLoad() {
     let o = {}; try { o = JSON.parse(localStorage.getItem(AU_KEY) || '{}') || {}; } catch (e) { o = {}; }
-    AU.cfg = { buon: { ...AU_DEF.buon, ...(o.buon || {}) }, san: { ...AU_DEF.san, ...(o.san || {}) }, km: { ...AU_DEF.km, ...(o.km || {}) }, rr: { ...AU_DEF.rr, ...(o.rr || {}) }, sd: { ...AU_DEF.sd, ...(o.sd || {}) }, dg: { ...AU_DEF.dg, ...(o.dg || {}) }, phi: { ...AU_DEF.phi, ...(o.phi || {}) } };
+    AU.cfg = { buon: { ...AU_DEF.buon, ...(o.buon || {}) }, san: { ...AU_DEF.san, ...(o.san || {}) }, km: { ...AU_DEF.km, ...(o.km || {}) }, rr: { ...AU_DEF.rr, ...(o.rr || {}) }, sd: { ...AU_DEF.sd, ...(o.sd || {}) }, dg: { ...AU_DEF.dg, ...(o.dg || {}) }, ap: { ...AU_DEF.ap, ...(o.ap || {}) }, phi: { ...AU_DEF.phi, ...(o.phi || {}) } };
+    { const a = AU.cfg.ap; a.lieu = typeof a.lieu === 'string' ? a.lieu : ''; a.aux = a.aux === 'khong' ? 'khong' : 'tot'; a.max = Math.max(1, Math.min(200, Math.floor(+a.max || 5))); a.quy = !!a.quy; a.giu = Math.max(0, Math.floor(+a.giu || 0)); a.tho = Math.max(0, Math.floor(+a.tho || 0)); a.tu = Math.max(0, Math.min(6, Math.floor(+a.tu || 0))); a.dac = typeof a.dac === 'string' ? a.dac : ''; a.dong = Math.max(0, Math.min(8, Math.floor(+a.dong || 0))); }   // 8.12.1-thu.1
     AU.cfg.phi.tu = AU.cfg.phi.tu !== false; AU.cfg.phi.tran = Math.max(0, Math.floor(Number(AU.cfg.phi.tran))); if (!Number.isFinite(AU.cfg.phi.tran)) AU.cfg.phi.tran = 200;
     { const d = AU.cfg.dg; d.ds = (Array.isArray(d.ds) ? d.ds : []).filter((m) => m && typeof m.id === 'string').map((m) => ({ id: m.id, ten: String(m.ten || m.id), giaMax: Number(m.giaMax) < 0 ? -1 : Math.max(0, Number(m.giaMax) || 0) })); d.tho = Math.max(0, Number(d.tho) || 0); d.giuLt = Math.max(0, Number(d.giuLt) || 0); d.noi = typeof d.noi === 'string' ? d.noi : ''; if (!AU_TOC[d.toc]) d.toc = 'nhanh'; if (d.cach !== 'vong') d.cach = 'yen'; }   // 7.17.4-thu.30
     { const s = AU.cfg.sd; s.on = !!s.on; s.bao = s.bao !== false; s.duTru = Math.max(0, Number(s.duTru) || 0); s.ds = (Array.isArray(s.ds) ? s.ds : []).filter((m) => m && typeof m.id === 'string').map((m) => ({ id: m.id, ten: String(m.ten || m.id), can: Math.max(1, Math.floor(Number(m.can) || 1)), giaMax: Math.max(0, Number(m.giaMax) || 0) })); }
@@ -15331,7 +15338,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
   }
 
   // ── 7.17.4-thu.48: phân loại Auto. Auto đi lại (dùng chung AU.run, một cái mỗi lúc vì nhân vật chỉ ở một nơi) và Auto nền (chạy cùng được).
-  const AU_TEN = { buon: 'Auto Buôn Bán', san: 'Auto Săn Yêu', dg: 'Auto Đấu Giá', rr: 'Auto Reroll Tư Chất', tdbq: 'Tìm Đồ (bế quan)' }, AU_TABK = { buon: 'abb', san: 'asy', dg: 'adg', rr: 'arr', tdbq: 'atd' };
+  const AU_TEN = { buon: 'Auto Buôn Bán', san: 'Auto Săn Yêu', dg: 'Auto Đấu Giá', rr: 'Auto Reroll Tư Chất', tdbq: 'Tìm Đồ (bế quan)', ap: 'Auto Ấp Trứng' }, AU_TABK = { buon: 'abb', san: 'asy', dg: 'adg', rr: 'arr', tdbq: 'atd', ap: 'aap' };
   // Bấm Chạy khi Auto đi lại khác đang chạy: hộp hỏi ngay dưới nút thay cho nút xám im lặng. Trả true nếu đã hiện hộp (đừng làm gì thêm).
   // opt (7.17.4-thu.50): { neo: nút để chèn hộp ngay sau, nhan: chữ động từ trên nút "Dừng nó và …" (vd 'đi'), dùng cho nút Đi Đến không phải Auto }.
   function auChanHoi(kind, chay, opt) {
@@ -16815,6 +16822,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     if (!UI.isOpen()) return;
     auBarVe();
     if (S.tab === 'arr') { rrPaint(); return; }
+    if (S.tab === 'aap') { const a = body.querySelector('#au-st'), b = body.querySelector('#au-lg'); if (a) a.innerHTML = apStatus(AU.run); if (b) b.innerHTML = auLogHtml(); auGoPaint('ap'); return; }
     if (S.tab === 'atd') { const b = body.querySelector('#sd-lg'); if (b) b.innerHTML = sdLogHtml(); tdBqPaint(); return; }
     const kind = S.tab === 'abb' ? 'buon' : S.tab === 'asy' ? 'san' : S.tab === 'akm' ? 'km' : S.tab === 'adg' ? 'dg' : null; if (!kind) return;
     const a = body.querySelector('#au-st'), b = body.querySelector('#au-lg');
@@ -17217,6 +17225,195 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     try { UI.notify('Auto Đấu Giá dừng: ' + (st.msg || 'theo yêu cầu')); } catch (e) { /* bỏ qua */ }
     if (auPT) { clearTimeout(auPT); auPT = 0; }
     drawTabs(); auPaint();
+  }
+  // ═════════ 8.12.1-thu.1: AUTO ẤP TRỨNG (I3, kế hoạch ghi-chu/ke-hoach/auto-ap-trung.md) ═════════
+  // Chỉ dùng lệnh game: tuTien.game.familiarAct(startRitual) để bắt đầu nghi thức (trừ liệu và linh thạch ngay), auChoBeQuan để chờ nghi thức xong (game tự gọi completeDueRituals khi thời gian trôi).
+  // KHÔNG nạp lại save, KHÔNG đổi RNG, KHÔNG gọi completeDueRituals / finishRitualsNow / rerollFamiliarPassives / core/dev, KHÔNG sửa nv.rituals / nv.familiars, KHÔNG thả con, KHÔNG mua trứng.
+  const AP_APT = ['Phàm Huyết', 'Linh Huyết', 'Dị Huyết', 'Chân Huyết', 'Thần Huyết', 'Thánh Huyết'];
+  const apMod = (k) => { try { return TT.core[k] || null; } catch (e) { return null; } };
+  const apAuxMax = () => { try { const FB = apMod('balance/familiar') || {}; return Math.max(0, Math.floor(+FB.RITUAL_AUX_MAX || 3)); } catch (e) { return 3; } };
+  // Bộ liệu phụ tốt nhất đang có: ưu tiên món thêm nhiều nấc (ritualAuxShift), tối đa auxMax, chỉ lấy liệu có trong túi (liệu chính trùng id thì chừa 1).
+  function apAuxTot(RT, Cc, def, m, have, auxMax) {
+    const aux = [];
+    const opts = (RT.ritualAuxOptions(Cc, def, m) || []).filter((id) => have(id) > (id === m ? 1 : 0)).map((id) => ({ id, sh: typeof RT.ritualAuxShift === 'function' ? Number(RT.ritualAuxShift(Cc, m, id)) || 1 : 1 })).sort((a, b) => b.sh - a.sh);
+    const used = {}; for (const o of opts) { while (aux.length < auxMax && (used[o.id] || 0) < have(o.id) - (o.id === m ? 1 : 0)) { aux.push(o.id); used[o.id] = (used[o.id] || 0) + 1; } if (aux.length >= auxMax) break; }
+    return aux;
+  }
+  // Danh sách (nghi thức × liệu chính) đang có trong túi, kèm tỉ lệ (như thẻ Ấp trứng ở tab Linh vật).
+  function apLieuDs() {
+    const out = [];
+    try {
+      const RT = apMod('familiar/ritual'), Cc = C(), nv = G().state.run.nhanVat;
+      if (!RT || typeof RT.ritualAptitudeOdds !== 'function' || typeof RT.ritualMains !== 'function' || !Cc.rituals) return out;
+      const auxMax = apAuxMax(), have = (id) => Number((nv.tuiDo || {})[id]) || 0, sum = (a, i0) => a.slice(i0).reduce((x, y) => x + (Number(y) || 0), 0);
+      const Kp = S.core, opn = (() => { try { return Kp && typeof Kp.openKinds === 'function' ? (Kp.openKinds(nv, Cc) || []) : null; } catch (e) { return null; } })();
+      for (const def of Cc.rituals.values()) {
+        if (!def) continue;
+        let mains; try { mains = Object.keys(RT.ritualMains(Cc, def) || {}); } catch (e) { continue; }
+        const mo = def.loai === 'linh_thu' || !opn || opn.includes(def.loai);
+        for (const m of mains) {
+          if (have(m) <= 0) continue;
+          try {
+            const aux = apAuxTot(RT, Cc, def, m, have, auxMax), odds = RT.ritualAptitudeOdds(Cc, def, m, aux);
+            if (!Array.isArray(odds)) continue;
+            out.push({ key: def.id + '|' + m, def, main: m, n: have(m), mo, rare: !!RT.isRareEgg(Cc, m), p6: Number(odds[5]) || 0, p5: sum(odds, 4) });
+          } catch (e) { /* bỏ qua liệu này */ }
+        }
+      }
+    } catch (e) { /* bỏ qua */ }
+    return out;
+  }
+  const apDac = () => { try { const PS = apMod('familiar/passive'); return PS && PS.PASSIVES ? (PS.PASSIVE_IDS || Object.keys(PS.PASSIVES)).filter((id) => !(typeof PS.isBadPassive === 'function' && PS.isBadPassive(id))).map((id) => [id, String((PS.PASSIVES[id] && PS.PASSIVES[id].ten) || id)]) : []; } catch (e) { return []; } };
+  function apDongTen(f) {
+    try {
+      const PS = apMod('familiar/passive'), ps = Array.isArray(f.passives) ? f.passives : [];
+      return ps.map((p) => { const t = String((PS && PS.PASSIVES && PS.PASSIVES[p.id] && PS.PASSIVES[p.id].ten) || p.id); let ph = ''; try { ph = PS && PS.passiveTierName ? PS.passiveTierName(p) : ''; } catch (e) { ph = ''; } return t + (ph ? ' ' + ph : ''); }).join(', ');
+    } catch (e) { return ''; }
+  }
+  function apMoTa(f) {
+    let ten = ''; try { const en = C().enemies.get(f.template); ten = tcWord(f.name || (en && en.ten) || String(f.template).replace('enemy.', '').replace(/_/g, ' ')); } catch (e) { ten = String(f.name || f.template || '?'); }
+    const a = Math.max(1, Math.floor(f.aptitude || 1)), dong = apDongTen(f);
+    return ten + ' · ' + (AP_APT[a - 1] || 'tư chất') + ' (' + a + ') · dòng: ' + (dong || 'không có');
+  }
+  // Điều kiện dừng: tư chất HOẶC đặc tính (mục nào có đặt); số dòng là điều kiện kèm. Không đặt gì thì không bao giờ đạt.
+  function apDat(f, cfg) {
+    const ps = Array.isArray(f.passives) ? f.passives : [], cs = [];
+    if (cfg.tu > 0) cs.push((f.aptitude || 1) >= cfg.tu);
+    if (cfg.dac) cs.push(ps.some((p) => p && p.id === cfg.dac));
+    const base = cs.length ? cs.some(Boolean) : cfg.dong > 0;
+    return base && (!(cfg.dong > 0) || ps.length >= cfg.dong);
+  }
+  function apStatus(st) {
+    if (!st || st.kind !== 'ap') return '<div class="vk-mu" style="font-size:13px">Chưa chạy.</div>';
+    const run = G() && G().state.run, nv = run ? run.nhanVat : null;
+    const rows = [['Trạng Thái', st.running ? '<span class="vk-ok">Đang chạy…</span>' : 'Đã dừng'], ['Lý Do Dừng', st.running ? '—' : esc(st.msg || '—')], ['Trứng Đã Ấp', st.nAp], ['Con Đã Ra', st.ra], ['Linh Thạch Đã Tốn', num(st.lt, 0)]];
+    if (nv && run) { rows.push(['Năm Đã Trôi', num(run.nam - st.nam0)]); rows.push(['Nghi Thức Đang Chạy', (nv.rituals || []).length]); rows.push(['Thọ Nguyên Còn', Math.floor(auLifeLeft()) + ' năm']); }
+    return rows.map((r) => `<div class="vk-row"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
+  }
+  function apReadCfg() {
+    const q = (id) => body.querySelector('#' + id), c = AU.cfg.ap, n = (id) => Math.max(0, Math.floor(Number(q(id).value) || 0));
+    if (!q('ap-lieu')) return;
+    c.lieu = q('ap-lieu').value; c.aux = q('ap-aux').value === 'khong' ? 'khong' : 'tot';
+    c.max = Math.max(1, Math.min(200, n('ap-max') || 5)); c.giu = n('ap-giu'); c.tho = n('ap-tho');
+    c.quy = !!q('ap-quy').checked; c.tu = Math.min(6, n('ap-tu')); c.dac = q('ap-dac').value; c.dong = Math.min(8, n('ap-dong'));
+    auSave();
+  }
+  function apStart() {
+    if (AU.run && AU.run.running) { if (!auChanHoi('ap', apStart)) auPaint(); return; }
+    const g = G();
+    if (!g || !g.state || !g.state.run) { UI.notify('Chưa có kiếp nào đang chơi.'); return; }
+    if (g.state.run.ketThuc) { UI.notify('Kiếp này đã kết thúc.'); return; }
+    apReadCfg(); const cfg = AU.cfg.ap, RT = apMod('familiar/ritual');
+    if (!RT || typeof RT.startRitual !== 'function' || typeof g.familiarAct !== 'function') { UI.notify('Bản game này thiếu lệnh ấp trứng (familiarAct / startRitual).'); return; }
+    const kq = cfg.lieu.split('|'); if (kq.length !== 2 || !C().rituals.get(kq[0])) { UI.notify('Hãy chọn liệu chính (cần có trong túi).'); return; }
+    if (!(cfg.tu > 0 || cfg.dac || cfg.dong > 0)) { UI.notify('Hãy đặt ít nhất một điều kiện dừng (tư chất, đặc tính hoặc số dòng).'); return; }
+    const nv = g.state.run.nhanVat, dkt = [cfg.tu > 0 ? 'tư chất ≥ ' + cfg.tu : '', cfg.dac ? 'có đặc tính ' + ((apDac().find((x) => x[0] === cfg.dac) || [0, cfg.dac])[1]) : '', cfg.dong > 0 ? 'đủ ' + cfg.dong + ' dòng' : ''].filter(Boolean);
+    AU.run = { kind: 'ap', running: true, stop: false, steps: 0, fights: 0, wins: 0, trips: 0, profit: 0, stuck: 0, phase: 'plan', route: null, bad: new Set(), tried: 0, avoidedTargets: 0, chan: 0, thu: 0, msg: '', t0: performance.now(), tEnd: 0, nam0: g.state.run.nam, lt0: nv.linhThach, delay: 30, ok: false,
+      seen: new Set((nv.familiars || []).map((f) => f.id)), nAp: 0, ra: 0, lt: 0, qua: 0 };
+    auLog('Bắt đầu Auto Ấp Trứng: ' + nlItemName(kq[1]) + ', tối đa ' + cfg.max + ' trứng; điều kiện: ' + dkt.join(cfg.tu > 0 && cfg.dac ? ' hoặc ' : ' và ') + '.', 'vk-ok');
+    drawTabs(); auPaint(); apLoop(AU.run);
+  }
+  async function apStep(st) {
+    const g = G(), cfg = AU.cfg.ap, RT = apMod('familiar/ritual'), Cc = C();
+    { const r0 = g.state.run; if (r0 && r0.thongBaoDai) auCall(() => g.closeLongNotice()); if (r0 && r0.thongBao && typeof g.dongThongBao === 'function') auCall(() => g.dongThongBao()); }
+    const cp = await auBypassConfirm();
+    if (cp) return { stop: 'Phát hiện bảng xác nhận của game “' + (cp.title || 'không tên') + '”, Auto ' + (cp.closed ? 'đã đóng theo đường Hủy' : 'chưa đóng hẳn được, bạn đóng giúp') + ' và dừng, không tự đồng ý' };
+    const p = auPending(st, { safe: true });
+    if (p !== 'idle') { if (p === 'ok') return null; return p; }
+    const run = g.state.run, nv = run.nhanVat, fams = nv.familiars || [], rits = nv.rituals || [];
+    // 1) con mới ra: chấm điều kiện
+    let hit = null;
+    for (const f of fams) {
+      if (st.seen.has(f.id)) continue;
+      st.seen.add(f.id); st.ra++;
+      const ok = apDat(f, cfg), t = apMoTa(f);
+      auLog('Ra ' + t + (ok ? ' (đạt điều kiện)' : ''), ok ? 'vk-ok' : '');
+      if (ok && !hit) hit = t;
+    }
+    const tk = () => ' Tổng kết: ấp ' + st.nAp + ' trứng, ra ' + st.ra + ' con, tốn ' + num(st.lt, 0) + ' linh thạch, trôi ' + num(Math.round((G().state.run.nam - st.nam0) * 10) / 10) + ' năm.';
+    if (hit) return { stop: 'Đạt: ' + hit + '.' + tk(), ok: true };
+    // 2) còn ấp được thêm không
+    const [rid, main] = String(cfg.lieu).split('|'), def = Cc.rituals.get(rid);
+    if (!def) return { stop: 'Nghi thức đã chọn không còn trong game.' + tk() };
+    const have = (id) => Number((nv.tuiDo || {})[id]) || 0, CAP = apMod('familiar/capacity');
+    const ritMax = CAP && typeof CAP.ritualMax === 'function' ? CAP.ritualMax(nv) : 2, bagMax = CAP && typeof CAP.familiarBagMax === 'function' ? CAP.familiarBagMax(nv) : 20;
+    let ly = '', xong = false;
+    if (st.nAp >= cfg.max) { ly = 'Đã ấp đủ ' + cfg.max + ' trứng'; xong = true; }
+    else if (have(main) <= 0) ly = 'Hết liệu chính ' + nlItemName(main);
+    else if (RT.isRareEgg(Cc, main) && !cfg.quy) ly = 'Liệu chính là trứng quý, chưa tick “Dùng cả trứng quý”';
+    else if (rits.length >= ritMax) ly = 'cho';
+    else if (fams.length + rits.length >= bagMax) ly = 'Túi con đầy: thả bớt hoặc mở rộng túi rồi chạy lại';
+    else { const cost = Number(RT.ritualCost(Cc, def, main)) || 0; if (Math.floor(nv.linhThach) - cost < cfg.giu) ly = 'Linh thạch không đủ (cần ' + num(cost, 0) + ', giữ lại ' + num(cfg.giu, 0) + ', đang có ' + num(Math.floor(nv.linhThach), 0) + ')'; }
+    if (ly === '') {
+      const aux = cfg.aux === 'khong' ? [] : apAuxTot(RT, Cc, def, main, have, apAuxMax());
+      let yrs = 0, odds = []; const lt0 = nv.linhThach;
+      try { yrs = Number(RT.ritualYears(Cc, def, main)) || 0; odds = RT.ritualAptitudeOdds(Cc, def, main, aux) || []; } catch (e) { /* chỉ để ghi nhật ký */ }
+      S.rev = (S.rev | 0) + 1; // Tool gửi lệnh game: báo cho kyState()
+      let err; try { err = g.familiarAct((c) => RT.startRitual(c, rid, { main, aux })); } catch (e) { err = String((e && e.message) || e); }
+      if (err) return { stop: 'Bắt đầu nghi thức không được: ' + err + '.' + tk() };
+      const n1 = G().state.run.nhanVat;
+      if ((n1.rituals || []).length <= rits.length) return { stop: 'Game không ghi nhận nghi thức mới, dừng để bạn xem lại.' + tk() };
+      st.nAp++; st.lt += Math.max(0, lt0 - n1.linhThach);
+      const cnt = {}; for (const id of aux) cnt[id] = (cnt[id] || 0) + 1;
+      auLog('Ấp ' + nlItemName(main) + ' (liệu phụ ' + (aux.length ? Object.entries(cnt).map(([id, n]) => nlItemName(id) + (n > 1 ? ' ×' + n : '')).join(', ') : 'không') + '), ra sau ' + num(yrs, 1) + ' năm, tốn ' + num(Math.max(0, lt0 - n1.linhThach), 0) + ' linh thạch, tỉ lệ Thánh huyết ' + pct(Number(odds[5]) || 0, 2) + '.', 'vk-ok');
+      return null;
+    }
+    if (!rits.length) return { stop: ly + '.' + tk(), ok: xong };
+    // 3) không ấp thêm được mà còn nghi thức đang chạy: bế quan chờ tới lúc xong sớm nhất (làm tròn lên số năm nguyên)
+    const doneMin = Math.min(...rits.map((r) => Number(r.doneAt) || Infinity)), d = doneMin - run.nam;
+    if (!Number.isFinite(doneMin)) return { stop: 'Không đọc được thời điểm nghi thức xong.' + tk() };
+    if (d < -2) { if (++st.qua >= 2) return { stop: 'Nghi thức đã quá hạn mà con chưa ra, xem lại trong game.' + tk() }; } else st.qua = 0;
+    const nam = Math.max(1, Math.ceil(d - 1e-9)), conTho = Math.floor(auLifeLeft() - (Number(cfg.tho) || 0) - 1);
+    if (nam > conTho) return { stop: 'Phải bế quan ' + nam + ' năm chờ nghi thức nhưng thọ nguyên chỉ còn đủ ' + Math.max(0, conTho) + ' năm (giữ lại ' + cfg.tho + ' năm).' + tk() };
+    const w = auChoBeQuan(st, nam, null); if (w.stop) return { stop: w.stop + '.' + tk() };
+    if (!(w.troi >= 0.05)) { if (++st.thu >= 4) return { stop: 'Bế quan không trôi được thời gian sau vài lần, xem trong game.' + tk() }; return null; }
+    st.thu = 0;
+    auLog('Chờ nghi thức: bế quan tại ' + w.noi + ', đã trôi ' + num(Math.round(w.troi * 10) / 10) + ' năm (định ' + nam + ' năm).', '');
+    return null;
+  }
+  async function apLoop(st) {
+    try {
+      if (!S.core) S.core = await loadCore((m) => { st.msg = m; auPaintSoon(); });
+      while (!st.stop) {
+        if (!G().state.run || G().state.run.ketThuc) { st.msg = 'Kiếp đã kết thúc.'; break; }
+        const res = await auBuoc(st, () => apStep(st));
+        st.steps++;
+        if (res && res.stop) { st.msg = res.stop; st.ok = !!res.ok; break; }
+        if (st.steps >= 600) { st.msg = 'Đã chạy đủ 600 bước, dừng để an toàn.'; break; }
+        auPaintSoon(); await auSleep(st.delay);
+      }
+    } catch (e) { console.error(e); st.msg = 'Lỗi: ' + ((e && e.message) || e); }
+    st.running = false; st.stop = false; st.tEnd = performance.now();
+    auLog('Dừng: ' + (st.msg || 'theo yêu cầu') + auChamCuoi(st.msg), st.ok ? 'vk-ok' : 'vk-bad');
+    try { UI.notify('Auto Ấp Trứng dừng: ' + (st.msg || 'theo yêu cầu')); } catch (e) { /* bỏ qua */ }
+    if (auPT) { clearTimeout(auPT); auPT = 0; }
+    drawTabs(); auPaint();
+  }
+  function tabAutoApTrung() {
+    const cfg = AU.cfg.ap, ds = apLieuDs(), dac = apDac();
+    const lieuOpts = (ds.some((x) => x.key === cfg.lieu) || !cfg.lieu ? [] : [[cfg.lieu, '(liệu đã chọn không còn trong túi)']]).concat([['', ds.length ? '— chọn liệu chính —' : '— túi chưa có liệu chính —']]).concat(ds.map((x) => [x.key, nlItemName(x.main) + ' ×' + x.n + ' · ' + (x.def.ten || x.def.id) + ' · Thánh huyết ' + pct(x.p6, 2) + ' · ≥ Thần huyết ' + pct(x.p5, 1) + (x.rare ? ' · trứng quý' : '') + (x.mo ? '' : ' · chưa mở loại')]));
+    body.innerHTML = `
+    <div class="vk-card"><h3>Auto Ấp Trứng</h3>
+      <div class="vk-bad" style="font-size:13px;font-weight:bold;margin-bottom:6px">Mỗi lần ấp tốn trứng và linh thạch thật, không tua lại kết quả; bế quan chờ nghi thức tốn thọ nguyên. Chỉ chạy khi bạn bấm.</div>
+      <div class="vk-mu" style="font-size:13px">Auto ấp liệu chính đã chọn, bế quan chờ nghi thức xong, con ra thì chấm điều kiện: đạt thì dừng, không thì giữ con và ấp tiếp tới hết số trứng tối đa. Không thả con, không mua trứng. Tỉ lệ tính cho bộ liệu phụ tốt nhất đang có.</div>
+      ${auSel('ap-lieu', 'Liệu Chính', lieuOpts, cfg.lieu, 330)}
+      ${auSel('ap-aux', 'Liệu Phụ', [['tot', 'Tự chọn tốt nhất có sẵn'], ['khong', 'Không dùng']], cfg.aux, 230)}
+      ${auFld('ap-max', 'Số Trứng Tối Đa', cfg.max, '(mỗi lần chạy)')}
+      <label style="display:flex;gap:6px;align-items:center;font-size:13px;margin:5px 0"><input type="checkbox" id="ap-quy"${cfg.quy ? ' checked' : ''}> Dùng cả trứng quý (mặc định tắt: liệu chính là trứng quý thì không ấp)</label>
+      ${auFld('ap-giu', 'Giữ Lại Linh Thạch Tối Thiểu', cfg.giu, '(sau khi trừ phí ấp)')}
+      ${auFld('ap-tho', 'Giữ Lại Thọ Nguyên Ít Nhất', cfg.tho, '(năm, khi bế quan chờ)')}
+      <div class="vk-mu" style="font-size:12px;margin-top:6px">Điều kiện dừng: đạt tư chất HOẶC có đặc tính thì dừng; số dòng là điều kiện kèm thêm. Phải đặt ít nhất một điều kiện.</div>
+      ${auSel('ap-tu', 'Tư Chất Từ', [['0', 'Không xét'], ['1', '≥ Phàm Huyết (1)'], ['2', '≥ Linh Huyết (2)'], ['3', '≥ Dị Huyết (3)'], ['4', '≥ Chân Huyết (4)'], ['5', '≥ Thần Huyết (5)'], ['6', 'Thánh Huyết (6)']], String(cfg.tu), 230)}
+      ${auSel('ap-dac', 'Có Đặc Tính', [['', 'Không xét']].concat(dac).concat(cfg.dac && !dac.some((x) => x[0] === cfg.dac) ? [[cfg.dac, cfg.dac]] : []), cfg.dac, 230)}
+      ${auFld('ap-dong', 'Số Dòng Đặc Tính Từ', cfg.dong, '(0 = không xét)')}
+      ${auPhiHtml()}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="vk-btn au-go" id="ap-run">Chạy Tự Động</button><button class="vk-btn sec" id="au-stop">Dừng</button></div></div>
+    <div class="vk-card"><h3>Tiến Trình Auto</h3><div id="au-st"></div></div>
+    <div class="vk-card"><h3>Nhật Ký Auto</h3><div id="au-lg"></div></div>`;
+    body.querySelectorAll('input,select').forEach((el) => { el.onchange = () => { apReadCfg(); auPhiRead(); }; });
+    body.querySelector('#ap-run').onclick = () => apStart();
+    body.querySelector('#au-stop').onclick = () => auStop('Bạn bấm Dừng');
+    auPaint();
   }
   function dgStatus(st) {
     if (!st || st.kind !== 'dg') return '<div class="vk-mu" style="font-size:13px">Chưa chạy.</div>';
@@ -20054,7 +20251,15 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.12.0 · Bản Mod', d: '28/11/2026', now: true,
+            { t: 'Phiên Bản 8.13.0 · Bản Mod', d: '28/11/2026', now: true,
+            moi: [
+                '<b>Auto Ấp Trứng (Tự Động):</b> chọn liệu chính đang có trong túi (trứng, đồ phổ khôi lỗi, xác luyện thi…) kèm tỉ lệ ra từng phẩm, Tool tự ấp bằng lệnh game, bế quan chờ nghi thức xong, con ra thì chấm: đạt tư chất (mặc định Thánh huyết) hoặc đặc tính bạn chọn thì dừng, không đạt thì giữ con và ấp tiếp tới hết số trứng tối đa. Mặc định tối đa 5 trứng, không dùng trứng quý trừ khi tick, giữ lại linh thạch và thọ, không thả con, không mua trứng, không tua lại kết quả. Chưa kiểm ấp ra con (đã kiểm phần chặn khi chưa có công pháp đúng loại).'
+            ],
+            nang: [
+                '<b>Thẻ tỉ lệ ấp trứng (Ngự Linh):</b> dùng chung cách chọn liệu phụ tốt nhất với Auto Ấp Trứng. Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.12.0 · Bản Mod', d: '28/11/2026', now: false,
             moi: [
                 '<b>Mẫu chiêu:</b> Auto Build có ô Mẫu Chiêu: tự đặt ít nhất / tối đa cho 16 loại chiêu (thuẫn, hồi máu, khống chế, sát thương lớn, đánh lan, hút máu, độc/đốt, phá giáp, ấn ký…) hoặc chọn mẫu có sẵn (Chống chịu, Phật tu, Thể tu, Kiếm tu, Lan/quần, Ấn ký, Khống chế, Bền linh lực, 5 quy tắc…); là ràng buộc, thiếu thì báo rõ. Đã kiểm (Tool tự thử).',
                 '<b>Lưu phái:</b> Mọi / Ưu tiên / Chủ yếu (phái khác chỉ khi mạnh hơn hẳn) / Chỉ phái X (món không phái vẫn dùng). Đã kiểm.',

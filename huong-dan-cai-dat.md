@@ -1,4 +1,11 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.12.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.13.0)
+
+## Bản 8.13.0 · Auto Ấp Trứng
+### Tính năng mới
+- **Auto Ấp Trứng (Tự Động):** chọn liệu chính đang có trong túi (trứng, đồ phổ khôi lỗi, xác luyện thi…) kèm tỉ lệ ra từng phẩm, Tool tự ấp bằng lệnh game, bế quan chờ nghi thức xong, con ra thì chấm: đạt tư chất (mặc định Thánh huyết) hoặc đặc tính bạn chọn thì dừng, không đạt thì giữ con và ấp tiếp tới hết số trứng tối đa. Mặc định tối đa 5 trứng, không dùng trứng quý trừ khi tick, giữ lại linh thạch và thọ, không thả con, không mua trứng, không tua lại kết quả. Chưa kiểm ấp ra con (đã kiểm phần chặn khi chưa có công pháp đúng loại).
+
+### Nâng cấp tính năng
+- **Thẻ tỉ lệ ấp trứng (Ngự Linh):** dùng chung cách chọn liệu phụ tốt nhất với Auto Ấp Trứng. Chưa kiểm.
 
 ## Bản 8.12.0 · Mẫu chiêu, lưu phái, lệ phí vào thành, xuất JSON
 ### Tính năng mới

@@ -1,30 +1,13 @@
 {
-  "version": "8.12.0",
+  "version": "8.13.0",
   "ngay": "28/11/2026",
-  "tep": "ban/8.12.0/main.js",
-  "kich_thuoc": 2174314,
-  "sha256": "9041c887f48256f8aebcd91d75b4fd2eb956aa8b98c47ba19980c6483558a499",
+  "tep": "ban/8.13.0/main.js",
+  "kich_thuoc": 2193037,
+  "sha256": "22c4662151b6c7fe9b4adfb149b3654b8da20f5c545042cdd52bc0453c8df664",
   "moi": [
-    "<b>Mẫu chiêu:</b> Auto Build có ô Mẫu Chiêu: tự đặt ít nhất / tối đa cho 16 loại chiêu (thuẫn, hồi máu, khống chế, sát thương lớn, đánh lan, hút máu, độc/đốt, phá giáp, ấn ký…) hoặc chọn mẫu có sẵn (Chống chịu, Phật tu, Thể tu, Kiếm tu, Lan/quần, Ấn ký, Khống chế, Bền linh lực, 5 quy tắc…); là ràng buộc, thiếu thì báo rõ. Đã kiểm (Tool tự thử).",
-    "<b>Lưu phái:</b> Mọi / Ưu tiên / Chủ yếu (phái khác chỉ khi mạnh hơn hẳn) / Chỉ phái X (món không phái vẫn dùng). Đã kiểm.",
-    "<b>Đệ ra trận theo loại:</b> đặt ít nhất / tối đa từng loại (linh thú, ngự thú, khôi lỗi, trùng, thi, hồn); chưa có con thì chọn loại + số con và Tool chấm bằng đàn giả định cùng cảnh giới (cả Lộ trình). Chưa kiểm.",
-    "<b>Kiểu trận mẫu:</b> Đơn đấu / Đấu quần / Cả hai (thêm trận nhiều địch khi đánh thật). Đã kiểm.",
-    "<b>Xuất / Nhập bộ kinh mạch (JSON):</b> xuất mọi bộ đã lưu + bộ đang xếp ra file / bộ nhớ tạm; nhập lại xem trước món thiếu, chỗ không đặt được rồi áp (có hoàn tác). Chưa kiểm.",
-    "<b>Tỉ lệ ấp trứng:</b> tab Linh vật hiện tỉ lệ ra từng phẩm (tới Thánh huyết), năm ấp, giá, liệu phụ tốt nhất cho từng trứng trong túi. Chưa kiểm.",
-    "<b>Lệ phí vào thành / tông (game 28/11):</b> Auto Buôn Bán, Đấu Giá, bế quan đổi chỗ, Đi tới tự nộp lệ phí khi bị chặn ở cổng (ô bật, trần 200 linh thạch, không bao giờ tự mua lệnh bài); nộp không được thì dừng báo rõ; gợi ý mua lệnh bài khi phí cộng dồn lớn. Chưa kiểm.",
-    "<b>Làm thuê:</b> tab Kiếm Linh Thạch gợi ý Làm thuê ở thôn / trấn cho Phàm Nhân, Luyện Khí hoặc khi ít linh thạch. Chưa kiểm."
+    "<b>Auto Ấp Trứng (Tự Động):</b> chọn liệu chính đang có trong túi (trứng, đồ phổ khôi lỗi, xác luyện thi…) kèm tỉ lệ ra từng phẩm, Tool tự ấp bằng lệnh game, bế quan chờ nghi thức xong, con ra thì chấm: đạt tư chất (mặc định Thánh huyết) hoặc đặc tính bạn chọn thì dừng, không đạt thì giữ con và ấp tiếp tới hết số trứng tối đa. Mặc định tối đa 5 trứng, không dùng trứng quý trừ khi tick, giữ lại linh thạch và thọ, không thả con, không mua trứng, không tua lại kết quả. Chưa kiểm ấp ra con (đã kiểm phần chặn khi chưa có công pháp đúng loại)."
   ],
   "nang": [
-    "<b>Ô Nghịch 3 mức:</b> Tránh (mặc định: vẫn ưu tiên 0 nghịch nhưng không đổi sang bộ thua ≥ 2 trận thật), Cấm hẳn, Cho phép; điểm nghịch trừ vào đột phá đúng luật. Đã kiểm.",
-    "<b>Auto Kinh Mạch không tự áp bộ yếu hơn:</b> mọi chế độ không đổi sang bộ thua ≥ 2 trận thật so bộ đang xếp (trừ khi bạn chọn ràng buộc rõ). Đã kiểm.",
-    "<b>Lợi buôn bán, chỗ bế quan, kế hoạch đi:</b> đã trừ / ghi lệ phí vào thành. Chưa kiểm.",
-    "<b>Chấm Các Bộ Đã Lưu và lệnh __vkxKmSo:</b> thêm cột mẫu chiêu, phái khác; __vkxKmSo nhận cấu hình thử ({cfg:…}). Đã kiểm."
-  ],
-  "sua": [
-    "<b>Auto Kinh Mạch dừng \"undefined is not an object (arr0.length)\":</b> đã sửa. Đã kiểm.",
-    "<b>Lấp đầy ô để trống nhiều:</b> vòng lấp đầy nới lại (chỉ cần điểm thật không giảm, không thêm nghịch). Đã kiểm.",
-    "<b>Tra Cứu Vật Phẩm thiếu phái Khôi Lỗi:</b> bộ lọc nhận phái theo game và loại ngự linh (thêm Khôi Lỗi, Thi, Hồn). Chưa kiểm.",
-    "<b>Tự kiểm tra báo nhầm \"Save bị đụng\":</b> bỏ qua khi game vừa tự chạy hành động; chỉ báo khi save bị sửa thẳng. Chưa kiểm.",
-    "<b>Auto kẹt ở cổng thành:</b> không còn lặp \"Không tiến triển\" khi bị chặn lệ phí. Chưa kiểm."
+    "<b>Thẻ tỉ lệ ấp trứng (Ngự Linh):</b> dùng chung cách chọn liệu phụ tốt nhất với Auto Ấp Trứng. Chưa kiểm."
   ]
 }
