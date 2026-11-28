@@ -1,4 +1,28 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.11.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.12.0)
+
+## Bản 8.12.0 · Mẫu chiêu, lưu phái, lệ phí vào thành, xuất JSON
+### Tính năng mới
+- **Mẫu chiêu:** Auto Build có ô Mẫu Chiêu: tự đặt ít nhất / tối đa cho 16 loại chiêu (thuẫn, hồi máu, khống chế, sát thương lớn, đánh lan, hút máu, độc/đốt, phá giáp, ấn ký…) hoặc chọn mẫu có sẵn (Chống chịu, Phật tu, Thể tu, Kiếm tu, Lan/quần, Ấn ký, Khống chế, Bền linh lực, 5 quy tắc…); là ràng buộc, thiếu thì báo rõ. Đã kiểm (Tool tự thử).
+- **Lưu phái:** Mọi / Ưu tiên / Chủ yếu (phái khác chỉ khi mạnh hơn hẳn) / Chỉ phái X (món không phái vẫn dùng). Đã kiểm.
+- **Đệ ra trận theo loại:** đặt ít nhất / tối đa từng loại (linh thú, ngự thú, khôi lỗi, trùng, thi, hồn); chưa có con thì chọn loại + số con và Tool chấm bằng đàn giả định cùng cảnh giới (cả Lộ trình). Chưa kiểm.
+- **Kiểu trận mẫu:** Đơn đấu / Đấu quần / Cả hai (thêm trận nhiều địch khi đánh thật). Đã kiểm.
+- **Xuất / Nhập bộ kinh mạch (JSON):** xuất mọi bộ đã lưu + bộ đang xếp ra file / bộ nhớ tạm; nhập lại xem trước món thiếu, chỗ không đặt được rồi áp (có hoàn tác). Chưa kiểm.
+- **Tỉ lệ ấp trứng:** tab Linh vật hiện tỉ lệ ra từng phẩm (tới Thánh huyết), năm ấp, giá, liệu phụ tốt nhất cho từng trứng trong túi. Chưa kiểm.
+- **Lệ phí vào thành / tông (game 28/11):** Auto Buôn Bán, Đấu Giá, bế quan đổi chỗ, Đi tới tự nộp lệ phí khi bị chặn ở cổng (ô bật, trần 200 linh thạch, không bao giờ tự mua lệnh bài); nộp không được thì dừng báo rõ; gợi ý mua lệnh bài khi phí cộng dồn lớn. Chưa kiểm.
+- **Làm thuê:** tab Kiếm Linh Thạch gợi ý Làm thuê ở thôn / trấn cho Phàm Nhân, Luyện Khí hoặc khi ít linh thạch. Chưa kiểm.
+
+### Nâng cấp tính năng
+- **Ô Nghịch 3 mức:** Tránh (mặc định: vẫn ưu tiên 0 nghịch nhưng không đổi sang bộ thua ≥ 2 trận thật), Cấm hẳn, Cho phép; điểm nghịch trừ vào đột phá đúng luật. Đã kiểm.
+- **Auto Kinh Mạch không tự áp bộ yếu hơn:** mọi chế độ không đổi sang bộ thua ≥ 2 trận thật so bộ đang xếp (trừ khi bạn chọn ràng buộc rõ). Đã kiểm.
+- **Lợi buôn bán, chỗ bế quan, kế hoạch đi:** đã trừ / ghi lệ phí vào thành. Chưa kiểm.
+- **Chấm Các Bộ Đã Lưu và lệnh __vkxKmSo:** thêm cột mẫu chiêu, phái khác; __vkxKmSo nhận cấu hình thử ({cfg:…}). Đã kiểm.
+
+### Sửa lỗi
+- **Auto Kinh Mạch dừng "undefined is not an object (arr0.length)":** đã sửa. Đã kiểm.
+- **Lấp đầy ô để trống nhiều:** vòng lấp đầy nới lại (chỉ cần điểm thật không giảm, không thêm nghịch). Đã kiểm.
+- **Tra Cứu Vật Phẩm thiếu phái Khôi Lỗi:** bộ lọc nhận phái theo game và loại ngự linh (thêm Khôi Lỗi, Thi, Hồn). Chưa kiểm.
+- **Tự kiểm tra báo nhầm "Save bị đụng":** bỏ qua khi game vừa tự chạy hành động; chỉ báo khi save bị sửa thẳng. Chưa kiểm.
+- **Auto kẹt ở cổng thành:** không còn lặp "Không tiến triển" khi bị chặn lệ phí. Chưa kiểm.
 
 ## Bản 8.11.0 · Auto Build chấm đúng, trận thật, game 0.3.1a
 ### Tính năng mới
