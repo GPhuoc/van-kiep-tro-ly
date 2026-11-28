@@ -1,17 +1,13 @@
 {
-  "version": "8.15.0",
+  "version": "8.15.1",
   "ngay": "28/11/2026",
-  "tep": "ban/8.15.0/main.js",
-  "kich_thuoc": 2209870,
-  "sha256": "3cd992552c7f7906ad132a5a61c21d457093bb3bed5d28b56d82df7c2236e158",
-  "moi": [
-    "<b>Cách phá đạo chướng:</b> tab Đột Phá & Thọ, thẻ Đạo chướng chỉ cách phá chướng đang mang (việc ngoài đời cho Sát / Ngã / Trần / Tử, các sự kiện tâm cảnh phá được và kiếp này đã gặp chưa), các ngộ đang chờ chọn kèm số; chưa mang chướng thì có bảng chướng có thể rút ở ải lớn tới. Chưa kiểm."
-  ],
+  "tep": "ban/8.15.1/main.js",
+  "kich_thuoc": 2212661,
+  "sha256": "ae7544ed78834c1bceeb8fc5ad435ba629ee9b1caffbf3ef559813d25bd7db1b",
   "nang": [
-    "<b>Ải đỉnh Luyện Khí:</b> thẻ Lên Trúc Cơ ghi rõ chưa phá ải (phạt giảm dần theo phần còn thiếu, còn n%; phẩm đạo cơ −1 bậc tới khi phá hẳn) và các dòng nguồn tỉ lệ của game. Tỉ lệ các phương án đan nay đã tính cả phạt chưa phá ải. Chưa kiểm.",
-    "<b>Mô phỏng trận:</b> theo luật hết hiệp mới của game: địch tháo chạy tính thắng, hết hiệp mà ta kém khí huyết là ta rút. Chưa kiểm."
+    "<b>Auto Săn Yêu, đuổi theo:</b> ô mới \"Đuổi theo khi địch bỏ chạy\" (mặc định tắt = buông tha như cũ). Bật thì khi con mồi tháo chạy, Auto chọn Đuổi theo để nhặt đủ chiến lợi phẩm (game mới: đuổi hụt vẫn tính đã hạ). Chưa kiểm."
   ],
   "sua": [
-    "<b>Auto Sự Kiện:</b> không còn chọn lựa chọn cộng nghiệp (vd Hái Vân Vụ Cổ Trà nghiệp +2); có ô \"Né lựa chọn cộng nghiệp\" (mặc định bật). Việc lạ trong các Auto khác bắt được nghiệp nằm sâu trong kết quả nửa vời / ngẫu nhiên. Chưa kiểm."
+    "<b>Auto Săn Yêu, chỉ săn Tinh Anh:</b> bỏ tích Quái Thường, chỉ tích Tinh Anh thì Auto Lùng con đầu đàn (nhận lựa chọn chắc hơn); không có đầu đàn hợp thì chọn Thôi, không còn đi săn con thường rồi bỏ chạy. Nhật ký Auto có dòng chẩn đoán các lựa chọn. Chưa kiểm."
   ]
 }

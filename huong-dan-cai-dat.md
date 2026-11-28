@@ -1,4 +1,11 @@
-# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.15.0)
+# Vạn Kiếp Tu Tiên Tool · Trợ Lý (Bản Mod 8.15.1)
+
+## Bản 8.15.1 · Săn đầu đàn
+### Nâng cấp tính năng
+- **Auto Săn Yêu, đuổi theo:** ô mới "Đuổi theo khi địch bỏ chạy" (mặc định tắt = buông tha như cũ). Bật thì khi con mồi tháo chạy, Auto chọn Đuổi theo để nhặt đủ chiến lợi phẩm (game mới: đuổi hụt vẫn tính đã hạ). Chưa kiểm.
+
+### Sửa lỗi
+- **Auto Săn Yêu, chỉ săn Tinh Anh:** bỏ tích Quái Thường, chỉ tích Tinh Anh thì Auto Lùng con đầu đàn (nhận lựa chọn chắc hơn); không có đầu đàn hợp thì chọn Thôi, không còn đi săn con thường rồi bỏ chạy. Nhật ký Auto có dòng chẩn đoán các lựa chọn. Chưa kiểm.
 
 ## Bản 8.15.0 · Cách phá đạo chướng
 ### Tính năng mới

@@ -1,10 +1,10 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.15.0
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.15.1
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.15.0';
+const VKX_BAN_CAI = '8.15.1';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
@@ -150,7 +150,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.15.0',
+  version: '8.15.1',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
@@ -160,7 +160,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     const vkxMoc = (n) => { try { const ms = Math.round(performance.now() - vkxT0); vkxMocL.push(n + " " + ms); if (n === "xong") console.info("[VKX] khởi động", ms + " ms", "(" + vkxMocL.join(" · ") + ")"); } catch (e) { /* bỏ qua */ } };
     try { (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
-  var TOOL_VER = '8.15.0';
+  var TOOL_VER = '8.15.1';
   if (gWin.__vkxMerged) {
     try { gWin.__vkxMerged.open(); } catch (e) {}
     // 8.7.1-thu.6: nạp lại mod không F5 mà số bản khác: bản cũ vẫn chạy (không tự dọn: nhiều listener), nhắc F5 thay vì lặng lẽ mở bản cũ
@@ -14225,7 +14225,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
   const AU_KEY = 'vkx_auto_cfg';
   const AU_DEF = {
     buon: { maxY: 3, banY: 5, von: 60, giu: 100, lai: 20, chuyen: 5, hiem: 'ngang_suc', tho: 15, toc: 'nhanh', sk: true, sks: false, thoGia: 0, nhieu: true, banTui: false, tuiLoai: [], tuiPham: 3, tuiGiu: 5, tuiKhong: '', tuiRieng: '', tuiDs: '' },
-    san: { maxY: 3, mau: ['an_toan', 'ngang_suc', 'hiem'], tran: 20, thuong: 2, tho: 15, rut: 30, mucLa: 'chay', cach: 'ngau', kt: true, neDebuff: true, giaiTu: 0, giaiDen: 5, muc: ['thuong'], toc: 'nhanh', sk: true, sks: false, dkt: true, doanTruoc: true, dktThang: 90, dktNang: 10, dktSom: 30, duong: false, duongMax: 30, danThuong: true, nlMuc: [] },
+    san: { maxY: 3, mau: ['an_toan', 'ngang_suc', 'hiem'], tran: 20, thuong: 2, tho: 15, rut: 30, mucLa: 'chay', cach: 'ngau', kt: true, neDebuff: true, giaiTu: 0, giaiDen: 5, muc: ['thuong'], duoi: false, toc: 'nhanh', sk: true, sks: false, dkt: true, doanTruoc: true, dktThang: 90, dktNang: 10, dktSom: 30, duong: false, duongMax: 30, danThuong: true, nlMuc: [] },
     km: { petKind: 'linh_thu', mode: 'bal', algo: 'moi', tranThat: 'xn', thuan: 'day', linhThuMau: true, mau: { id: '', bat: false, loai: {} }, de: {}, kieuTran: 'don', phai: '', uu: { ht: false, ll: false, du: false, ma: '' }, dir: 'tien', kb: '', prio: false, khongNghich: true, lapDay: true, uuBo: true, bk: 5, ratio: '0', iters: 3000, mo: false, moMax: 1, two: false, mixHe: [], bo: '1', fb: 'bal', ln: 'tho', tay: false, bos: [], thuTu: 'danh,tu,dot', keep: 'tu', moBo: false, watch: false, core: [], coreBo: '', boUu: '', duBo: true, khongDiBao: false, coreW: 'manh', phamCao: true, phMinCp: 0, phMinPk: 0, phMinAuto: false, cam: [], heChi: [], dt: [], pet: '', petN: 0 },
     sd: { on: false, ds: [], duTru: 0, bao: true },
     ap: { lieu: '', aux: 'tot', max: 5, quy: false, giu: 500, tho: 15, tu: 6, dac: '', dong: 0 },   // 8.12.1-thu.1 (I3): Auto Ấp Trứng
@@ -15332,6 +15332,13 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       if (a.waiting && a.waiting.kind === 'enemy_escape') { // 7.12.4: đối phương mang thương tháo chạy sau trận: Buông tha (nhặt nửa chiến lợi phẩm) nếu game không cảnh báo hậu quả
         if (typeof g.pursuitOptions !== 'function' || typeof g.choosePursuit !== 'function') return { stop: 'Đối phương tháo chạy nhưng Game API thiếu pursuitOptions hoặc choosePursuit. Xử lý trong game rồi bấm chạy lại.' };
         let ops = []; try { ops = g.pursuitOptions() || []; } catch (e) { ops = []; }
+        const chs = ops.find((o) => o && o.id === 'chase'); // 8.15.1-thu.1: ô "Đuổi theo khi địch bỏ chạy" của Auto Săn Yêu
+        if (opt.hunt && AU.cfg.san.duoi === true && chs && !chs.canhBao) {
+          const r0 = auCall(() => g.choosePursuit('chase'));
+          if (!r0.ok) return { stop: 'Không chọn được Đuổi theo: ' + r0.err };
+          auLog('Đối phương tháo chạy: Đuổi theo.', '');
+          return 'ok';
+        }
         const rel = ops.find((o) => o && o.id === 'release');
         if (!rel) return { stop: 'Đối phương tháo chạy nhưng không đọc được lựa chọn Buông tha. Xử lý trong game rồi bấm chạy lại.' };
         if (rel.canhBao) return { stop: 'Đối phương tháo chạy; Buông tha có hậu quả (' + String(rel.canhBao).slice(0, 120) + '). Dừng để bạn tự quyết định trong game.' };
@@ -15408,7 +15415,8 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
   // dính debuff thì dừng. Nay: lựa chọn thật nào đúng màu, đúng loại đã tích, không dính debuff thì để auPick chọn như cũ (không tốn tháng truy tìm);
   // không có thì truy tìm loài hợp nhất trong cả sổ loài của ô (auTruyPick). Trả null = để luồng cũ lo.
   // 7.14.0-thu.5: nhận lựa chọn 'Lùng con đầu đàn' theo dữ liệu sự kiện (combat {dau_dan}), không theo chữ trên nút (game đã có bản tiếng Anh).
-  function auDauDan(x) { try { const d = C().encounters.get('ev.san_yeu'), ch = d && (d.choices || [])[x.index]; if (ch) return JSON.stringify([ch.effects || [], ch.success || [], ch.failure || []]).includes('{dau_dan}'); } catch (e) { /* dùng chữ */ } return /đầu đàn|leader|alpha/i.test(String(x.text || '')); }
+  // 8.15.1-thu.1: bền hơn: index của view có thể lệch def.choices (thử cả tìm theo chữ), chấp nhận 'dau_dan' không ngoặc, rồi mới xét chữ
+  function auDauDan(x) { try { const d = C().encounters.get('ev.san_yeu'), cs = (d && d.choices) || [], chs = [cs[x.index], cs.find((y) => y && y.text === x.text)].filter(Boolean); for (const ch of chs) if (/dau_dan/.test(JSON.stringify([ch.effects || [], ch.success || [], ch.failure || []]))) return true; } catch (e) { /* dùng chữ */ } return /đầu đàn|leader|alpha|头/i.test(String(x.text || '')); }
   // 8.6.1-thu.1: bỏ ký tự điều khiển / ô □ khỏi nhãn in vào nhật ký (chỉ dùng khi in, không dùng để so khớp)
   function auSach(s) { return String(s || '').replace(/[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2060\ufeff\u25a1\u25a0\ufffd]/g, '').replace(/\s+/g, ' ').trim(); }
   // 8.6.1-thu.1: mức quái thật của một lựa chọn ev.san_yeu (con {yeu_thu} có thể là Tinh Anh dù nhãn chỉ ghi "Săn X"); null nếu không đọc được
@@ -15427,11 +15435,15 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       return true;
     });
     if (hop.length) return null; // auPick chọn (ưu tiên đầu đàn khi tích Tinh Anh)
-    if (typeof g.targetedHunt !== 'function') return null;
+    const chiTinhAnh = !mucs.includes('thuong') && mucs.includes('tinh_anh'); // 8.15.1-thu.1: chỉ tích Tinh Anh: không đi săn con thường
+    const syKey = (v.id || '') + '|' + cs.map((x) => x.text).join('/');
+    if (chiTinhAnh && st._syDiag !== syKey) { st._syDiag = syKey; auLog('Săn yêu (chẩn đoán, chỉ tích Tinh Anh): ' + (cs.map((x) => '“' + auSach(x.text) + '” #' + x.index + ' đầu đàn=' + (auDauDan(x) ? 'có' : 'không') + ' mức=' + (auSyMuc(x, vars) || '?')).join('; ') || 'không có lựa chọn') + '.', ''); }
+    const thoi = () => { const out = (v.choices || []).find((c) => c.available && c.thoat); if (!out) return null; auLog('Săn yêu: chỉ tích Tinh Anh, không có con đầu đàn hợp → chọn “' + auSach(out.text) + '”, không săn con thường.', ''); const r = auCall(() => g.choose(out.index)); return r.ok ? 'ok' : { stop: 'Không chọn được “' + out.text + '”: ' + r.err }; };
+    if (typeof g.targetedHunt !== 'function') return chiTinhAnh ? thoi() : null;
     const tp = auTruyPick(st, Object.assign({}, cfg, { cach: cfg.cach === 'nl' ? 'nl' : 'truy' }));
     if (tp === 'ok') { auLog('“Săn ' + (cs[0] ? auSach(cs[0].text).replace(/^Săn\s*/i, '') : 'yêu thú') + '” và con đầu đàn không hợp (màu / loại / debuff) → chọn loài khác trong sổ loài của ô.', ''); return 'ok'; }
     if (tp === 'skip') { const out = (v.choices || []).find((c) => c.available && c.thoat); if (out) { const r = auCall(() => g.choose(out.index)); return r.ok ? 'ok' : { stop: 'Không chọn được “' + out.text + '”: ' + r.err }; } }
-    return null;
+    return chiTinhAnh ? thoi() : null;
   }
   function auPick(v, opt) {
     const cs = (v.choices || []).filter((c) => c.available);
@@ -16943,6 +16955,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       c.maxY = num0('au-maxy', 0.5, 30, c.maxY); c.tran = Math.floor(num0('au-tran', 1, 9999, c.tran)); c.tho = num0('au-tho', 0, 1e4, c.tho);
       c.thuong = Math.floor(num0('au-thuong', 1, AU_TT_MAX, c.thuong)); { const x = q('au-duong'); if (x) c.duong = x.checked; c.duongMax = num0('au-duong-max', 1, 200, c.duongMax); const y = q('au-dan-thuong'); if (y) c.danThuong = y.checked; } /* 7.13.0-thu.25, thu.32 */ c.rut = num0('au-rut', 0, 99, c.rut); c.mucLa = sel('au-mucla', c.mucLa) === 'dung' ? 'dung' : 'chay'; { const v = sel('au-cach', c.cach); c.cach = v === 'truy' || v === 'nl' ? v : 'ngau'; } auNlRead(c, q); c.toc = sel('au-toc', c.toc);
       const h = q('au-ne-debuff'); if (h) c.neDebuff = h.checked;
+      { const x = q('au-duoi'); if (x) c.duoi = x.checked; } // 8.15.1-thu.1
       { const x = q('au-dkt'); if (x) c.dkt = x.checked; const dt = q('au-doan'); if (dt) c.doanTruoc = dt.checked; c.dktThang = num0('au-dkt-thang', 0, 100, c.dktThang); c.dktNang = num0('au-dkt-nang', 0, 100, c.dktNang); c.dktSom = num0('au-dkt-som', 0, 100, c.dktSom); } // 7.13.0-thu.8, thu.22 dktSom
       { const a = Math.floor(Number(sel('au-giai-tu', c.giaiTu))), b = Math.floor(Number(sel('au-giai-den', c.giaiDen))); const r = auGiaiRange({ giaiTu: a, giaiDen: b }); c.giaiTu = r[0]; c.giaiDen = r[1]; }
       { const m = AU_MUC_ID.filter((k) => { const el = q('au-muc-' + k); return el ? el.checked : auMucNorm(c.muc).includes(k); }); c.muc = auMucNorm(m); }
@@ -18302,6 +18315,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       ${auFld('au-tho', 'Dừng Khi Thọ Nguyên Còn Dưới', c.tho, '(năm)')}
       <label style="display:flex;gap:6px;align-items:center;margin:6px 0;font-size:13px"><input type="checkbox" id="au-dkt" ${c.dkt !== false ? 'checked' : ''}> <b>Quyết Đánh Theo Dự Kiến Thật</b> <span class="vk-mu">(mặc định bật; trận phải tự đánh thì mô phỏng ${AU_DKT_N} trận bằng Auto của bạn, có dùng đan/phù, rồi mới đánh; không đạt thì bỏ chạy)</span></label>
       <label style="display:flex;gap:6px;align-items:center;margin:6px 0;font-size:13px"><input type="checkbox" id="au-doan" ${c.doanTruoc !== false ? 'checked' : ''}> <b>Dự đoán trước khi đánh (bỏ con thua chắc)</b> <span class="vk-mu">(mặc định bật; mô phỏng nhanh trước khi Truy Tìm hay chọn con để săn: con dự đoán thua chắc thì không chọn. Không tính đan/phù nên chỉ loại con thua chắc, không loại con "có thể thắng")</span></label>
+      <label style="display:flex;gap:6px;align-items:center;margin:6px 0;font-size:13px"><input type="checkbox" id="au-duoi" ${c.duoi === true ? 'checked' : ''}> <b>Đuổi theo khi địch bỏ chạy</b> <span class="vk-mu">(mặc định tắt = buông tha. Game mới: địch tháo chạy mà buông tha hay đuổi hụt đều tính đã hạ; đuổi kịp thì nhặt đủ chiến lợi phẩm, tốn thêm chút thời gian. Game cảnh báo hậu quả thì Auto vẫn buông tha)</span></label>
       ${auFld('au-dkt-thang', 'Dự Kiến Thật: Thắng Tối Thiểu', c.dktThang ?? 90, '(%)')}
       ${auFld('au-dkt-nang', 'Dự Kiến Thật: Tỉ Lệ Trận Thương Nặng Tối Đa', c.dktNang ?? 10, '(% số trận mô phỏng kết thúc ở Thương nặng hoặc Trọng thương)')}
       ${auFld('au-dkt-som', 'Bỏ Chạy Giữa Trận Khi Dự Kiến Thắng Dưới', c.dktSom ?? 30, '(%, 0 = tắt; mỗi hiệp mô phỏng lại ' + AU_DKT_SOM_N + ' trận từ thế đang đánh, thắng tụt dưới ngưỡng thì chạy thay vì uống đan kéo dài)')}
@@ -20416,7 +20430,15 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.15.0 · Bản Mod', d: '28/11/2026', now: true,
+            { t: 'Phiên Bản 8.15.1 · Bản Mod', d: '28/11/2026', now: true,
+            nang: [
+                '<b>Auto Săn Yêu, đuổi theo:</b> ô mới "Đuổi theo khi địch bỏ chạy" (mặc định tắt = buông tha như cũ). Bật thì khi con mồi tháo chạy, Auto chọn Đuổi theo để nhặt đủ chiến lợi phẩm (game mới: đuổi hụt vẫn tính đã hạ). Chưa kiểm.'
+            ],
+            sua: [
+                '<b>Auto Săn Yêu, chỉ săn Tinh Anh:</b> bỏ tích Quái Thường, chỉ tích Tinh Anh thì Auto Lùng con đầu đàn (nhận lựa chọn chắc hơn); không có đầu đàn hợp thì chọn Thôi, không còn đi săn con thường rồi bỏ chạy. Nhật ký Auto có dòng chẩn đoán các lựa chọn. Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.15.0 · Bản Mod', d: '28/11/2026', now: false,
             moi: [
                 '<b>Cách phá đạo chướng:</b> tab Đột Phá & Thọ, thẻ Đạo chướng chỉ cách phá chướng đang mang (việc ngoài đời cho Sát / Ngã / Trần / Tử, các sự kiện tâm cảnh phá được và kiếp này đã gặp chưa), các ngộ đang chờ chọn kèm số; chưa mang chướng thì có bảng chướng có thể rút ở ải lớn tới. Chưa kiểm.'
             ],

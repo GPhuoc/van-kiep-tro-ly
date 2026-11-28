@@ -1,10 +1,10 @@
-/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.13.0
+/* Vạn Kiếp Tu Tiên Tool · Trợ Lý · Bản Mod 8.15.1
  * Viết bởi Minhndt3 và Shgphuoc cùng Kỹ Sư Claude. Mod cho Vạn Kiếp Tu Tiên (apiVersion 1): cài file .zip ở Cấu hình → Mods.
  * Toàn bộ phép tính gọi lõi game qua window.tuTien.core (tên hàm gốc, không dò regex). */
 (function () { // bọc để Nạp lại nhiều lần không báo khai báo trùng
 /* ── Bộ nạp bản tự cập nhật (8.1.0-thu.3): nếu trình duyệt đang giữ bản main.js mới hơn bản cài (lưu ở localStorage) thì chạy bản đó thay cho bản cài.
  * Lỗi / chạy hỏng 2 lần thì đánh dấu hỏng và quay về bản cài. Khóa: mod:van_kiep_tro_ly:cn_* (xem khối TỰ CẬP NHẬT trong ready). */
-const VKX_BAN_CAI = '8.13.0';
+const VKX_BAN_CAI = '8.15.1';
 function vkxSoBan(a, b) { // so X.Y.Z[-thu.N]: >0 nếu a mới hơn b; bản có đuôi -thu.N nhỏ hơn bản không đuôi cùng số
   const p = (v) => { const m = /^(\d+)\.(\d+)\.(\d+)(?:-thu\.(\d+))?/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : [0, 0, 0, 0]; };
   const x = p(a), y = p(b);
@@ -150,7 +150,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
 (window.tuTienMods ??= []).push({
   id: 'van_kiep_tro_ly',
   name: 'Vạn Kiếp Tu Tiên Tool · Trợ Lý',
-  version: '8.13.0',
+  version: '8.15.1',
   author: 'Minhndt3 · Shgphuoc · Kỹ Sư Claude',
   // Đồng tác giả: Minhndt3 & Shgphuoc (ngang hàng).
   apiVersion: 1,
@@ -160,7 +160,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     const vkxMoc = (n) => { try { const ms = Math.round(performance.now() - vkxT0); vkxMocL.push(n + " " + ms); if (n === "xong") console.info("[VKX] khởi động", ms + " ms", "(" + vkxMocL.join(" · ") + ")"); } catch (e) { /* bỏ qua */ } };
     try { (function (TT, MOD) { MOD = vkxGhiDk(MOD); // ghi danh sách đăng ký giao diện vào cn_dk (bộ nạp dùng để đăng ký trước)
   var gWin = window;
-  var TOOL_VER = '8.13.0';
+  var TOOL_VER = '8.15.1';
   if (gWin.__vkxMerged) {
     try { gWin.__vkxMerged.open(); } catch (e) {}
     // 8.7.1-thu.6: nạp lại mod không F5 mà số bản khác: bản cũ vẫn chạy (không tự dọn: nhiều listener), nhắc F5 thay vì lặng lẽ mở bản cũ
@@ -183,6 +183,7 @@ function vkxNapBanMoi(tt, mod, chay) { // true = bộ nạp nhận việc chạy
     { id: 'sdbao', ten: 'Báo săn đồ (báo ngầm)', nhom: 'Kiếm Lời', nhe: true, mo_ta: 'Sau mỗi lần state đổi, xem tiệm/đấu giá/sự kiện đang mở để báo món bạn đang săn.' },
     { id: 'skdlg', ten: 'Kết quả dưới nút lựa chọn sự kiện', nhom: 'Tra Cứu', nhe: true, nen: true, mo_ta: 'Vẽ dòng "kết quả" dưới nút lựa chọn trong hộp sự kiện của game (theo dõi thay đổi giao diện khi có sự kiện).' },
     { id: 'skkq', ten: 'Đối chiếu dự đoán sự kiện', nhom: 'Tra Cứu', nhe: true, nen: true, mo_ta: 'Chụp tỉ lệ dự đoán mỗi lần state đổi, ghi lại khi bạn chọn để so với kết quả thật.' },
+    { id: 'bossdb', ten: 'Báo boss rơi dị bảo', nhom: 'Tra Cứu', nhe: true, mo_ta: 'Boss có tỉ lệ rơi dị bảo xuất hiện trên bản đồ thì hiện thông báo (bấm để mở tab Dị Bảo).' },
     { id: 'qt', ten: 'Theo dõi sự kiện quan tâm', nhom: 'Tra Cứu', nhe: true, mo_ta: 'Khi đổi tháng/di chuyển/state đổi, quét sự kiện đang có để báo cái bạn đã đánh dấu quan tâm.' },
     { id: 'gyt', ten: 'Báo nổi gợi ý lượt trận', nhom: 'Đột Phá', nhe: true, mo_ta: 'Khi dock Mod đóng, tính gợi ý lượt đánh và báo nổi (mặc định tắt trong cấu hình).' },
     { id: 'thu', ten: 'Sổ thu được theo nguồn', nhom: 'Nhân Vật', nen: true, mo_ta: 'Ghi mỗi lần nhận vật phẩm để thống kê nguồn thu.' },
@@ -4377,14 +4378,99 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       return `<div class="vk-card"><h3>${esc(i.ten || e.relic)}</h3><div style="margin-bottom:4px">${badge(r)}</div><div class="vk-mu" style="font-size:13px">Sự kiện: «${esc(e.ten)}»<br>${bits.join('<br>')}</div>${bay ? `<div class="vk-dibao-actions">${bay}</div>` : noTarget}</div>`;
     };
     const rowsV = rows.filter((r) => okTt(r.e.relic)), bossV = bossRows.filter((r) => okTt(r.id)), chungV = chungRows.filter((r) => okTt(r.id));
+    // 8.13.1-thu.1: thẻ "Boss rơi dị bảo" (boss có tỉ lệ rơi dị bảo; đang có trên bản đồ thì xếp đầu kèm nút Đi tới)
+    const bossMap = diBaoBossTrenMap(), bossDs = diBaoBossDs();
+    const bossCard = (() => {
+      if (!bossDs.length) return '';
+      const rowsB = bossDs.map((b) => ({ b, on: bossMap.filter((m) => m.boss.id === b.id) })).sort((x, y) => (y.on.length > 0) - (x.on.length > 0));
+      const dong = ({ b, on }) => {
+        const head = `<span>${esc(b.ten)} <span class="vk-mu">· ${b.cg != null ? esc(realmName(b.cg)) : ''}${b.rate != null ? ' · rơi ' + pct(b.rate, 1) : ''}</span></span>`;
+        if (!on.length) return `<div class="vk-row">${head}<b class="vk-mu">Chưa xuất hiện</b></div>`;
+        return `<div class="vk-row">${head}<b class="vk-ok">Đang có trên bản đồ</b></div>` + on.map((m) => `<div class="vk-mu" style="font-size:12.5px;margin:0 0 4px 10px">${esc(qtNoi(m.slot))}${m.hetHan != null ? ' · còn ' + Math.max(0, Math.floor(m.hetHan)) + ' năm' : ''} ${ddQuickTravelButton(m.slot, run.viTri, 'Đi tới ' + qtNoi(m.slot))}</div>`).join('');
+      };
+      return `<div class="vk-card"><h3>Boss rơi dị bảo (${bossDs.length})</h3><div class="vk-mu" style="font-size:12px;margin-bottom:6px">Hạ boss này có thể rơi dị bảo (rơi chung, không rõ món nào). ${bossMap.length ? 'Đang có ' + bossMap.length + ' nơi trên bản đồ.' : 'Hiện chưa thấy boss nào trên bản đồ.'}</div>${rowsB.map(dong).join('')}</div>`;
+    })();
     body.innerHTML = `<div class="vk-card"><h3>Dị bảo đã nhận: ${nDone}/${rows.length + bossRows.length + chungRows.length}</h3><div class="vk-mu" style="font-size:13px">Trạng thái đọc thẳng từ save đang chơi. Dị bảo chỉ hiện trên bản đồ khi game cho sự kiện xuất hiện; node tồn tại vài năm rồi tan, nên đủ điều kiện chưa chắc đã thấy. Bảng này không thể hiện được tỉ lệ rơi từ boss.</div><div style="margin-top:8px">${ttSelHtml('db', tt)}${tt ? ` <span class="vk-mu" style="font-size:12px">hiện ${rowsV.length + bossV.length + chungV.length} / ${rows.length + bossRows.length + chungRows.length} món (mục “ngẫu nhiên” không lọc được)</span>` : ''}</div></div>` +
-      rowsV.map(card).join('') +
+      bossCard + rowsV.map(card).join('') +
       (bossV.length ? `<div class="vk-card"><h3>Chỉ rơi từ boss Hóa Thần</h3>${bossV.map((b) => `<div class="vk-row"><span>${esc(b.info.ten || b.id)}</span><b>${b.done ? 'Đã nhận' : 'Chưa có'}</b></div>`).join('')}</div>` : '') +
-      (chungV.length ? `<div class="vk-card"><h3>Rơi chung (${chungV.length})</h3><div class="vk-mu" style="font-size:12px;margin-bottom:6px">Không có sự kiện riêng. Rơi ngẫu nhiên một dị bảo khi hạ boss có rơi dị bảo, hoặc từ thủ quan Vô Nhai Uyên tầng 40 trở lên.</div>${chungV.map((r) => `<div class="vk-row"><span>${esc(r.ten)} <span class="vk-mu">· ${esc(LOAI_VI[r.loai] || (r.loai ? loaiTen(r.loai) : ''))}</span></span><b>${r.done ? 'Đã nhận' : 'Chưa có'}</b></div>`).join('')}${chung.boss.length ? `<div class="vk-mu" style="font-size:12px;margin-top:8px">Boss có rơi dị bảo: ${chung.boss.map((b) => esc(b.ten) + (b.cg != null ? ' (' + esc(realmName(b.cg)) + ')' : '') + (b.rate != null ? ' ' + pct(b.rate, 1) : '')).join(' · ')}</div>` : ''}</div>` : '') +
+      (chungV.length ? `<div class="vk-card"><h3>Rơi chung (${chungV.length})</h3><div class="vk-mu" style="font-size:12px;margin-bottom:6px">Không có sự kiện riêng. Rơi ngẫu nhiên một dị bảo khi hạ boss có rơi dị bảo, hoặc từ thủ quan Vô Nhai Uyên tầng 40 trở lên.</div>${chungV.map((r) => `<div class="vk-row"><span>${esc(r.ten)} <span class="vk-mu">· ${esc(LOAI_VI[r.loai] || (r.loai ? loaiTen(r.loai) : ''))}</span></span><b>${r.done ? 'Đã nhận' : 'Chưa có'}</b></div>`).join('')}</div>` : '') +
       (randRows.length ? `<div class="vk-card"><h3>Dị bảo ngẫu nhiên (${randRows.length})</h3><div class="vk-mu" style="font-size:13px;margin-bottom:6px">Sự kiện chỉ cho một vật ngẫu nhiên theo loại, không có món cố định, nên không đánh dấu “đã nhận”. Đọc thẳng từ dữ liệu game.</div>${randRows.map((r) => `<div class="vk-row" style="align-items:flex-start"><span>${esc(r.ten)}<div class="vk-mu" style="font-size:12px">${esc(r.noi)}${r.gate ? ' · cần ' + esc(realmName(r.gate[0])) : ''}${r.loai ? ' · thưởng ' + esc(LOAI_VI[r.loai] || loaiTen(r.loai)) : ''}${r.hc ? ' · hồi chiêu ' + r.hc + ' năm' : ''}</div></span><b>${r.stt === 'map' ? '<span class="vk-ok">Đang có trên bản đồ' + (r.nodeLeft != null ? ' · còn ' + Math.max(0, Math.floor(r.nodeLeft)) + ' năm' : '') + '</span>' : r.stt === 'cd' ? '<span class="vk-bad">Hồi chiêu · còn ' + Math.ceil(r.left) + ' năm</span>' : r.stt === 'lock' ? '<span class="vk-bad">Chưa đủ cảnh giới</span>' : '<span class="vk-ok">Đủ điều kiện</span>'}</b></div>`).join('')}</div>` : '');
     { const se = body.querySelector('#tt-db'); if (se) se.onchange = () => { ttLuu('db', se.value); tabDiBao(); }; }
     ddBindQuickTravel(body);
   }
+  // 8.13.1-thu.1: boss có tỉ lệ rơi dị bảo (quái có roi_di_bao). Đệm theo object content (đổi content thì quét lại).
+  let DBB_C = null, DBB_DS = [], DBB_ENC = new Map(), DBB_QUET = false;
+  function diBaoBossDs() {
+    try {
+      const c = C();
+      if (DBB_C !== c) {
+        DBB_C = c; DBB_DS = []; DBB_ENC = new Map(); DBB_QUET = false;
+        for (const def of c.enemies.values()) {
+          const js = JSON.stringify((def && def.roi) || '');
+          if (js.indexOf('"roi_di_bao"') < 0) continue;
+          const m = /"roi_di_bao":([\d.]+)/.exec(js);
+          DBB_DS.push({ id: def.id, ten: def.ten || def.id, cg: def.canh_gioi, tc: def.tieu_canh_gioi, rate: m ? parseFloat(m[1]) : null });
+        }
+      }
+    } catch (e) { console.error('[dibao] boss ds', e); }
+    return DBB_DS;
+  }
+  // Encounter nào có chuỗi id boss (đúng cả chuỗi, có nháy) trong định nghĩa: encId → [boss…]. Quái gọi trực tiếp (combat: "enemy.x") hoặc qua vars mặc định của encounter.
+  function diBaoEncBoss() {
+    const ds = diBaoBossDs();
+    if (DBB_QUET || !ds.length) return DBB_ENC;
+    try {
+      for (const [eid, def] of C().encounters) {
+        const js = JSON.stringify(def || '');
+        const hit = ds.filter((b) => b.id && js.indexOf('"' + b.id + '"') >= 0);
+        if (hit.length) DBB_ENC.set(eid, hit);
+      }
+    } catch (e) { console.error('[dibao] enc boss', e); }
+    DBB_QUET = true;
+    return DBB_ENC;
+  }
+  // Boss rơi dị bảo đang có trên bản đồ: node có encounter thuộc bảng trên, hoặc vars có giá trị là id boss.
+  function diBaoBossTrenMap() {
+    const out = [];
+    try {
+      const run = G().state.run, nam = typeof run.nam === 'number' ? run.nam : null, byEnc = diBaoEncBoss(), byId = new Map(diBaoBossDs().map((b) => [b.id, b]));
+      for (const [slot, nd] of Object.entries(run.nodes || {})) {
+        if (!nd) continue;
+        const got = new Map();
+        if (typeof nd.encounter === 'string' && byEnc.has(nd.encounter)) for (const b of byEnc.get(nd.encounter)) got.set(b.id, b);
+        if (nd.vars && typeof nd.vars === 'object') for (const v of Object.values(nd.vars)) if (typeof v === 'string' && byId.has(v)) got.set(v, byId.get(v));
+        for (const b of got.values()) out.push({ slot, encId: nd.encounter || '', boss: b, hetHan: typeof nd.hetHanNam === 'number' && nam != null ? nd.hetHanNam - nam : null });
+      }
+    } catch (e) { console.error('[dibao] boss tren map', e); }
+    return out;
+  }
+  // Báo boss rơi dị bảo (việc ngầm 'bossdb'): boss mới hiện trên bản đồ thì thông báo một lần; rời bản đồ rồi hiện lại thì báo lại. Khóa đã báo nhớ ở localStorage vkx_bossdb_v1.
+  const DBB_DA = new Set((() => { try { const a = JSON.parse(localStorage.getItem('vkx_bossdb_v1') || '[]'); return Array.isArray(a) ? a.filter((x) => typeof x === 'string').slice(-200) : []; } catch (e) { return []; } })());
+  let DBB_TM = 0, DBB_T0 = 0;
+  function diBaoBossBao() {
+    try {
+      const ds = diBaoBossDs(); if (!ds.length) return;
+      const cur = diBaoBossTrenMap(), moi = [], dang = new Set();
+      for (const m of cur) { const k = m.slot + '|' + (m.encId || m.boss.id); dang.add(k); if (!DBB_DA.has(k)) { DBB_DA.add(k); moi.push(m); } }
+      let doi = moi.length > 0;
+      for (const k of [...DBB_DA]) if (!dang.has(k)) { DBB_DA.delete(k); doi = true; }
+      if (doi) { try { localStorage.setItem('vkx_bossdb_v1', JSON.stringify([...DBB_DA].slice(-200))); } catch (e) { /* bỏ qua */ } }
+      if (!moi.length) return;
+      const mo = () => { try { if (!UI.isOpen()) UI.open(); UI.setSection('tl'); goTab('db'); } catch (e) { /* bỏ qua */ } };
+      if (moi.length === 1) { const m = moi[0]; UI.notify('Boss rơi dị bảo xuất hiện: ' + m.boss.ten + ' tại ' + qtNoi(m.slot) + (m.boss.rate != null ? ' (tỉ lệ ' + pct(m.boss.rate, 1) + ')' : '') + ' — bấm để xem', 8000, mo); return; }
+      UI.notify('Boss rơi dị bảo xuất hiện: ' + moi.slice(0, 3).map((m) => m.boss.ten + ' (' + qtNoi(m.slot) + ')').join(', ') + (moi.length > 3 ? '…' : '') + ' — bấm để xem', 8000, mo);
+    } catch (e) { console.error('[dibao] bao boss', e); }
+  }
+  function diBaoBossHen() { // gộp nhịp: tối đa một lần quét mỗi ~2 giây
+    if (DBB_TM) return;
+    const cho = Math.max(0, 2000 - (Date.now() - DBB_T0));
+    DBB_TM = setTimeout(() => { DBB_TM = 0; DBB_T0 = Date.now(); diBaoBossBao(); }, cho);
+  }
+  try {
+    if (typeof TT.on === 'function') for (const ev of ['timePass', 'travel']) nenOn('bossdb', ev, diBaoBossHen);
+    nenSub('bossdb', diBaoBossHen);
+  } catch (e) { /* bỏ qua */ }
+  setTimeout(() => { try { if (!nenTat('bossdb')) diBaoBossHen(); } catch (e) { /* bỏ qua */ } }, 3500);
   // Dị bảo rơi chung (game 0.0.3): vật tag di_bao không thuộc DIBAO nhúng, không có sự kiện riêng; rơi từ quái có roi_di_bao hoặc thủ quan Vô Nhai Uyên 40+.
   function diBaoChung() {
     const out = { items: [], boss: [] };
@@ -4394,12 +4480,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
         if (!it || !Array.isArray(it.tag) || !it.tag.includes('di_bao') || known.has(it.id) || known.has(idGoc(it.id))) continue;
         out.items.push({ id: it.id, ten: it.ten || it.id, loai: it.loai, gia: it.gia, bd: it.theo_kiep ? 'Có' : 'Không' });
       }
-      for (const def of C().enemies.values()) {
-        const js = JSON.stringify((def && def.roi) || '');
-        if (js.indexOf('"roi_di_bao"') < 0) continue;
-        const m = /"roi_di_bao":([\d.]+)/.exec(js);
-        out.boss.push({ ten: def.ten || def.id, cg: def.canh_gioi, tc: def.tieu_canh_gioi, rate: m ? parseFloat(m[1]) : null });
-      }
+      out.boss = diBaoBossDs().slice();
     } catch (e) { console.error('[dibao] chung', e); return { items: [], boss: [] }; }
     return out;
   }
@@ -4797,8 +4878,8 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
         try { const tr = K.taoTran(clone(P), clone(t.dich), { enemyId: t.id, muc: t.muc }, sd, ally ? clone(ally) : undefined, fam ? clone(fam) : undefined); x = dktMot(tr, set, c, sd, realm); } catch (e) { x = null; }
         nTran++; r.n++; if (KM_DO) KM_DO.tranN = (KM_DO.tranN || 0) + 1;
         if (!x) { r.ket++; nKet++; if (KM_DO) KM_DO.tranKet = (KM_DO.tranKet || 0) + 1; } else {
-          r.hiep += x.hiep; if (x.kt === 'thang') { r.th++; r.mau += x.hp / Math.max(1, x.hpMax); }
-          else if (x.kt === 'het_hiep' || x.kt === 'enemy_fled') { r.hoa++; r.hoaD += x.kt === 'enemy_fled' ? 0.7 : 0.5; r.hoaMau += x.hp / Math.max(1, x.hpMax); }   // 8.9.2-thu.8: hết hiệp / địch bỏ chạy là hòa (0,5 / 0,7 điểm), thua = 0
+          r.hiep += x.hiep; if (x.kt === 'thang' || x.kt === 'enemy_fled') { r.th++; r.mau += x.hp / Math.max(1, x.hpMax); }   // game 28/11/2026: hết hiệp bên kém khí huyết rút; địch kém tháo chạy = THẮNG
+          else if (x.kt === 'het_hiep') { r.hoa++; r.hoaD += 0.4; r.hoaMau += x.hp / Math.max(1, x.hpMax); }   // het_hiep giờ nghĩa là ta kém hoặc bằng nên phải rút: 0,4 điểm, thua = 0
           if (LLb.re > 0 && Number.isFinite(x.linh) && x.linh < LLb.re) r.can++;   // cạn linh lực: cuối trận không đủ ra chiêu rẻ nhất
         }
         opt.onT && opt.onT(nTran);
@@ -4926,7 +5007,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
         let v = 0; nTran++;
         if (!x) nKet++; else {
           const hr = Math.max(0, Math.min(1, x.hp / Math.max(1, x.hpMax))), hp = 0.2 * hr;
-          if (x.kt === 'thang') { th++; v = 1 + hp; w++; } else if (x.kt === 'enemy_fled') { fled++; v = 0.9 + hp; w++; } else if (x.kt === 'het_hiep') { hoa++; v = 0.5 + hp; }
+          if (x.kt === 'thang') { th++; v = 1 + hp; w++; } else if (x.kt === 'enemy_fled') { fled++; v = 1 + hp; w++; } else if (x.kt === 'het_hiep') { hoa++; v = 0.4 + hp; }   // game 28/11/2026: địch tháo chạy = thắng; hết hiệp = ta rút (0,4)
           if (x.kt !== 'thua') { hpS += hr; hpN++; }
           if (ref === null) ref = { kt: x.kt, hr }; else if (ref.kt !== x.kt || Math.abs(ref.hr - hr) > 1e-6) doi = true;
         }
@@ -6426,6 +6507,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       <div class="vk-row"><span>Nơi đang đứng</span><b>${cho}</b></div>
       <div class="vk-row"><span>Tỉ lệ nếu không dùng gì</span><b>${pct(h0.tiLe, 1)}</b></div>
       ${h0.som ? '<div class="vk-bad" style="font-size:13px">Chưa Đại viên mãn: đột phá sớm bị trừ tỉ lệ.</div>' : ''}
+      ${(() => { const t = aiLkTxt(nv, h0); return t ? '<div class="vk-bad" style="font-size:13px">' + esc(t) + '</div>' + (Array.isArray(h0.nguon) && h0.nguon.length ? '<div class="vk-mu" style="font-size:12px">' + h0.nguon.map((x) => esc(x.ten) + ' ' + (typeof x.gt === 'number' ? (x.gt > 0 ? '+' : '') + pct(x.gt, 1) : esc(String(x.gt)))).join(' · ') + '</div>' : '') : ''; })()}
       ${(() => { try { return bcAt(nv) === true ? '<div class="vk-bad" style="font-size:13px">' + esc(BC_AI_CANH) + '</div>' : ''; } catch (e) { return ''; } })()}
     </div>
     ${dcCardHtml(nv)}
@@ -6456,19 +6538,71 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
   function dcDef(id) { try { const m = C().obstacles; if (!m || !id) return null; return m.get(id) || m.get('chuong.' + id) || [...m.values()].find((d) => d && (d.id === id || String(d.id).endsWith('.' + id))) || null; } catch (e) { return null; } }
   function dcChuong(nv) { const f = dcFn('character/character', 'activeObstacle'); if (!f) return null; try { const id = f(nv); return id ? { id, def: dcDef(id) } : null; } catch (e) { return null; } }
   function dcChoText(nv) { const p = dcCho(nv); return p ? (p.obstacle && p.obstacle.ten ? p.obstacle.ten : 'đạo chướng') + ': ' + (p.options || []).map((o, i) => (i + 1) + '. ' + o.ten).join(' · ') : ''; }
+  // game 28/11/2026: CÁCH PHÁ ĐẠO CHƯỚNG. Chỉ đọc. Việc ngoài đời (4 loại có việc) + sự kiện tâm cảnh quét từ nội dung game (cache theo id chướng).
+  const DC_ID = (id) => String(id || '').replace(/^chuong\./, '');
+  function dcViecTxt(id) {
+    const k = DC_ID(id); let hp = 0.2; try { const v = Number(TT.core['balance/obstacle'].OBSTACLE_WIN_HP); if (v > 0) hp = v; } catch (e) { /* mặc định */ }
+    return ({ sat: 'Thắng một trận rồi chọn tha kẻ bại có cảnh giới từ bằng mình trở lên.', nga: 'Thua một trận mà còn sống.', tran: 'Lần đầu bước vào một nước mới.', tu: 'Thắng một trận mà khí huyết cuối trận dưới ' + pct(hp, 0) + '.' })[k] || '';
+  }
+  function dcSuKien(id) {
+    const k = DC_ID(id); if (!k) return [];
+    return nhoC('dcsk|' + k, (c) => {
+      const out = [], re = new RegExp('"pha_chuong":(true|"(chuong\\.)?' + k.replace(/[^\w]/g, '') + '")');
+      const khop = (r) => r === true || r === k || r === 'chuong.' + k || (Array.isArray(r) && r.some((x) => x === true || x === k || x === 'chuong.' + k));
+      try {
+        for (const e of c.encounters.values()) {
+          const rq = e && e.requires; if (!rq || rq.dang_chuong === undefined || !khop(rq.dang_chuong)) continue;
+          const chs = [].concat(Array.isArray(e.choices) ? e.choices : [], ...Object.values(e.scenes || {}).map((sc) => (sc && Array.isArray(sc.choices)) ? sc.choices : []));
+          const hit = chs.filter((x) => { try { return re.test(JSON.stringify(x)); } catch (er) { return false; } }).map((x) => String(x.text || '').trim()).filter(Boolean);
+          if (hit.length) out.push({ id: e.id, ten: tcClean(e.ten || e.id), noi: (e.tags && Array.isArray(e.tags.noi) ? e.tags.noi : []).join(', '), lc: hit });
+        }
+      } catch (er) { /* thiếu dữ liệu thì bỏ */ }
+      return out;
+    });
+  }
+  function dcCachPhaHtml(nv, ch, d, cho) {
+    try {
+      let h = '';
+      if (d) {
+        const id = DC_ID(d.id || (nv.obstacle && nv.obstacle.id)), viec = dcViecTxt(id), sk = dcSuKien(id);
+        h += '<div style="font-size:13px;margin-top:6px"><b>Cách phá</b> ' + (ch ? '<span class="vk-warn">(đang đứng ở ải: làm một việc dưới đây là qua ải ngay, được chọn ngộ)</span>' : '<span class="vk-mu">(chưa chạm ải lớn; việc làm trước đó thường không tính)</span>') + '<ul style="margin:3px 0 0 18px;padding:0">';
+        if (viec) h += '<li>Việc ngoài đời: ' + esc(viec) + '</li>';
+        if (sk.length) {
+          let run = null; try { run = ctx().run; } catch (e) { run = null; }
+          h += '<li>Sự kiện tâm cảnh (chọn đúng lựa chọn phá):<ul style="margin:2px 0 0 16px;padding:0">' + sk.slice(0, 8).map((x) => '<li>' + esc(x.ten) + (x.noi ? ' <span class="vk-mu">· ' + esc(x.noi) + '</span>' : '') + (run && run.history && run.history[x.id] ? ' <span class="vk-mu">· đã gặp kiếp này</span>' : '') + ': ' + x.lc.slice(0, 3).map((t) => '“' + esc(t) + '”').join(' / ') + '</li>').join('') + (sk.length > 8 ? '<li class="vk-mu">… và ' + (sk.length - 8) + ' sự kiện nữa</li>' : '') + '</ul></li>';
+        }
+        if (!viec && !sk.length) h += '<li class="vk-mu">Tool chưa tìm thấy việc / sự kiện phá riêng cho chướng này; xem gợi ý ở trên.</li>';
+        h += '<li class="vk-mu">Qua ải bằng tích lũy hoặc đan phá bình cảnh vẫn được nhưng không được ngộ.</li></ul></div>';
+      } else if (!cho) {
+        const f = dcFn('progress/obstacle', 'obstacleWeights'); let ws = []; if (f) { try { ws = f(ctx()) || []; } catch (e) { ws = []; } }
+        const tong = ws.reduce((a, x) => a + (Number(x.weight) || 0), 0);
+        if (ws.length && tong > 0) h += '<details style="margin-top:6px"><summary style="font-size:13px;cursor:pointer"><b>Chướng có thể rút ở ải lớn tới</b> <span class="vk-mu">(' + ws.length + ' loại)</span></summary><table class="vk-t"><tr><th>Chướng</th><th>Tỉ lệ</th><th>Cách phá</th></tr>' + ws.map((x) => '<tr><td>' + esc((x.def && x.def.ten) || '?') + (x.sign ? ' <span class="vk-warn">có dấu hiệu</span>' : '') + '</td><td>' + pct(x.weight / tong, 0) + '</td><td class="vk-mu" style="font-size:12px">' + esc(dcViecTxt(x.def && x.def.id) || 'qua sự kiện tâm cảnh') + '</td></tr>').join('') + '</table></details>';
+      }
+      return h;
+    } catch (e) { return ''; }
+  }
+  // game 28/11/2026: chưa phá ải đỉnh Luyện Khí: phạt giảm dần theo phần còn thiếu, phẩm đạo cơ −1 bậc tới khi phá hẳn
+  function aiLkTxt(nv, h0) {
+    try {
+      if (!h0 || !h0.chuaPhaAi) return '';
+      let n = null; const f = dcFn('progress/dot_pha', 'peakBottleneckLeft'); if (f) { try { n = Number(f(nv)); } catch (e) { n = null; } } if (!(n >= 0)) n = bcLeft(nv);
+      return 'Chưa phá ải đỉnh Luyện Khí: phạt giảm dần theo phần còn thiếu' + (n != null && n >= 0 ? ' (còn ' + pct(n, 0) + ')' : '') + ', phẩm đạo cơ −1 bậc tới khi phá hẳn.';
+    } catch (e) { return ''; }
+  }
   function dcCardHtml(nv) {
     try {
       const cho = dcCho(nv), ch = dcChuong(nv), fl = dcFn('progress/obstacle', 'enlightenmentList');
       let ds = []; if (fl) { try { ds = fl(nv, C()) || []; } catch (e) { ds = []; } }
       const mang = nv && nv.obstacle ? dcDef(nv.obstacle.id) : null;
-      if (!cho && !ch && !mang && !ds.length) return '';
+      const dd0 = (ch && ch.def) || mang, cp = dcCachPhaHtml(nv, ch, dd0, cho);
+      if (!cho && !ch && !mang && !ds.length && !cp) return '';
       let h = '<div class="vk-card"><h3>Đạo chướng</h3>';
-      if (cho) h += '<div class="vk-bad" style="font-size:13px">Vừa phá ' + esc((cho.obstacle && cho.obstacle.ten) || 'chướng') + ': chọn một trong ba ngộ trong game: ' + esc((cho.options || []).map((o) => o.ten).join(' · ')) + '.</div>';
+      if (cho) h += '<div class="vk-bad" style="font-size:13px">Vừa phá ' + esc((cho.obstacle && cho.obstacle.ten) || 'chướng') + ': chọn một trong ba ngộ trong game: ' + esc((cho.options || []).map((o) => { let vt = ''; try { const fv = dcFn('progress/obstacle', 'enlightenmentValueText'); if (fv) vt = fv(o.key, o.value); } catch (e) { vt = ''; } return o.ten + (vt ? ' (' + vt + ')' : ''); }).join(' · ')) + '.</div>';
       const d = (ch && ch.def) || mang;
       if (d) h += '<div class="vk-row"><span>Đang mang' + (ch ? ' (đang cản ải)' : ' (chưa chạm ải lớn)') + '</span><b>' + esc(d.ten || d.id) + '</b></div>' + (d.goi_y ? '<div class="vk-mu" style="font-size:12.5px">' + esc(d.goi_y) + '</div>' : '') + (d.dau_hieu ? '<div class="vk-mu" style="font-size:12px">Dấu hiệu: ' + esc(typeof d.dau_hieu === 'string' ? d.dau_hieu : JSON.stringify(d.dau_hieu)) + '</div>' : '');
       else if (ch) h += '<div class="vk-row"><span>Đang cản ải</span><b>' + esc(ch.id) + '</b></div>';
       if (ds.length) h += '<div class="vk-mu" style="font-size:12.5px;margin-top:4px">Ngộ đã chọn: ' + ds.map((x) => esc(x.ten) + ' (' + esc(String(x.key)) + ' ' + esc(String(x.value)) + ')').join(' · ') + '</div>';
-      return h + '</div>';
+      return h + cp + '</div>';
     } catch (e) { return ''; }
   }
   function bcPills(nv, cg) {
@@ -6518,6 +6652,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       <label style="display:flex;gap:6px;align-items:center;font-size:13px;margin-top:6px"><input type="checkbox" id="bc-lon"${BC.lon ? ' checked' : ''}> Dùng đan cả ở ải lớn (mất lượt chọn ngộ)</label>
       <div class="vk-mu" style="font-size:12px;margin-top:2px">${esc(BC_LON_NOTE)} Mặc định tắt: ở ải lớn Auto không dùng đan.</div>
       <div class="vk-row"><span>${realmName(cg)}</span><span>${tt}${at === true && bcLon(nv) ? ' <span class="vk-warn">· ải lớn' + (BC.lon ? ' (vẫn dùng đan vì ô trên đang bật)' : ': Auto không dùng đan') + '</span>' : ''}</span></div>
+      ${(() => { try { const hh = S.core.chuanBiDotPha(ctx(), { dan: [], thieuDot: 0 }), t = aiLkTxt(nv, hh); return t ? '<div class="vk-bad" style="font-size:12.5px">' + esc(t) + '</div>' : ''; } catch (e) { return ''; } })()}
       <div class="vk-row"><span>Trong túi</span><span>${ps.length ? ps.map((p) => esc(tcClean(p.it.ten)) + ' ×' + p.n + ' (' + pct(p.phan, 0) + ')').join(', ') : '<span class="vk-mu">không có</span>'}</span></div>
       ${BC.log.length ? '<div class="vk-mu" style="font-size:12px;margin-top:4px">' + BC.log.map(esc).join('<br>') + '</div>' : ''}</div>`;
   }
@@ -7146,7 +7281,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     const c = ctx();
     if (asDvm && c.run.nhanVat.tieuCanhGioi < 3) { c.run.nhanVat.tieuCanhGioi = 3; c.run.nhanVat.peakStage = 3; }
     for (const id of extraPills) c.run.nhanVat.tuiDo[id] = Math.max(1, c.run.nhanVat.tuiDo[id] || 0);
-    try { const n2 = c.run.nhanVat, fa = bcFn('atBottleneck'), ft = bcFn('binhCanhThreshold'); if (fa && ft && fa(n2)) { const t = Number(ft(n2)); if (t > 0) n2.binhCanh = t; } } catch {} // 8.10.1-thu.2: đứng ải thì tính như đã phá (game tự trừ EARLY_PENALTY_FOUNDATION khi chưa phá)
+    // game 28/11/2026: không còn ép binhCanh = ngưỡng; chưa phá ải đỉnh Luyện Khí thì game tự tính phạt giảm dần theo phần còn thiếu, nên tỉ lệ ở đây đã gồm phạt đó
     try { return S.core.chuanBiDotPha(c, { dan: extraPills, thieuDot: td }).tiLe; } catch { return null; }
   }
   let WG = null; // 8.4.2-thu.3: trong một lần dựng tab Đột phá & Thọ, nhớ nv, hàng Tàng Kinh Các và chuỗi theo id (đỡ clone ctx cho mỗi món)
@@ -8603,6 +8738,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     if ((nv.lichLuyen || 0) < 2) w.push(['bad', 'Lịch luyện sắp cạn: bế quan sẽ ngưng trệ. Đi đánh, đi xa để hồi.']);
     try { if (bcAt(nv) === true) w.push(['bad', BC_AI_CANH]); } catch {}
     try { const t = dcChoText(nv); if (t) w.push(['bad', 'Phá được đạo chướng, chọn một ngộ trong game (Tool không tự chọn). ' + t]); else { const ch = dcChuong(nv); if (ch) w.push(['', 'Đạo chướng: ' + ((ch.def && ch.def.ten) || ch.id) + (ch.def && ch.def.goi_y ? ' — ' + ch.def.goi_y : '')]); } } catch {} // 8.10.1-thu.2
+    try { if (bcAt(nv) === true) { const ch = dcChuong(nv), id = ch && DC_ID(ch.id), v = id && dcViecTxt(id); if (v) w.push(['', 'Phá đạo chướng ' + ((ch.def && ch.def.ten) || id) + ': ' + v]); } } catch {} // game 28/11/2026
     if (nv.thuongThe) w.push(['bad', `Đang bị thương ${nv.thuongThe} bậc: tu luyện và đột phá đều giảm.`]);
     const tm = run.tongMon; if (tm && tm.promotionRetryYear && tm.promotionRetryYear > run.nam) w.push(['', `Khảo hạch tông môn bị khóa thêm ${num(tm.promotionRetryYear - run.nam)} năm.`]);
     if (has('thieuDeKhaoHach')) for (const ng of Object.keys(nv.nghe || {})) { try { const r = K.thieuDeKhaoHach(c, ng).find((x) => x.includes('rớt')); if (r) w.push(['', `${NGHE[ng] || ng}: ${r}.`]); } catch {} }
@@ -12034,6 +12170,26 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
   const tcPills = (arr) => arr.map((s) => `<span class="tc-pill">${s}</span>`).join('');
   const tcChance = (p) => pct(Math.min(1, p), p < 0.1 ? 1 : 0);
   const tcRow = (a, b) => `<div class="vk-row"><span>${esc(a)}</span><b style="text-align:right">${b}</b></div>`;
+  // 8.13.1-thu.1: hình ô kinh mạch của công pháp / pháp khí (it.hinh: '.' = trống, 'X' / 'A' = hệ đầu, 'B'… = hệ kế theo CHU_HE). Màu theo hệ lấy từ BASE ở mục "Vẽ kinh mạch".
+  try { const o = document.getElementById('vkx-hinh-css'); if (o) o.remove(); const st = document.createElement('style'); st.id = 'vkx-hinh-css'; st.textContent = '.tc-hinh{display:grid;gap:2px;justify-content:end;margin:2px 0}.tc-hinh i{display:block;width:14px;height:14px;border-radius:3px;background:var(--hc,#888)}.tc-hinh i.k{background:transparent;box-shadow:inset 0 0 0 1px #8883}.tc-hinh.nho{gap:1px;margin:0 0 0 auto;flex:0 0 auto}.tc-hinh.nho i{width:6px;height:6px;border-radius:1px}.tc-hinh.nho i.k{box-shadow:none}.tc-hinh-n{font-size:11px;color:var(--mut);text-align:right}'; document.head.appendChild(st); } catch (e) { /* bỏ qua */ }
+  function tcHinhHtml(it, nho) {
+    try {
+      if (!it || (it.loai !== 'cong_phap' && it.loai !== 'phap_khi') || !Array.isArray(it.hinh) || !it.hinh.length) return '';
+      const hang = it.hinh.map((r) => String(r)), rong = Math.max(...hang.map((r) => r.length));
+      if (!(rong > 0) || rong > 40 || hang.length > 40) return '';
+      const he = Array.isArray(it.he) ? it.he : [];
+      let n = 0, cells = '';
+      for (const r of hang) for (let i = 0; i < rong; i++) {
+        const ch = r[i] || '.';
+        if (ch === '.' || ch === ' ') { cells += '<i class="k"></i>'; continue; }
+        n++;
+        const idx = ch === 'X' ? 0 : Math.max(0, 'ABCDE'.indexOf(ch)), h = he[idx] || he[0], col = (BASE[h] || ['#888'])[0];
+        cells += `<i style="--hc:${col}" title="${esc(heTen(h || ''))}"></i>`;
+      }
+      const grid = `<div class="tc-hinh${nho ? ' nho' : ''}" style="grid-template-columns:repeat(${rong},${nho ? 6 : 14}px)">${cells}</div>`;
+      return nho ? grid : grid + `<div class="tc-hinh-n">${n} ô</div>`;
+    } catch (e) { return ''; }
+  }
   const tcItemName = (id) => { const it = C().items.get(id); return it ? tcWord(it.ten) : tcWord(String(id).replace(/^item\./, '').replace(/_/g, ' ')); };
   const tcMonName = (id) => { const e = C().enemies.get(id); return e ? tcWord(e.ten) : tcWord(String(id).replace(/^enemy\./, '').replace(/_/g, ' ')); };
   const tcAdd = (map, k, v) => { let a = map.get(k); if (!a) map.set(k, (a = [])); a.push(v); };
@@ -12260,6 +12416,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     if (it.canh_gioi !== undefined) rows.push(tcRow('Yêu Cầu', esc(tcRealm(it.canh_gioi))));
     if (it.he && it.he.length) rows.push(tcRow('Hệ', esc(it.he.map(heTen).join(' / '))));
     if (it.gia) rows.push(tcRow('Giá Gốc', it.gia + ' Linh Thạch'));
+    { const hh = tcHinhHtml(it); if (hh) rows.push(tcRow('Hình Ô', hh)); }
     if (own) rows.push(tcRow('Đang Có Trong Túi', `<span class="vk-ok">${own}</span>`));
     { const boId = Cc.setOfItem && Cc.setOfItem.get(it.id), boDef = boId && Cc.itemSets && Cc.itemSets.get(boId); if (boDef) rows.push(tcRow('Thuộc Bộ', tcLk('b', boId, boDef.ten) + ` (${(boDef.mon || []).length} món)`)); }
     if (typeof it.khuon === 'string' && Cc.enemies.has(it.khuon)) rows.push(tcRow('Nở Ra', tcLk('q', it.khuon, tcMonName(it.khuon))));
@@ -12609,7 +12766,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
         const own = isV && bag[x.id] > 0 ? ` <span class="vk-ok" style="font-size:12px">có ×${bag[x.id]}</span>` : '';
         const qv = isV ? (x.it.pham_cap || 0) : 0, col = isV ? TC_QCOL[Math.min(8, qv)] : TC_MCOL[x.e.muc || 'thuong'] || '#9ca3af';
         const badge = isV ? (qv ? phNgan(qv) : '·') : (TC_MUC[x.e.muc || 'thuong'] || '');
-        return `<details class="vk-card tc-card" style="--tq:${col}" data-i="${i}" ${f.focus === x.id ? 'open' : ''}><summary><span class="tc-q${isV ? '' : ' tx'}">${esc(badge)}</span><span class="tc-nm"><b>${esc(x.name)}${own}${modxTag(x.id)}</b><small>${esc(meta.filter(Boolean).join(' · '))}</small>${isV && f.cd.length ? '<small style="color:var(--ok,#4ade80)">' + esc(cdVals(x, f)) + '</small>' : ''}</span></summary><div class="tc-bd"></div></details>`;
+        return `<details class="vk-card tc-card" style="--tq:${col}" data-i="${i}" ${f.focus === x.id ? 'open' : ''}><summary><span class="tc-q${isV ? '' : ' tx'}">${esc(badge)}</span><span class="tc-nm"><b>${esc(x.name)}${own}${modxTag(x.id)}</b><small>${esc(meta.filter(Boolean).join(' · '))}</small>${isV && f.cd.length ? '<small style="color:var(--ok,#4ade80)">' + esc(cdVals(x, f)) + '</small>' : ''}</span>${isV ? tcHinhHtml(x.it, true) : ''}</summary><div class="tc-bd"></div></details>`;
       }).join('') + (res.length > shown.length ? `<button class="vk-btn sec" id="tc-more" style="width:100%">Xem Thêm ${Math.min(40, res.length - shown.length)} Kết Quả</button>` : '') || '<div class="vk-card vk-mu">Không thấy kết quả nào.</div>';
       body.querySelectorAll('#tc-list details').forEach((el) => {
         const fill = () => { if (el.dataset.done) return; el.dataset.done = 1; const x = shown[+el.dataset.i]; try { el.querySelector('.tc-bd').innerHTML = isV ? tcItemHtml(x) : tcMonHtml(x); if (isV) vkxKitGan(el.querySelector('.tc-bd'), 'itemCard', { id: x.id }, true); } catch (e) { console.error(e); el.querySelector('.tc-bd').innerHTML = errBox(e); } };
@@ -12674,7 +12831,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
   const SK_TRAN = { won: 'nếu thắng', lost: 'nếu thua', fled: 'nếu chạy thoát' };
   const SK_TS0 = { tu_vi: 100, dao_tam: 10, tam_ma: 5, than_thuc: 40, can_cot: 80, khi_van: 100, ngo_tinh: 25, than_phap: 25, tho_nguyen: 10, linh_thach: 0.1, vat: 1, tran: 30, thuong: 50, cong_phap: 20 };
   const skCfgLoad = () => { try { return JSON.parse(localStorage.getItem('vkx_sk') || 'null') || {}; } catch (e) { return {}; } };
-  const SKC = (() => { const o = skCfgLoad(); if (o.v !== 2) delete o.ts; o.ts = { ...SK_TS0, ...(o.ts || {}) }; o.soi = { on: true, thuc: false, auto: false, dlg: true, ...(o.soi || {}), auto: false }; /* thu.1: Auto sự kiện luôn tắt khi nạp */ o.au = { coTran: 'an', mot: 'khong', nguong: 0, max: 4, kieu: 'loi', boQua: [], ...(o.au || {}) }; /* thu.43: tùy chọn Auto Sự Kiện */ if (!Array.isArray(o.au.boQua)) o.au.boQua = []; return o; })();
+  const SKC = (() => { const o = skCfgLoad(); if (o.v !== 2) delete o.ts; o.ts = { ...SK_TS0, ...(o.ts || {}) }; o.soi = { on: true, thuc: false, auto: false, dlg: true, ...(o.soi || {}), auto: false }; /* thu.1: Auto sự kiện luôn tắt khi nạp */ o.au = { coTran: 'an', mot: 'khong', nguong: 0, max: 4, kieu: 'loi', boQua: [], neNghiep: true, ...(o.au || {}) }; o.au.neNghiep = o.au.neNghiep !== false; /* thu.43: tùy chọn Auto Sự Kiện */ if (!Array.isArray(o.au.boQua)) o.au.boQua = []; return o; })();
   const skCfgSave = () => { try { localStorage.setItem('vkx_sk', JSON.stringify({ v: 2, ts: SKC.ts, soi: SKC.soi, au: SKC.au })); } catch (e) { /* bỏ qua */ } };
   const skStr = (v) => (v === null || v === undefined ? '' : typeof v === 'object' ? (Array.isArray(v) ? v.map(skStr).join(', ') : Object.entries(v).map(([a, b]) => a + ': ' + skStr(b)).join(', ')) : String(v));
   const skGoiLoi = new Set(); // tên hiệu ứng lạ gặp khi phân tích (cho Tự Kiểm Tra)
@@ -13726,8 +13883,11 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     if (SKAUTO.dem >= maxN) return { bo: true, msg: '“' + ten + '”: đã tự chọn ' + maxN + ' lần trong cùng sự kiện, nhường bạn chọn tiếp (tránh lặp).' };
     const lvOf = (x) => (x.vc.risk && x.vc.risk.level) || '';
     const an = (x) => !x.lc.coTran || (au.coTran === 'khong' ? false : au.coTran === 'ngang' ? (lvOf(x) === 'an_toan' || lvOf(x) === 'ngang_suc') : lvOf(x) === 'an_toan');
-    const cand = t.rows.filter((x) => x.vc.available && an(x)).sort((x, y) => (y.r.d || 0) - (x.r.d || 0));
-    if (!cand.length) return { bo: true, msg: '“' + ten + '”: không có lối nào hợp tùy chọn giao chiến, để bạn tự chọn.' };
+    // game 28/11/2026: né lựa chọn cộng nghiệp (nghiệp > 0 ở bất kỳ nhánh nào: luôn / thành / nửa vời / bại)
+    const coNghiep = (x) => [x.lc.nh.chung, x.lc.nh.thanh, x.lc.nh.nua, x.lc.nh.bai].some((b) => b && (b.items || []).some((it) => it.key === 'nghiep' && !(typeof it.so === 'number' && it.so <= 0)));
+    const cand0 = t.rows.filter((x) => x.vc.available && an(x));
+    const cand = (au.neNghiep !== false ? cand0.filter((x) => !coNghiep(x)) : cand0).sort((x, y) => (y.r.d || 0) - (x.r.d || 0));
+    if (!cand.length) return { bo: true, msg: cand0.length ? '“' + ten + '”: mọi lựa chọn đều cộng nghiệp, để bạn tự chọn.' : '“' + ten + '”: không có lối nào hợp tùy chọn giao chiến, để bạn tự chọn.' };
     const ng = Number.isFinite(Number(au.nguong)) ? Number(au.nguong) : 0;
     let best = cand[0];
     if (!t.mot && !((best.r.d || 0) > ng)) return { bo: true, msg: '“' + ten + '”: không lối nào có lợi rõ (điểm tốt nhất ' + (Math.round((best.r.d || 0) * 10) / 10) + ', ngưỡng ' + ng + '), để bạn tự chọn.' };
@@ -13791,6 +13951,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       <div class="vk-mu" style="font-size:13px">Khi bật, mỗi lần gặp sự kiện thường, Tool tự bấm lựa chọn có lợi nhất theo cách chấm ở Tra Cứu → Sự Kiện. Không tự đánh nhau nguy hiểm, không đụng bí cảnh, đột phá, tiệm. Tắt là Tool chỉ gợi ý, bạn tự bấm.</div>
       <div class="vk-row" style="margin-top:8px"><span>Trạng thái</span><b id="aus-st" class="${on ? 'vk-ok' : 'vk-mu'}"></b></div>
       <button class="vk-btn" id="aus-sw" style="width:100%;margin-top:8px;padding:12px;font-size:15px"></button>
+      <label class="vk-row" style="margin-top:6px"><span>Né lựa chọn cộng nghiệp</span><input type="checkbox" id="aus-nn"${au.neNghiep !== false ? ' checked' : ''}></label>
       <label class="vk-row" style="margin-top:6px"><span>Tự Bỏ qua mini game khi game cho phép</span><input type="checkbox" id="aus-bm"${au.boMini !== false ? ' checked' : ''}></label>
       <div class="vk-mu" style="font-size:12px;margin-top:6px">Mini game: Auto bấm Bỏ qua (kết theo chỉ số) nếu ô trên bật; hoặc bật Cấu hình → Trò chơi → Tắt mini game (khóa tu-tien.skip-mini-games) để game tự kết, Auto chạy liền mạch. Gặp lựa chọn có hiệu ứng Tool chưa biết, hay màn lạ, Auto dừng nhường bạn (hoặc bấm Bỏ qua nếu có).</div>
       <div class="vk-mu" style="font-size:12px;margin-top:6px">Mặc định TẮT mỗi lần tải lại game. Khi Auto Săn Yêu / Buôn Bán đang chạy, sự kiện trên đường chỉ tự chọn nếu bật ô riêng trong tab của chúng (cùng các tùy chọn bên dưới).</div></div>
@@ -13819,6 +13980,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     };
     $('#aus-sw').onclick = () => { skAutoBat(!SKC.soi.auto); paintTop(); };
     $('#aus-ct').onchange = (e) => { au.coTran = e.target.value; skCfgSave(); SKAUTO.key = ''; };
+    $('#aus-nn').onchange = (e) => { au.neNghiep = !!e.target.checked; skCfgSave(); SKAUTO.key = ''; };
     $('#aus-bm').onchange = (e) => { au.boMini = !!e.target.checked; skCfgSave(); };
     $('#aus-mot').onchange = (e) => { au.mot = e.target.value; skCfgSave(); SKAUTO.key = ''; };
     $('#aus-kieu').onchange = (e) => { au.kieu = e.target.value; skCfgSave(); SKAUTO.key = ''; };
@@ -14063,7 +14225,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
   const AU_KEY = 'vkx_auto_cfg';
   const AU_DEF = {
     buon: { maxY: 3, banY: 5, von: 60, giu: 100, lai: 20, chuyen: 5, hiem: 'ngang_suc', tho: 15, toc: 'nhanh', sk: true, sks: false, thoGia: 0, nhieu: true, banTui: false, tuiLoai: [], tuiPham: 3, tuiGiu: 5, tuiKhong: '', tuiRieng: '', tuiDs: '' },
-    san: { maxY: 3, mau: ['an_toan', 'ngang_suc', 'hiem'], tran: 20, thuong: 2, tho: 15, rut: 30, mucLa: 'chay', cach: 'ngau', kt: true, neDebuff: true, giaiTu: 0, giaiDen: 5, muc: ['thuong'], toc: 'nhanh', sk: true, sks: false, dkt: true, doanTruoc: true, dktThang: 90, dktNang: 10, dktSom: 30, duong: false, duongMax: 30, danThuong: true, nlMuc: [] },
+    san: { maxY: 3, mau: ['an_toan', 'ngang_suc', 'hiem'], tran: 20, thuong: 2, tho: 15, rut: 30, mucLa: 'chay', cach: 'ngau', kt: true, neDebuff: true, giaiTu: 0, giaiDen: 5, muc: ['thuong'], duoi: false, toc: 'nhanh', sk: true, sks: false, dkt: true, doanTruoc: true, dktThang: 90, dktNang: 10, dktSom: 30, duong: false, duongMax: 30, danThuong: true, nlMuc: [] },
     km: { petKind: 'linh_thu', mode: 'bal', algo: 'moi', tranThat: 'xn', thuan: 'day', linhThuMau: true, mau: { id: '', bat: false, loai: {} }, de: {}, kieuTran: 'don', phai: '', uu: { ht: false, ll: false, du: false, ma: '' }, dir: 'tien', kb: '', prio: false, khongNghich: true, lapDay: true, uuBo: true, bk: 5, ratio: '0', iters: 3000, mo: false, moMax: 1, two: false, mixHe: [], bo: '1', fb: 'bal', ln: 'tho', tay: false, bos: [], thuTu: 'danh,tu,dot', keep: 'tu', moBo: false, watch: false, core: [], coreBo: '', boUu: '', duBo: true, khongDiBao: false, coreW: 'manh', phamCao: true, phMinCp: 0, phMinPk: 0, phMinAuto: false, cam: [], heChi: [], dt: [], pet: '', petN: 0 },
     sd: { on: false, ds: [], duTru: 0, bao: true },
     ap: { lieu: '', aux: 'tot', max: 5, quy: false, giu: 500, tho: 15, tu: 6, dac: '', dong: 0 },   // 8.12.1-thu.1 (I3): Auto Ấp Trứng
@@ -14265,9 +14427,9 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
   }
   function dktHtml(o, t) {
     const pc = (a) => Math.round(100 * a / o.n) + '%', n = o.n;
-    const ket = ['<b style="color:' + (o.thang / n >= 0.9 ? '#2e7d32' : o.thang / n >= 0.6 ? '#b8860b' : '#b71c1c') + '">Thắng ' + pc(o.thang) + '</b>', 'Thua ' + pc(o.thua)];
+    const ket = ['<b style="color:' + ((o.thang + o.chay) / n >= 0.9 ? '#2e7d32' : (o.thang + o.chay) / n >= 0.6 ? '#b8860b' : '#b71c1c') + '">Thắng ' + pc(o.thang) + '</b>', 'Thua ' + pc(o.thua)];
     if (o.chay) ket.push('Địch chạy ' + pc(o.chay));
-    if (o.rut) ket.push('Địch rút ' + pc(o.rut));
+    if (o.rut) ket.push('Hết hiệp, ta rút ' + pc(o.rut));   // game 28/11/2026: bên kém khí huyết rút
     if (o.khac) ket.push('Khác ' + pc(o.khac));
     const tt = o.tt.map((v, i) => v ? AU_TT_TEN[i] + ' ' + pc(v) : '').filter(Boolean).join(' · ');
     let ten = (id) => id; try { const ct = C(); ten = (id) => { const it = ct.items.get(id); return (it && it.ten) || id; }; } catch (e) { /* bỏ qua */ }
@@ -15170,6 +15332,13 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       if (a.waiting && a.waiting.kind === 'enemy_escape') { // 7.12.4: đối phương mang thương tháo chạy sau trận: Buông tha (nhặt nửa chiến lợi phẩm) nếu game không cảnh báo hậu quả
         if (typeof g.pursuitOptions !== 'function' || typeof g.choosePursuit !== 'function') return { stop: 'Đối phương tháo chạy nhưng Game API thiếu pursuitOptions hoặc choosePursuit. Xử lý trong game rồi bấm chạy lại.' };
         let ops = []; try { ops = g.pursuitOptions() || []; } catch (e) { ops = []; }
+        const chs = ops.find((o) => o && o.id === 'chase'); // 8.15.1-thu.1: ô "Đuổi theo khi địch bỏ chạy" của Auto Săn Yêu
+        if (opt.hunt && AU.cfg.san.duoi === true && chs && !chs.canhBao) {
+          const r0 = auCall(() => g.choosePursuit('chase'));
+          if (!r0.ok) return { stop: 'Không chọn được Đuổi theo: ' + r0.err };
+          auLog('Đối phương tháo chạy: Đuổi theo.', '');
+          return 'ok';
+        }
         const rel = ops.find((o) => o && o.id === 'release');
         if (!rel) return { stop: 'Đối phương tháo chạy nhưng không đọc được lựa chọn Buông tha. Xử lý trong game rồi bấm chạy lại.' };
         if (rel.canhBao) return { stop: 'Đối phương tháo chạy; Buông tha có hậu quả (' + String(rel.canhBao).slice(0, 120) + '). Dừng để bạn tự quyết định trong game.' };
@@ -15246,7 +15415,8 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
   // dính debuff thì dừng. Nay: lựa chọn thật nào đúng màu, đúng loại đã tích, không dính debuff thì để auPick chọn như cũ (không tốn tháng truy tìm);
   // không có thì truy tìm loài hợp nhất trong cả sổ loài của ô (auTruyPick). Trả null = để luồng cũ lo.
   // 7.14.0-thu.5: nhận lựa chọn 'Lùng con đầu đàn' theo dữ liệu sự kiện (combat {dau_dan}), không theo chữ trên nút (game đã có bản tiếng Anh).
-  function auDauDan(x) { try { const d = C().encounters.get('ev.san_yeu'), ch = d && (d.choices || [])[x.index]; if (ch) return JSON.stringify([ch.effects || [], ch.success || [], ch.failure || []]).includes('{dau_dan}'); } catch (e) { /* dùng chữ */ } return /đầu đàn|leader|alpha/i.test(String(x.text || '')); }
+  // 8.15.1-thu.1: bền hơn: index của view có thể lệch def.choices (thử cả tìm theo chữ), chấp nhận 'dau_dan' không ngoặc, rồi mới xét chữ
+  function auDauDan(x) { try { const d = C().encounters.get('ev.san_yeu'), cs = (d && d.choices) || [], chs = [cs[x.index], cs.find((y) => y && y.text === x.text)].filter(Boolean); for (const ch of chs) if (/dau_dan/.test(JSON.stringify([ch.effects || [], ch.success || [], ch.failure || []]))) return true; } catch (e) { /* dùng chữ */ } return /đầu đàn|leader|alpha|头/i.test(String(x.text || '')); }
   // 8.6.1-thu.1: bỏ ký tự điều khiển / ô □ khỏi nhãn in vào nhật ký (chỉ dùng khi in, không dùng để so khớp)
   function auSach(s) { return String(s || '').replace(/[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2060\ufeff\u25a1\u25a0\ufffd]/g, '').replace(/\s+/g, ' ').trim(); }
   // 8.6.1-thu.1: mức quái thật của một lựa chọn ev.san_yeu (con {yeu_thu} có thể là Tinh Anh dù nhãn chỉ ghi "Săn X"); null nếu không đọc được
@@ -15265,11 +15435,15 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       return true;
     });
     if (hop.length) return null; // auPick chọn (ưu tiên đầu đàn khi tích Tinh Anh)
-    if (typeof g.targetedHunt !== 'function') return null;
+    const chiTinhAnh = !mucs.includes('thuong') && mucs.includes('tinh_anh'); // 8.15.1-thu.1: chỉ tích Tinh Anh: không đi săn con thường
+    const syKey = (v.id || '') + '|' + cs.map((x) => x.text).join('/');
+    if (chiTinhAnh && st._syDiag !== syKey) { st._syDiag = syKey; auLog('Săn yêu (chẩn đoán, chỉ tích Tinh Anh): ' + (cs.map((x) => '“' + auSach(x.text) + '” #' + x.index + ' đầu đàn=' + (auDauDan(x) ? 'có' : 'không') + ' mức=' + (auSyMuc(x, vars) || '?')).join('; ') || 'không có lựa chọn') + '.', ''); }
+    const thoi = () => { const out = (v.choices || []).find((c) => c.available && c.thoat); if (!out) return null; auLog('Săn yêu: chỉ tích Tinh Anh, không có con đầu đàn hợp → chọn “' + auSach(out.text) + '”, không săn con thường.', ''); const r = auCall(() => g.choose(out.index)); return r.ok ? 'ok' : { stop: 'Không chọn được “' + out.text + '”: ' + r.err }; };
+    if (typeof g.targetedHunt !== 'function') return chiTinhAnh ? thoi() : null;
     const tp = auTruyPick(st, Object.assign({}, cfg, { cach: cfg.cach === 'nl' ? 'nl' : 'truy' }));
     if (tp === 'ok') { auLog('“Săn ' + (cs[0] ? auSach(cs[0].text).replace(/^Săn\s*/i, '') : 'yêu thú') + '” và con đầu đàn không hợp (màu / loại / debuff) → chọn loài khác trong sổ loài của ô.', ''); return 'ok'; }
     if (tp === 'skip') { const out = (v.choices || []).find((c) => c.available && c.thoat); if (out) { const r = auCall(() => g.choose(out.index)); return r.ok ? 'ok' : { stop: 'Không chọn được “' + out.text + '”: ' + r.err }; } }
-    return null;
+    return chiTinhAnh ? thoi() : null;
   }
   function auPick(v, opt) {
     const cs = (v.choices || []).filter((c) => c.available);
@@ -15307,6 +15481,9 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     if (mucs) { const mk = auChoiceMuc(def, ch, run && run.active && run.active.vars); if (mk !== null && !mucs.includes(mk)) return null; } // 7.13.0-thu.3: giao chiến loại quái không tích thì không chọn
     const lt = Math.max(100, (run.nhanVat && run.nhanVat.linhThach) || 0);
     let h = 0;
+    // game 28/11/2026: nghiệp/tâm ma > 0 ở mọi độ sâu và cả nhánh partial (random / chọn / danh sách con)
+    const xauNgam = (x, d) => { if (!x || typeof x !== 'object' || d > 8) return false; if (Array.isArray(x)) return x.some((y) => xauNgam(y, d + 1)); return Object.entries(x).some(([k, v]) => ((k === 'tam_ma' || k === 'nghiep') && (typeof v !== 'number' || v > 0)) || (v && typeof v === 'object' && xauNgam(v, d + 1))); };
+    for (const key of ['effects', 'success', 'partial', 'failure']) if (xauNgam(ch[key], 0)) return null;
     for (const key of ['effects', 'success', 'failure']) for (const ef of ch[key] || []) {
       if (!ef || typeof ef !== 'object') continue;
       for (const [k, v] of Object.entries(ef)) {
@@ -16778,6 +16955,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       c.maxY = num0('au-maxy', 0.5, 30, c.maxY); c.tran = Math.floor(num0('au-tran', 1, 9999, c.tran)); c.tho = num0('au-tho', 0, 1e4, c.tho);
       c.thuong = Math.floor(num0('au-thuong', 1, AU_TT_MAX, c.thuong)); { const x = q('au-duong'); if (x) c.duong = x.checked; c.duongMax = num0('au-duong-max', 1, 200, c.duongMax); const y = q('au-dan-thuong'); if (y) c.danThuong = y.checked; } /* 7.13.0-thu.25, thu.32 */ c.rut = num0('au-rut', 0, 99, c.rut); c.mucLa = sel('au-mucla', c.mucLa) === 'dung' ? 'dung' : 'chay'; { const v = sel('au-cach', c.cach); c.cach = v === 'truy' || v === 'nl' ? v : 'ngau'; } auNlRead(c, q); c.toc = sel('au-toc', c.toc);
       const h = q('au-ne-debuff'); if (h) c.neDebuff = h.checked;
+      { const x = q('au-duoi'); if (x) c.duoi = x.checked; } // 8.15.1-thu.1
       { const x = q('au-dkt'); if (x) c.dkt = x.checked; const dt = q('au-doan'); if (dt) c.doanTruoc = dt.checked; c.dktThang = num0('au-dkt-thang', 0, 100, c.dktThang); c.dktNang = num0('au-dkt-nang', 0, 100, c.dktNang); c.dktSom = num0('au-dkt-som', 0, 100, c.dktSom); } // 7.13.0-thu.8, thu.22 dktSom
       { const a = Math.floor(Number(sel('au-giai-tu', c.giaiTu))), b = Math.floor(Number(sel('au-giai-den', c.giaiDen))); const r = auGiaiRange({ giaiTu: a, giaiDen: b }); c.giaiTu = r[0]; c.giaiDen = r[1]; }
       { const m = AU_MUC_ID.filter((k) => { const el = q('au-muc-' + k); return el ? el.checked : auMucNorm(c.muc).includes(k); }); c.muc = auMucNorm(m); }
@@ -18137,6 +18315,7 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
       ${auFld('au-tho', 'Dừng Khi Thọ Nguyên Còn Dưới', c.tho, '(năm)')}
       <label style="display:flex;gap:6px;align-items:center;margin:6px 0;font-size:13px"><input type="checkbox" id="au-dkt" ${c.dkt !== false ? 'checked' : ''}> <b>Quyết Đánh Theo Dự Kiến Thật</b> <span class="vk-mu">(mặc định bật; trận phải tự đánh thì mô phỏng ${AU_DKT_N} trận bằng Auto của bạn, có dùng đan/phù, rồi mới đánh; không đạt thì bỏ chạy)</span></label>
       <label style="display:flex;gap:6px;align-items:center;margin:6px 0;font-size:13px"><input type="checkbox" id="au-doan" ${c.doanTruoc !== false ? 'checked' : ''}> <b>Dự đoán trước khi đánh (bỏ con thua chắc)</b> <span class="vk-mu">(mặc định bật; mô phỏng nhanh trước khi Truy Tìm hay chọn con để săn: con dự đoán thua chắc thì không chọn. Không tính đan/phù nên chỉ loại con thua chắc, không loại con "có thể thắng")</span></label>
+      <label style="display:flex;gap:6px;align-items:center;margin:6px 0;font-size:13px"><input type="checkbox" id="au-duoi" ${c.duoi === true ? 'checked' : ''}> <b>Đuổi theo khi địch bỏ chạy</b> <span class="vk-mu">(mặc định tắt = buông tha. Game mới: địch tháo chạy mà buông tha hay đuổi hụt đều tính đã hạ; đuổi kịp thì nhặt đủ chiến lợi phẩm, tốn thêm chút thời gian. Game cảnh báo hậu quả thì Auto vẫn buông tha)</span></label>
       ${auFld('au-dkt-thang', 'Dự Kiến Thật: Thắng Tối Thiểu', c.dktThang ?? 90, '(%)')}
       ${auFld('au-dkt-nang', 'Dự Kiến Thật: Tỉ Lệ Trận Thương Nặng Tối Đa', c.dktNang ?? 10, '(% số trận mô phỏng kết thúc ở Thương nặng hoặc Trọng thương)')}
       ${auFld('au-dkt-som', 'Bỏ Chạy Giữa Trận Khi Dự Kiến Thắng Dưới', c.dktSom ?? 30, '(%, 0 = tắt; mỗi hiệp mô phỏng lại ' + AU_DKT_SOM_N + ' trận từ thế đang đánh, thắng tụt dưới ngưỡng thì chạy thay vì uống đan kéo dài)')}
@@ -20251,7 +20430,35 @@ const KM_NG_K = 0.03;   // 8.3.1-thu.2: phạt điểm nghịch (khi không Ma t
     var HINT = 'Bản Mod chạy trong game, chỉ gồm phần Trợ Lý; số bản của Trợ Lý (Bản 2.x) được đánh riêng, độc lập với số Phiên Bản của Tool.';
 
     var LOG = [
-            { t: 'Phiên Bản 8.13.0 · Bản Mod', d: '28/11/2026', now: true,
+            { t: 'Phiên Bản 8.15.1 · Bản Mod', d: '28/11/2026', now: true,
+            nang: [
+                '<b>Auto Săn Yêu, đuổi theo:</b> ô mới "Đuổi theo khi địch bỏ chạy" (mặc định tắt = buông tha như cũ). Bật thì khi con mồi tháo chạy, Auto chọn Đuổi theo để nhặt đủ chiến lợi phẩm (game mới: đuổi hụt vẫn tính đã hạ). Chưa kiểm.'
+            ],
+            sua: [
+                '<b>Auto Săn Yêu, chỉ săn Tinh Anh:</b> bỏ tích Quái Thường, chỉ tích Tinh Anh thì Auto Lùng con đầu đàn (nhận lựa chọn chắc hơn); không có đầu đàn hợp thì chọn Thôi, không còn đi săn con thường rồi bỏ chạy. Nhật ký Auto có dòng chẩn đoán các lựa chọn. Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.15.0 · Bản Mod', d: '28/11/2026', now: false,
+            moi: [
+                '<b>Cách phá đạo chướng:</b> tab Đột Phá & Thọ, thẻ Đạo chướng chỉ cách phá chướng đang mang (việc ngoài đời cho Sát / Ngã / Trần / Tử, các sự kiện tâm cảnh phá được và kiếp này đã gặp chưa), các ngộ đang chờ chọn kèm số; chưa mang chướng thì có bảng chướng có thể rút ở ải lớn tới. Chưa kiểm.'
+            ],
+            nang: [
+                '<b>Ải đỉnh Luyện Khí:</b> thẻ Lên Trúc Cơ ghi rõ chưa phá ải (phạt giảm dần theo phần còn thiếu, còn n%; phẩm đạo cơ −1 bậc tới khi phá hẳn) và các dòng nguồn tỉ lệ của game. Tỉ lệ các phương án đan nay đã tính cả phạt chưa phá ải. Chưa kiểm.',
+                '<b>Mô phỏng trận:</b> theo luật hết hiệp mới của game: địch tháo chạy tính thắng, hết hiệp mà ta kém khí huyết là ta rút. Chưa kiểm.'
+            ],
+            sua: [
+                '<b>Auto Sự Kiện:</b> không còn chọn lựa chọn cộng nghiệp (vd Hái Vân Vụ Cổ Trà nghiệp +2); có ô "Né lựa chọn cộng nghiệp" (mặc định bật). Việc lạ trong các Auto khác bắt được nghiệp nằm sâu trong kết quả nửa vời / ngẫu nhiên. Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.14.0 · Bản Mod', d: '28/11/2026', now: false,
+            moi: [
+                '<b>Báo boss rơi dị bảo:</b> tab Dị Bảo có thẻ "Boss rơi dị bảo" liệt kê boss có tỉ lệ rơi dị bảo (cảnh giới, tỉ lệ), boss đang có trên bản đồ xếp đầu kèm nơi, số năm còn lại và nút Đi tới. Boss mới xuất hiện trên bản đồ thì hiện thông báo, bấm vào mở tab Dị Bảo (tắt được ở Việc chạy ngầm). Chưa kiểm.'
+            ],
+            nang: [
+                '<b>Tra Cứu vật phẩm:</b> công pháp và pháp khí hiện hình ô kinh mạch: hình nhỏ ngay trên dòng kết quả, mở thẻ thấy lưới lớn tô màu theo hệ và số ô. Chưa kiểm.'
+            ]
+            },
+            { t: 'Phiên Bản 8.13.0 · Bản Mod', d: '28/11/2026', now: false,
             moi: [
                 '<b>Auto Ấp Trứng (Tự Động):</b> chọn liệu chính đang có trong túi (trứng, đồ phổ khôi lỗi, xác luyện thi…) kèm tỉ lệ ra từng phẩm, Tool tự ấp bằng lệnh game, bế quan chờ nghi thức xong, con ra thì chấm: đạt tư chất (mặc định Thánh huyết) hoặc đặc tính bạn chọn thì dừng, không đạt thì giữ con và ấp tiếp tới hết số trứng tối đa. Mặc định tối đa 5 trứng, không dùng trứng quý trừ khi tick, giữ lại linh thạch và thọ, không thả con, không mua trứng, không tua lại kết quả. Chưa kiểm ấp ra con (đã kiểm phần chặn khi chưa có công pháp đúng loại).'
             ],
